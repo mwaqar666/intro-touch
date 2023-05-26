@@ -10,7 +10,7 @@ export interface IApiStack {
 	api: Api<AuthorizedApi>;
 }
 
-export const ApiStack = ({ stack }: StackContext): IApiStack => {
+export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 	const { auth }: IAuthStack = use(AuthStack);
 
 	// Create Api
@@ -24,7 +24,7 @@ export const ApiStack = ({ stack }: StackContext): IApiStack => {
 				},
 			},
 		},
-		routes: routeRegister(),
+		routes: await routeRegister(),
 	});
 
 	// attach permissions for authenticated users to the api

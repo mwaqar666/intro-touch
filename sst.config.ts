@@ -15,7 +15,7 @@ export default {
 			region: "us-east-2",
 		};
 	},
-	stacks(app: App): void {
+	async stacks(app: App): Promise<void> {
 		app.setDefaultFunctionProps({
 			runtime: "nodejs18.x",
 			environment: {
@@ -28,7 +28,7 @@ export default {
 		app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY);
 
 		app.stack(AuthStack);
-		app.stack(ApiStack);
+		await app.stack(ApiStack);
 		app.stack(DatabaseStack);
 	},
 } satisfies SSTConfig;
