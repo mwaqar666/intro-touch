@@ -1,19 +1,21 @@
 import { Application } from "@/backend/core/concrete/application";
 import type { IApplication } from "@/backend/core/contracts/application";
-import type { IContainer } from "@/backend/core/contracts/container";
 import type { IModule } from "@/backend/core/contracts/module";
 import type { Constructable } from "@/stacks/types";
 import { ModuleRegister } from "@/backend/ignition/module.register";
 
 export class IntroTouch {
-	private static _instance: IntroTouch;
-	private application: IApplication;
+	private bootstrapped: boolean;
 
 	private constructor() {
 		this.createUnderlyingApplication();
+
+		this.bootstrapped = false;
 	}
 
-	public static getInstance(): IntroTouch {
+	private static _instance: IntroTouch;
+
+	public static get instance(): IntroTouch {
 		if (this._instance) return this._instance;
 
 		this._instance = new IntroTouch();
@@ -21,35 +23,43 @@ export class IntroTouch {
 		return this._instance;
 	}
 
-	public bootstrapApplication(): IntroTouch {
-		this.registerApplicationModules().bootApplicationModules();
+	private _application: IApplication;
 
-		return this;
+	public get application(): IApplication {
+		if (this.bootstrapped) return this._application;
+
+		throw new Error("Application not bootstrapped");
 	}
 
-	public serviceContainer(): IContainer {
-		return this.application.getContainer();
+	public bootstrapApplication(): IntroTouch {
+		if (this.bootstrapped) return this;
+
+		this.registerApplicationModules().runApplicationModulesLifeCycle();
+
+		this.bootstrapped = true;
+
+		return this;
 	}
 
 	private registerApplicationModules(): IntroTouch {
 		const applicationModules: Array<Constructable<IModule>> = ModuleRegister.applicationModules();
 
 		applicationModules.forEach((applicationModule: Constructable<IModule>): void => {
-			this.application.registerModule(applicationModule);
+			this._application.registerModule(applicationModule);
 		});
 
 		return this;
 	}
 
-	private bootApplicationModules(): IntroTouch {
-		this.application.bootModules();
+	private runApplicationModulesLifeCycle(): IntroTouch {
+		this._application.runModuleLifeCycle();
 
 		return this;
 	}
 
 	private createUnderlyingApplication(): void {
-		this.application = new Application();
+		this._application = new Application();
 
-		this.application.registerContainer();
+		this._application.registerContainer();
 	}
 }

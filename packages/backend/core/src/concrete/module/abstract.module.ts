@@ -8,7 +8,27 @@ export abstract class AbstractModule implements IModule {
 		this.container = container;
 	}
 
-	public abstract boot(): void;
+	public preRegister(): void {
+		// Implement in subsequent module
+	}
 
-	public abstract register(): void;
+	public register(): void {
+		// Implement in subsequent module
+	}
+
+	public postRegister(): void {
+		// Implement in subsequent module
+	}
+
+	public preBoot(): void {
+		// Implement in subsequent module
+	}
+
+	public boot(): void {
+		// Implement in subsequent module
+	}
+
+	public postBoot(): void {
+		// Implement in subsequent module
+	}
 }

@@ -5,9 +5,10 @@ import type { IContainer } from "@/backend/core/contracts/container";
 import type { IModule } from "@/backend/core/contracts/module";
 
 export class Application implements IApplication {
-	private booted: boolean;
+	private lifeCycleRan: boolean;
 	private container: IContainer;
 	private registeredModules: Array<IModule> = [];
+	private registeredModuleNames: Array<string> = [];
 
 	public registerContainer(): void {
 		this.container = new Container();
@@ -19,36 +20,49 @@ export class Application implements IApplication {
 		throw new Error("Container not initialized yet!");
 	}
 
-	public registerModule(module: Constructable<IModule>): void {
+	public registerModule(appModule: Constructable<IModule>): void {
 		if (!this.container) {
 			throw new Error("No container registered to add the module!");
 		}
 
-		const moduleInstance: IModule = this.runModuleRegisterCycle(module);
+		this.verifyModuleIsNotRegisteredTwice(appModule);
+
+		this.registerModuleInstance(appModule);
+	}
+
+	public runModuleLifeCycle(): void {
+		if (this.lifeCycleRan) {
+			throw new Error("Module life cycle already ran!");
+		}
+
+		this.runRegisteredModulesLifeCycle();
+
+		this.lifeCycleRan = true;
+	}
+
+	private verifyModuleIsNotRegisteredTwice(appModule: Constructable<IModule>): void {
+		const modulePresent: boolean = this.registeredModuleNames.includes(appModule.name);
+		if (!modulePresent) return;
+
+		throw new Error(`Module "${appModule.name}" is already registered!`);
+	}
+
+	private registerModuleInstance(appModule: Constructable<IModule>): void {
+		this.registeredModuleNames.push(appModule.name);
+
+		const moduleInstance: IModule = new appModule();
+		moduleInstance.setContainer(this.container);
 
 		this.registeredModules.push(moduleInstance);
 	}
 
-	public bootModules(): void {
-		if (this.booted) {
-			throw new Error("Application already booted!");
-		}
+	private runRegisteredModulesLifeCycle(): void {
+		this.registeredModules.forEach((appModule: IModule) => appModule.preRegister());
+		this.registeredModules.forEach((appModule: IModule) => appModule.register());
+		this.registeredModules.forEach((appModule: IModule) => appModule.postRegister());
 
-		this.runRegisteredModulesBootCycle();
-
-		this.booted = true;
-	}
-
-	private runModuleRegisterCycle(module: Constructable<IModule>): IModule {
-		const moduleInstance: IModule = new module();
-
-		moduleInstance.setContainer(this.container);
-		moduleInstance.register();
-
-		return moduleInstance;
-	}
-
-	private runRegisteredModulesBootCycle(): void {
-		this.registeredModules.forEach((module: IModule) => module.boot());
+		this.registeredModules.forEach((appModule: IModule) => appModule.preBoot());
+		this.registeredModules.forEach((appModule: IModule) => appModule.boot());
+		this.registeredModules.forEach((appModule: IModule) => appModule.postBoot());
 	}
 }

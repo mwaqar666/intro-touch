@@ -1,19 +1,19 @@
 import { AbstractModule } from "@/backend/core/concrete/module";
 import { RouterTokenConst } from "@/backend/router/const";
-import type { IRoute, IRouteBuilder, IStackRouter } from "@/backend/router/interface";
-import { RouteBuilderService, StackRouterService } from "@/backend/router/services";
+import type { IRouteRegister, IStackRouter } from "@/backend/router/interface";
+import { RouteHandlerService, RouteRegisterService, StackRouterService } from "@/backend/router/services";
 
 export class RouterModule extends AbstractModule {
-	public register(): void {
-		this.container.set(RouterTokenConst.RouteBuilderToken, { type: RouteBuilderService });
-		this.container.set(RouterTokenConst.StackRouterToken, { type: StackRouterService });
+	public override register(): void {
+		this.container.registerSingleton(RouterTokenConst.RouteRegisterToken, { type: RouteRegisterService });
+		this.container.registerSingleton(RouterTokenConst.StackRouterToken, { type: StackRouterService });
+		this.container.registerSingleton(RouterTokenConst.RouteHandlerToken, { type: RouteHandlerService });
 	}
 
-	public boot(): void {
-		const routeBuilder: IRouteBuilder = this.container.get(RouterTokenConst.RouteBuilderToken);
-		const stackRouter: IStackRouter = this.container.get(RouterTokenConst.StackRouterToken);
-		const applicationRoutes: Array<IRoute> = this.container.get(RouterTokenConst.RouteToken);
+	public override postBoot(): void {
+		const routeRegister: IRouteRegister = this.container.resolve(RouterTokenConst.RouteRegisterToken);
+		const stackRouter: IStackRouter = this.container.resolve(RouterTokenConst.StackRouterToken);
 
-		stackRouter.prepareApiStackRoutes(routeBuilder.buildRoutesFrom(applicationRoutes));
+		stackRouter.prepareApiStackRoutes(routeRegister.buildRoutes());
 	}
 }

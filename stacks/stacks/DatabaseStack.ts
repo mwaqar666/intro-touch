@@ -1,7 +1,6 @@
-import { Connections, Port } from "aws-cdk-lib/aws-ec2";
 import type { StackContext } from "sst/constructs";
 import { RDS } from "sst/constructs";
-import { DatabaseConfig } from "@/stacks/config";
+import { Config } from "@/stacks/config";
 import { DatabaseConst } from "@/stacks/const";
 
 export interface IDatabaseStack {
@@ -9,12 +8,9 @@ export interface IDatabaseStack {
 }
 
 export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
-	const rdsConnectivity: Connections = new Connections();
-	rdsConnectivity.allowFromAnyIpv4(Port.allTcp());
-
 	const database: RDS = new RDS(stack, DatabaseConst.RDS_ID, {
 		engine: "postgresql11.13",
-		defaultDatabaseName: DatabaseConfig.DATABASE_NAME,
+		defaultDatabaseName: Config.get("DATABASE_NAME"),
 	});
 
 	stack.addOutputs({

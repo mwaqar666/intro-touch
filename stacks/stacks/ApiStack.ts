@@ -24,9 +24,6 @@ export const ApiStack = ({ stack }: StackContext): IApiStack => {
 				},
 			},
 		},
-		defaults: {
-			authorizer: "jwt",
-		},
 		routes: routeRegister(),
 	});
 

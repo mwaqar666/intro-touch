@@ -10,6 +10,9 @@ importers:
       '@tsconfig/strictest':
         specifier: ^2.0.1
         version: 2.0.1
+      '@types/aws-lambda':
+        specifier: ^8.10.115
+        version: 8.10.115
       '@types/node':
         specifier: ^20.1.2
         version: 20.1.2
@@ -25,6 +28,9 @@ importers:
       constructs:
         specifier: 10.1.156
         version: 10.1.156
+      dotenv:
+        specifier: ^16.0.3
+        version: 16.0.3
       eslint:
         specifier: ^8.40.0
         version: 8.40.0
@@ -2172,6 +2178,10 @@ packages:
 
   /@tsconfig/strictest@2.0.1:
     resolution: { integrity: sha512-7JHHCbyCsGUxLd0pDbp24yz3zjxw2t673W5oAP6HCEdr/UUhaRhYd3SSnUsGCk+VnPVJVA4mXROzbhI+nyIk+w== }
+    dev: true
+
+  /@types/aws-lambda@8.10.115:
+    resolution: { integrity: sha512-kCZuFXKLV3y8NjSoaD5+qKTpRWvPz3uh3W/u1uwlw3Mg+MtaStg1NWgjAwUXo/VJDb6n6KF1ljykFNlNwEJ53Q== }
     dev: true
 
   /@types/json-schema@7.0.11:

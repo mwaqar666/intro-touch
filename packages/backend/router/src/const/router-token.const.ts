@@ -1,9 +1,8 @@
 import { Token } from "typedi";
-import type { IRoute, IRouteBuilder, IStackRouter } from "@/backend/router/interface";
+import type { IRouteHandler, IRouteRegister, IStackRouter } from "@/backend/router/interface";
 
 export class RouterTokenConst {
-	public static readonly StackRouterToken: Token<IStackRouter> = new Token<IStackRouter>("IStackRouter");
-	public static readonly RouteBuilderToken: Token<IRouteBuilder> = new Token<IRouteBuilder>("IRouteBuilder");
-
-	public static readonly RouteToken: Token<Array<IRoute>> = new Token<Array<IRoute>>("Array<IRoute>");
+	public static readonly StackRouterToken: Token<IStackRouter> = new Token<IStackRouter>("StackRouterToken");
+	public static readonly RouteRegisterToken: Token<IRouteRegister> = new Token<IRouteRegister>("RouteRegisterToken");
+	public static readonly RouteHandlerToken: Token<IRouteHandler> = new Token<IRouteHandler>("RouteHandlerToken");
 }

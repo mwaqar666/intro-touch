@@ -1,8 +1,11 @@
 import type { Constructable, Key } from "@/stacks/types";
+import { Service } from "typedi";
 
-export const Controller = <T extends object>(target: Constructable<T>): Constructable<T> => {
+export const Controller = <T extends object>(target: Constructable<T, any>): Constructable<T, any> => {
+	Service()(target);
+
 	return new Proxy(target, {
-		construct(concreteController: Constructable<T>, argumentsArray: Array<void>): T {
+		construct(concreteController: Constructable<T, any>, argumentsArray: Array<void>): T {
 			const controllerInstance: T = Reflect.construct(concreteController, argumentsArray);
 
 			return new Proxy(controllerInstance, {

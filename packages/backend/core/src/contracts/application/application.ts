@@ -7,7 +7,7 @@ export interface IApplication {
 
 	getContainer(): IContainer;
 
-	registerModule(module: Constructable<IModule>): void;
+	registerModule(appModule: Constructable<IModule>): void;
 
-	bootModules(): void;
+	runModuleLifeCycle(): void;
 }

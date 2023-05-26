@@ -1,7 +1,8 @@
+import { ApplicationConst } from "@/backend/common/const";
 import type { AvailableAuthorizers } from "@/stacks/types";
 import type { ApiRouteProps } from "sst/constructs";
 import { Service } from "typedi";
-import type { IRouteBuilder, ISimpleRoute, IStackRouter } from "@/backend/router/interface";
+import type { IRouteRegister, ISimpleRoute, IStackRouter } from "@/backend/router/interface";
 
 @Service()
 export class StackRouterService implements IStackRouter {
@@ -11,10 +12,10 @@ export class StackRouterService implements IStackRouter {
 		return this.stackRoutes;
 	}
 
-	public prepareApiStackRoutes(routeBuilder: IRouteBuilder): void {
+	public prepareApiStackRoutes(routeRegister: IRouteRegister): void {
 		if (this.stackRoutes) return;
 
-		const preparedRoutes: Array<[string, ApiRouteProps<AvailableAuthorizers>]> = this.prepareRoutes(routeBuilder.getCompiledRoutes());
+		const preparedRoutes: Array<[string, ApiRouteProps<AvailableAuthorizers>]> = this.prepareRoutes(routeRegister.getBuiltRoutes());
 
 		this.stackRoutes = Object.fromEntries(preparedRoutes);
 	}
@@ -25,7 +26,7 @@ export class StackRouterService implements IStackRouter {
 
 			const routeProps: ApiRouteProps<AvailableAuthorizers> = {
 				type: "function",
-				function: route.handler,
+				function: ApplicationConst.applicationEntryPointHandler,
 				authorizer: route.authorizer ?? "none",
 			};
 

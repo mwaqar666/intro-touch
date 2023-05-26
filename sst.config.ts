@@ -1,11 +1,15 @@
-import { env } from "process";
+import { resolve } from "node:path";
+import { env } from "node:process";
 import { RemovalPolicy } from "aws-cdk-lib";
+import { config } from "dotenv";
 import type { App } from "sst/constructs";
 import type { ConfigOptions, SSTConfig } from "sst/project";
 import { ApiStack, AuthStack, DatabaseStack } from "./stacks/stacks";
 
 export default {
-	config(): ConfigOptions {
+	config({ stage }): ConfigOptions {
+		config({ path: resolve(`.env.${stage ?? "dev"}`) });
+
 		return {
 			name: "intro-touch",
 			region: "us-east-2",

@@ -1,5 +1,7 @@
-import type { AvailableAuthorizers, ExclusiveUnion } from "@/stacks/types";
+import type { AvailableAuthorizers, Delegate, ExclusiveUnion } from "@/stacks/types";
+import type { Context } from "aws-lambda/handler";
 import type { RouteMethod } from "@/backend/router/enum";
+import type { IRequest, IResponse } from "@/backend/router/interface/route-handler";
 
 export interface IGroupedRoute {
 	/**
@@ -36,7 +38,7 @@ export interface ISimpleRoute {
 	 * If the handler is in packages/backend/user/src/controllers/user.controller, then the handler property will be like:
 	 * user/src/controllers/user-controller.handler
 	 */
-	handler: string;
+	handler: Delegate<[IRequest, Context], IResponse>;
 
 	/**
 	 * Authorizer to apply to this route. This takes precedence over the authorizer that is applied on the group
@@ -45,3 +47,7 @@ export interface ISimpleRoute {
 }
 
 export type IRoute = ExclusiveUnion<[ISimpleRoute, IGroupedRoute]>;
+
+export interface IRouter {
+	registerRoutes(): Array<IRoute>;
+}
