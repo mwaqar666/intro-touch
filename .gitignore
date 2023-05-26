@@ -1,0 +1,40 @@
+# Serverless directories
+.build
+.serverless
+.webpack
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+tsconfig.tsbuildinfo
+
+# IDE
+.idea
+.vscode
+
+# SST
+.sst
+cdk.context.json
+
+# Envdir
+.envrc
+
+# Environment variables
+.env.*
+!.env.example
+
+# Test output
+.nyc_output
+coverage
+
+# SQLite db used for unit testing
+database.sqlite
+
+cdk.out/sendgrid.env

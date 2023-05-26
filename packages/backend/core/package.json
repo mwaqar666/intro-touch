@@ -1,0 +1,8 @@
+{
+  "name": "@intro-touch/backend-core",
+  "version": "0.0.0",
+  "type": "module",
+  "devDependencies": {
+    "typedi": "^0.10.0"
+  }
+}

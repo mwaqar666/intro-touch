@@ -1,0 +1,38 @@
+{
+  "extends": [
+    "@tsconfig/node18/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "incremental": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@/stacks/*": [
+        "stacks/*"
+      ],
+      "@/backend/common/*": [
+        "packages/backend/common/src/*"
+      ],
+      "@/backend/core/*": [
+        "packages/backend/core/src/*"
+      ],
+      "@/backend/ignition/*": [
+        "packages/backend/ignition/src/*"
+      ],
+      "@/backend/router/*": [
+        "packages/backend/router/src/*"
+      ],
+      "@/backend/user/*": [
+        "packages/backend/user/src/*"
+      ],
+      "@/common/utils/*": [
+        "packages/common/utils/src/*"
+      ]
+    }
+  }
+}
