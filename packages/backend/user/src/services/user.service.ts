@@ -1,13 +1,13 @@
 export class UserService {
 	public getUserList(): void {
-		console.log("getUserList");
+		console.log("UserService => getUserList");
 	}
 
 	public getUser(): void {
-		console.log("getUser");
+		console.log("UserService => getUser");
 	}
 
 	public deleteUser(): void {
-		console.log("deleteUser");
+		console.log("UserService => deleteUser");
 	}
 }

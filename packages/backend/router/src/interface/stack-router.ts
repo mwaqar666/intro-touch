@@ -1,9 +1,9 @@
 import type { AvailableAuthorizers } from "@/stacks/types";
 import type { ApiRouteProps } from "sst/constructs";
-import type { IRouteRegister } from "@/backend/router/interface/route-register";
+import type { ISimpleRoute } from "@/backend/router/interface/route";
 
 export interface IStackRouter {
 	getApiStackRoutes(): Record<string, ApiRouteProps<AvailableAuthorizers>>;
 
-	prepareApiStackRoutes(routeRegister: IRouteRegister): void;
+	prepareApiStackRoutes(builtRoutes: Array<ISimpleRoute>): void;
 }
