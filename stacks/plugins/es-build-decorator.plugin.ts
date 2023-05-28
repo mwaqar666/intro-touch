@@ -1,17 +1,12 @@
 import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { basename, dirname } from "node:path";
 import { cwd } from "node:process";
-import { inspect } from "node:util";
 import type { OnLoadArgs, OnLoadResult, Plugin, PluginBuild } from "esbuild";
 import type { ParsedCommandLine, TranspileOutput } from "typescript";
 import { default as typescript } from "typescript";
 import type { Nullable, Optional } from "@/stacks/types";
 
-const printDiagnostics = (...args: Array<unknown>): void => {
-	console.log(inspect(args, false, 10, true));
-};
-
-export const esBuildDecorator: Plugin = {
+export const esBuildDecoratorPlugin: Plugin = {
 	name: "esbuildDecorator",
 	setup: (build: PluginBuild): void => {
 		let parsedTsConfig: Nullable<ParsedCommandLine> = null;
@@ -25,23 +20,20 @@ export const esBuildDecorator: Plugin = {
 				if (!fileContents) throw new Error(`Failed to read "${fileName}"`);
 
 				const result = typescript.parseConfigFileTextToJson(fileName, fileContents);
-				if (result.error) {
-					printDiagnostics(result.error);
-					throw new Error(`Failed to parse "${fileName}"`);
-				}
+				if (result.error) console.log(result.error);
 
 				const loadedConfig = result.config;
-				const baseDir: string = path.dirname(fileName);
+				const baseDir: string = dirname(fileName);
 
 				parsedTsConfig = typescript.parseJsonConfigFileContent(loadedConfig, typescript.sys, baseDir);
-				if (parsedTsConfig.errors[0]) printDiagnostics(parsedTsConfig.errors);
+				parsedTsConfig.errors.forEach((diagnostic: typescript.Diagnostic) => console.log(diagnostic));
 			}
 
 			const typescriptFile: string = await readFile(onLoadArgs.path, "utf8");
 
 			const program: TranspileOutput = typescript.transpileModule(typescriptFile, {
 				compilerOptions: parsedTsConfig.options,
-				fileName: path.basename(onLoadArgs.path),
+				fileName: basename(onLoadArgs.path),
 			});
 
 			return { contents: program.outputText };

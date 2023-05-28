@@ -1,1 +1,1 @@
-export * from "./es-build-decorator";
+export * from "./es-build-decorator.plugin";

@@ -13,6 +13,7 @@ export class UserController {
 
 	public getUserList(request: IRequest, context: Context): IResponse {
 		console.log(request, context);
+		console.log(this.userService);
 
 		return {
 			body: "None",
@@ -22,6 +23,7 @@ export class UserController {
 
 	public getUser(request: IRequest, context: Context): IResponse {
 		console.log(request, context);
+		console.log(this.userService);
 
 		return {
 			body: "None",
@@ -31,6 +33,7 @@ export class UserController {
 
 	public deleteUser(request: IRequest, context: Context): IResponse {
 		console.log(request, context);
+		console.log(this.userService);
 
 		return {
 			body: "None",
