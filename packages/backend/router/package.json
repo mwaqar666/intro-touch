@@ -1,7 +1,6 @@
 {
   "name": "@intro-touch/backend-router",
   "version": "0.0.0",
-  "type": "module",
   "devDependencies": {
     "typedi": "^0.10.0"
   }

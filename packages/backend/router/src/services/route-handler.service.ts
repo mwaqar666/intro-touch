@@ -1,9 +1,8 @@
 import type { Context } from "aws-lambda";
-import { Inject, Service } from "typedi";
+import { Inject } from "typedi";
 import { RouterTokenConst } from "@/backend/router/const";
 import type { IRequest, IResponse, IRouteHandler, IRouteRegister, ISimpleRoute } from "@/backend/router/interface";
 
-@Service()
 export class RouteHandlerService implements IRouteHandler {
 	public constructor(
 		// Dependencies
@@ -11,7 +10,7 @@ export class RouteHandlerService implements IRouteHandler {
 	) {}
 
 	public async handleRoute(request: IRequest, context: Context): Promise<IResponse> {
-		const matchedRoute: ISimpleRoute = this.routeRegister.getRoute(request.rawPath);
+		const matchedRoute: ISimpleRoute = this.routeRegister.resolveRoute(request.rawPath);
 
 		return matchedRoute.handler(request, context);
 	}

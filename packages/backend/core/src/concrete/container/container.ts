@@ -1,26 +1,32 @@
-import type { DependencyProvider } from "@/backend/common/types";
+import type { Constructable } from "@/stacks/types";
 import type { Token } from "typedi";
 import { Container as TypeDIContainer } from "typedi";
 import type { IContainer } from "@/backend/core/contracts/container";
 
 export class Container implements IContainer {
+	private readonly container = TypeDIContainer.of();
+
 	public resolve<T>(token: Token<T>): T {
-		return TypeDIContainer.get(token);
+		return this.container.get(token);
 	}
 
-	public registerSingleton<T>(token: Token<T>, provider: DependencyProvider<T>): void {
-		TypeDIContainer.set({
+	public registerSingleton<T>(token: Token<T>, provider: Constructable<T>): void {
+		this.container.set({
 			id: token,
-			...provider,
+			type: provider,
 			transient: false,
 		});
 	}
 
-	public registerTransient<T>(token: Token<T>, provider: DependencyProvider<T>): void {
-		TypeDIContainer.set({
+	public registerTransient<T>(token: Token<T>, provider: Constructable<T>): void {
+		this.container.set({
 			id: token,
-			...provider,
+			type: provider,
 			transient: true,
 		});
+	}
+
+	public dispose(): void {
+		this.container.reset();
 	}
 }

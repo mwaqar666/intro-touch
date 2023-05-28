@@ -1,7 +1,8 @@
 import type { StackContext } from "sst/constructs";
 import { Api, use } from "sst/constructs";
-import { routeRegister } from "@/backend/ignition/handler";
+import { routeRegisterHandler } from "@/backend/ignition/handlers";
 import { ApiConst } from "@/stacks/const";
+import { esBuildDecorator } from "@/stacks/plugins";
 import type { IAuthStack } from "@/stacks/stacks/AuthStack";
 import { AuthStack } from "@/stacks/stacks/AuthStack";
 import type { AuthorizedApi } from "@/stacks/types";
@@ -24,7 +25,16 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 				},
 			},
 		},
-		routes: await routeRegister(),
+		defaults: {
+			function: {
+				nodejs: {
+					esbuild: {
+						plugins: [esBuildDecorator],
+					},
+				},
+			},
+		},
+		routes: await routeRegisterHandler(),
 	});
 
 	// attach permissions for authenticated users to the api

@@ -4,7 +4,7 @@ import { RemovalPolicy } from "aws-cdk-lib";
 import { config } from "dotenv";
 import type { App } from "sst/constructs";
 import type { ConfigOptions, SSTConfig } from "sst/project";
-import { ApiStack, AuthStack, DatabaseStack } from "./stacks/stacks";
+import { ApiStack, AuthStack, DatabaseStack } from "@/stacks/stacks";
 
 export default {
 	config({ stage }): ConfigOptions {
@@ -23,6 +23,9 @@ export default {
 				NODE_ENV: <string>env["NODE_ENV"],
 			},
 			architecture: "arm_64",
+			nodejs: {
+				esbuild: {},
+			},
 		});
 
 		app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY);

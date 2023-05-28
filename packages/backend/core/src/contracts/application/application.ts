@@ -9,5 +9,5 @@ export interface IApplication {
 
 	registerModule(appModule: Constructable<IModule>): void;
 
-	runModuleLifeCycle(): void;
+	runModuleLifeCycle(): Promise<void>;
 }

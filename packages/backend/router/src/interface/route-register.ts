@@ -8,7 +8,7 @@ export interface IRouteRegister {
 
 	getBuiltRoutes(): Array<ISimpleRoute>;
 
-	getRoute(path: string): ISimpleRoute;
+	resolveRoute(path: string): ISimpleRoute;
 }
 
 export interface IRouteGroup {

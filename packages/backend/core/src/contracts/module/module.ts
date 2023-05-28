@@ -3,15 +3,15 @@ import type { IContainer } from "@/backend/core/contracts/container";
 export interface IModule {
 	setContainer(container: IContainer): void;
 
-	preRegister(): void;
+	preRegister(): Promise<void>;
 
-	register(): void;
+	register(): Promise<void>;
 
-	postRegister(): void;
+	postRegister(): Promise<void>;
 
-	preBoot(): void;
+	preBoot(): Promise<void>;
 
-	boot(): void;
+	boot(): Promise<void>;
 
-	postBoot(): void;
+	postBoot(): Promise<void>;
 }

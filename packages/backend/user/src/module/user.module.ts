@@ -2,14 +2,18 @@ import { AbstractModule } from "@/backend/core/concrete/module";
 import { RouterTokenConst } from "@/backend/router/const";
 import type { IRouter, IRouteRegister } from "@/backend/router/interface";
 import { UserTokenConst } from "@/backend/user/const";
+import { UserController } from "@/backend/user/controller";
 import { UserRouter } from "@/backend/user/router";
+import { UserService } from "@/backend/user/services";
 
 export class UserModule extends AbstractModule {
-	public override register(): void {
-		this.container.registerSingleton(UserTokenConst.UserRouterToken, { type: UserRouter });
+	public override async register(): Promise<void> {
+		this.container.registerSingleton(UserTokenConst.UserServiceToken, UserService);
+		this.container.registerSingleton(UserTokenConst.UserControllerToken, UserController);
+		this.container.registerSingleton(UserTokenConst.UserRouterToken, UserRouter);
 	}
 
-	public override boot(): void {
+	public override async boot(): Promise<void> {
 		const userRouter: IRouter = this.container.resolve(UserTokenConst.UserRouterToken);
 		const routeRegister: IRouteRegister = this.container.resolve(RouterTokenConst.RouteRegisterToken);
 

@@ -1,10 +1,8 @@
 import { ApplicationConst } from "@/backend/common/const";
 import type { AvailableAuthorizers } from "@/stacks/types";
 import type { ApiRouteProps } from "sst/constructs";
-import { Service } from "typedi";
 import type { IRouteRegister, ISimpleRoute, IStackRouter } from "@/backend/router/interface";
 
-@Service()
 export class StackRouterService implements IStackRouter {
 	private stackRoutes: Record<string, ApiRouteProps<AvailableAuthorizers>>;
 
@@ -26,7 +24,7 @@ export class StackRouterService implements IStackRouter {
 
 			const routeProps: ApiRouteProps<AvailableAuthorizers> = {
 				type: "function",
-				function: ApplicationConst.applicationEntryPointHandler,
+				function: ApplicationConst.ApplicationEntryPointHandler,
 				authorizer: route.authorizer ?? "none",
 			};
 

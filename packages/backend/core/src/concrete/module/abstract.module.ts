@@ -8,27 +8,27 @@ export abstract class AbstractModule implements IModule {
 		this.container = container;
 	}
 
-	public preRegister(): void {
+	public async preRegister(): Promise<void> {
 		// Implement in subsequent module
 	}
 
-	public register(): void {
+	public async register(): Promise<void> {
 		// Implement in subsequent module
 	}
 
-	public postRegister(): void {
+	public async postRegister(): Promise<void> {
 		// Implement in subsequent module
 	}
 
-	public preBoot(): void {
+	public async preBoot(): Promise<void> {
 		// Implement in subsequent module
 	}
 
-	public boot(): void {
+	public async boot(): Promise<void> {
 		// Implement in subsequent module
 	}
 
-	public postBoot(): void {
+	public async postBoot(): Promise<void> {
 		// Implement in subsequent module
 	}
 }

@@ -1,6 +1,3 @@
-import { Service } from "typedi";
-
-@Service()
 export class UserService {
 	public getUserList(): void {
 		console.log("getUserList");

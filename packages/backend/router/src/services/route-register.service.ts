@@ -1,9 +1,7 @@
 import type { Optional } from "@/stacks/types";
-import { Service } from "typedi";
 import { RouteBuilderConst } from "@/backend/router/const";
 import type { IGroupedRoute, IRoute, IRouteGroup, IRouter, IRouteRegister, ISimpleRoute } from "@/backend/router/interface";
 
-@Service()
 export class RouteRegisterService implements IRouteRegister {
 	private moduleRoutes: Array<IRoute> = [];
 	private builtRoutes: Array<ISimpleRoute> = [];
@@ -24,7 +22,7 @@ export class RouteRegisterService implements IRouteRegister {
 		return this.builtRoutes;
 	}
 
-	public getRoute(path: string): ISimpleRoute {
+	public resolveRoute(path: string): ISimpleRoute {
 		const matchedRoute: Optional<ISimpleRoute> = this.builtRoutes.find((builtRoute: ISimpleRoute): boolean => builtRoute.path === path);
 		if (matchedRoute) return matchedRoute;
 

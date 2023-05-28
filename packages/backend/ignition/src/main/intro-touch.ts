@@ -7,20 +7,10 @@ import { ModuleRegister } from "@/backend/ignition/module.register";
 export class IntroTouch {
 	private bootstrapped: boolean;
 
-	private constructor() {
+	public constructor() {
 		this.createUnderlyingApplication();
 
 		this.bootstrapped = false;
-	}
-
-	private static _instance: IntroTouch;
-
-	public static get instance(): IntroTouch {
-		if (this._instance) return this._instance;
-
-		this._instance = new IntroTouch();
-
-		return this._instance;
 	}
 
 	private _application: IApplication;
@@ -31,18 +21,19 @@ export class IntroTouch {
 		throw new Error("Application not bootstrapped");
 	}
 
-	public bootstrapApplication(): IntroTouch {
+	public async bootstrapApplication(): Promise<IntroTouch> {
 		if (this.bootstrapped) return this;
 
-		this.registerApplicationModules().runApplicationModulesLifeCycle();
+		await this.registerApplicationModules();
+		await this.runApplicationModulesLifeCycle();
 
 		this.bootstrapped = true;
 
 		return this;
 	}
 
-	private registerApplicationModules(): IntroTouch {
-		const applicationModules: Array<Constructable<IModule>> = ModuleRegister.applicationModules();
+	private async registerApplicationModules(): Promise<IntroTouch> {
+		const applicationModules: Array<Constructable<IModule>> = await Promise.all(ModuleRegister.applicationModules());
 
 		applicationModules.forEach((applicationModule: Constructable<IModule>): void => {
 			this._application.registerModule(applicationModule);
@@ -51,8 +42,8 @@ export class IntroTouch {
 		return this;
 	}
 
-	private runApplicationModulesLifeCycle(): IntroTouch {
-		this._application.runModuleLifeCycle();
+	private async runApplicationModulesLifeCycle(): Promise<IntroTouch> {
+		await this._application.runModuleLifeCycle();
 
 		return this;
 	}

@@ -1,13 +1,15 @@
 import { Controller } from "@/backend/core/decorators";
 import type { IRequest, IResponse } from "@/backend/router/interface";
 import type { Context } from "aws-lambda";
+import { Inject } from "typedi";
+import { UserTokenConst } from "@/backend/user/const";
 import type { UserService } from "@/backend/user/services";
 
 @Controller
 export class UserController {
 	public constructor(
 		// Dependencies
-		private readonly userService: UserService,
+		@Inject(UserTokenConst.UserServiceToken) private readonly userService: UserService,
 	) {}
 
 	public getUserList(request: IRequest, context: Context): IResponse {

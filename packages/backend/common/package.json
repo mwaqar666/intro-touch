@@ -1,7 +1,6 @@
 {
   "name": "@intro-touch/backend-common",
   "version": "1.0.0",
-  "type": "module",
   "devDependencies": {
     "typedi": "^0.10.0"
   }
