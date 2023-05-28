@@ -7,7 +7,7 @@ export interface IAuthStack {
 }
 
 export const AuthStack = ({ stack }: StackContext): IAuthStack => {
-	const auth: Cognito = new Cognito(stack, AuthConst.CognitoUserPoolId, {
+	const auth: Cognito = new Cognito(stack, AuthConst.CognitoUserPool, {
 		login: ["email", "username"],
 	});
 

@@ -15,7 +15,7 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 	const { auth }: IAuthStack = use(AuthStack);
 
 	// Create Api
-	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.ApplicationLambdaId, {
+	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.ApplicationApi, {
 		authorizers: {
 			jwt: {
 				type: "user_pool",

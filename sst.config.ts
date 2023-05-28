@@ -23,9 +23,6 @@ export default {
 				NODE_ENV: <string>env["NODE_ENV"],
 			},
 			architecture: "arm_64",
-			nodejs: {
-				esbuild: {},
-			},
 		});
 
 		app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY);
