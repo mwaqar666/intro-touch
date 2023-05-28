@@ -1,10 +1,10 @@
 import type { Constructable } from "@/stacks/types";
-import type { Token } from "typedi";
+import type { ContainerInstance, Token } from "typedi";
 import { Container as TypeDIContainer } from "typedi";
 import type { IContainer } from "@/backend/core/contracts/container";
 
 export class Container implements IContainer {
-	private readonly container = TypeDIContainer.of();
+	private readonly container: ContainerInstance = TypeDIContainer.of();
 
 	public resolve<T>(token: Token<T>): T {
 		return this.container.get(token);
@@ -24,9 +24,5 @@ export class Container implements IContainer {
 			type: provider,
 			transient: true,
 		});
-	}
-
-	public dispose(): void {
-		this.container.reset();
 	}
 }
