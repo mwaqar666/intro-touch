@@ -2,9 +2,10 @@ import type { Constructable, Key } from "@/stacks/types";
 import { copyMetadata } from "ioc-class";
 import "reflect-metadata";
 
-export function Controller<T extends object, TArgs extends Array<unknown>>(target: Constructable<T, TArgs>): Constructable<T, TArgs> {
+export const Controller = <T extends object, TArgs extends Array<unknown>>(target: Constructable<T, TArgs>): Constructable<T, TArgs> => {
 	/**
-	 * Trap the class instantiation, so when an instance of the class is created, we add another trap on property accessor
+	 * Trap the class instantiation, so when an instance of the class is created, we can add
+	 * another trap on property accessor
 	 */
 	const proxifiedTarget: Constructable<T, TArgs> = new Proxy(target, {
 		construct(concreteController: Constructable<T, TArgs>, argumentsArray: TArgs): T {
@@ -22,7 +23,6 @@ export function Controller<T extends object, TArgs extends Array<unknown>>(targe
 					 * bind the "this" context of method to class instance itself. This way
 					 * we can pass around the method signature as callback to another function
 					 */
-
 					if (targetProp instanceof Function) {
 						return targetProp.bind(controller);
 					}
@@ -36,4 +36,4 @@ export function Controller<T extends object, TArgs extends Array<unknown>>(targe
 	copyMetadata(target, proxifiedTarget);
 
 	return proxifiedTarget;
-}
+};

@@ -24,18 +24,15 @@ export class IntroTouch {
 	public async bootstrapApplication(): Promise<IntroTouch> {
 		if (this.bootstrapped) return this;
 
-		await this.registerApplicationModules();
-		await this.runApplicationModulesLifeCycle();
+		await this.registerApplicationModules().runApplicationModulesLifeCycle();
 
 		this.bootstrapped = true;
 
 		return this;
 	}
 
-	private async registerApplicationModules(): Promise<IntroTouch> {
-		const applicationModules: Array<Constructable<IModule>> = await Promise.all(ModuleRegister.applicationModules());
-
-		applicationModules.forEach((applicationModule: Constructable<IModule>): void => {
+	private registerApplicationModules(): IntroTouch {
+		ModuleRegister.applicationModules().forEach((applicationModule: Constructable<IModule>): void => {
 			this._application.registerModule(applicationModule);
 		});
 
