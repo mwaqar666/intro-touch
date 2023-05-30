@@ -14,7 +14,7 @@ export class Application implements IApplication {
 		this.container = new Container();
 	}
 
-	public getContainer(): IContainer {
+	public getApplicationContainer(): IContainer {
 		if (this.container) return this.container;
 
 		throw new Error("Container not initialized yet!");
@@ -40,7 +40,9 @@ export class Application implements IApplication {
 
 	private registerModuleInstance(appModule: Constructable<IModule>): void {
 		const modulePresent: boolean = this.registeredModuleNames.includes(appModule.name);
-		if (modulePresent) return;
+		if (modulePresent) {
+			throw new Error(`Module "${appModule.name}" already registered`);
+		}
 
 		this.registeredModuleNames.push(appModule.name);
 

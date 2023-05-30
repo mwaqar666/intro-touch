@@ -5,7 +5,7 @@ import type { IModule } from "@/backend/core/contracts/module";
 export interface IApplication {
 	registerContainer(): void;
 
-	getContainer(): IContainer;
+	getApplicationContainer(): IContainer;
 
 	registerModule(appModule: Constructable<IModule>): void;
 

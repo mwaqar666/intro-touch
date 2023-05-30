@@ -5,18 +5,25 @@ import type { Constructable } from "@/stacks/types";
 import { ModuleRegister } from "@/backend/ignition/module.register";
 
 export class IntroTouch {
+	private static instance: IntroTouch;
 	private bootstrapped: boolean;
+	private application: IApplication;
 
-	public constructor() {
+	private constructor() {
 		this.createUnderlyingApplication();
 
 		this.bootstrapped = false;
 	}
 
-	private _application: IApplication;
+	public static getInstance(): IntroTouch {
+		if (IntroTouch.instance) return IntroTouch.instance;
 
-	public get application(): IApplication {
-		if (this.bootstrapped) return this._application;
+		IntroTouch.instance = new IntroTouch();
+		return IntroTouch.instance;
+	}
+
+	public getApplication(): IApplication {
+		if (this.bootstrapped) return this.application;
 
 		throw new Error("Application not bootstrapped");
 	}
@@ -33,21 +40,21 @@ export class IntroTouch {
 
 	private registerApplicationModules(): IntroTouch {
 		ModuleRegister.applicationModules().forEach((applicationModule: Constructable<IModule>): void => {
-			this._application.registerModule(applicationModule);
+			this.application.registerModule(applicationModule);
 		});
 
 		return this;
 	}
 
 	private async runApplicationModulesLifeCycle(): Promise<IntroTouch> {
-		await this._application.runModuleLifeCycle();
+		await this.application.runModuleLifeCycle();
 
 		return this;
 	}
 
 	private createUnderlyingApplication(): void {
-		this._application = new Application();
+		this.application = new Application();
 
-		this._application.registerContainer();
+		this.application.registerContainer();
 	}
 }
