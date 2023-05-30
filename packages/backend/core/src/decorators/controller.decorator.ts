@@ -23,11 +23,7 @@ export const Controller = <T extends object, TArgs extends Array<unknown>>(targe
 					 * bind the "this" context of method to class instance itself. This way
 					 * we can pass around the method signature as callback to another function
 					 */
-					if (targetProp instanceof Function) {
-						return targetProp.bind(controller);
-					}
-
-					return targetProp;
+					return targetProp instanceof Function ? targetProp.bind(controller) : targetProp;
 				},
 			});
 		},

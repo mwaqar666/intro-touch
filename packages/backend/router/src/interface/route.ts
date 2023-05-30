@@ -48,6 +48,8 @@ export interface ISimpleRoute {
 
 export type IRoute = ExclusiveUnion<[ISimpleRoute, IGroupedRoute]>;
 
-export interface IRouter {
+export interface IRouter<T> {
+	setControllers(controllers: T): void;
+
 	registerRoutes(): Array<IRoute>;
 }

@@ -1,8 +1,8 @@
 import type { AvailableAuthorizers } from "@/stacks/types";
 import type { IRoute, IRouter, ISimpleRoute } from "@/backend/router/interface/route";
 
-export interface IRouteRegister {
-	registerRouter(routes: IRouter): void;
+export interface IRouteRegister<T = unknown> {
+	registerRouter(routes: IRouter<T>): void;
 
 	registerBuiltRoutes(routes: Array<ISimpleRoute>): void;
 
