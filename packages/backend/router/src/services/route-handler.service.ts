@@ -1,5 +1,5 @@
 import type { Context } from "aws-lambda";
-import { Inject } from "typedi";
+import { Inject } from "ioc-class";
 import { RouterTokenConst } from "@/backend/router/const";
 import type { IRequest, IResponse, IRouteHandler, IRouteRegister, ISimpleRoute } from "@/backend/router/interface";
 

@@ -1,4 +1,4 @@
-import type { IContainer } from "@/backend/core/contracts/container";
+import type { IContainer } from "ioc-class";
 
 export interface IModule {
 	setContainer(container: IContainer): void;

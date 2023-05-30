@@ -5,6 +5,8 @@ import { ApiConst } from "@/stacks/const";
 import { esBuildDecoratorPlugin } from "@/stacks/plugins";
 import type { IAuthStack } from "@/stacks/stacks/AuthStack";
 import { AuthStack } from "@/stacks/stacks/AuthStack";
+import type { IDatabaseStack } from "@/stacks/stacks/DatabaseStack";
+import { DatabaseStack } from "@/stacks/stacks/DatabaseStack";
 import type { AuthorizedApi } from "@/stacks/types";
 
 export interface IApiStack {
@@ -13,8 +15,8 @@ export interface IApiStack {
 
 export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 	const { auth }: IAuthStack = use(AuthStack);
+	const { database }: IDatabaseStack = use(DatabaseStack);
 
-	// Create Api
 	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.ApplicationApi, {
 		authorizers: {
 			jwt: {
@@ -37,7 +39,7 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 		routes: await routeRegisterHandler(),
 	});
 
-	// attach permissions for authenticated users to the api
+	api.bind([database]);
 	auth.attachPermissionsForAuthUsers(stack, [api]);
 
 	stack.addOutputs({

@@ -1,7 +1,8 @@
 {
   "name": "@intro-touch/backend-router",
   "version": "0.0.0",
-  "devDependencies": {
-    "typedi": "^0.10.0"
+  "dependencies": {
+    "ioc-class": "^1.0.0",
+    "reflect-metadata": "^0.1.13"
   }
 }

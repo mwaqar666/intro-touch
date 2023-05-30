@@ -1,4 +1,4 @@
-import { Token } from "typedi";
+import { Token } from "ioc-class";
 import type { IRouteBuilder, IRouteHandler, IRouteRegister, IStackRouter } from "@/backend/router/interface";
 
 export class RouterTokenConst {

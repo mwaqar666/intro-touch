@@ -1,7 +1,7 @@
 import type { Constructable } from "@/stacks/types";
-import { Container } from "@/backend/core/concrete/container";
+import type { IContainer } from "ioc-class";
+import { Container } from "ioc-class";
 import type { IApplication } from "@/backend/core/contracts/application";
-import type { IContainer } from "@/backend/core/contracts/container";
 import type { IModule } from "@/backend/core/contracts/module";
 
 export class Application implements IApplication {

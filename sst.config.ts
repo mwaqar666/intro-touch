@@ -28,7 +28,7 @@ export default {
 		app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY);
 
 		app.stack(AuthStack);
-		await app.stack(ApiStack);
 		app.stack(DatabaseStack);
+		await app.stack(ApiStack);
 	},
 } satisfies SSTConfig;

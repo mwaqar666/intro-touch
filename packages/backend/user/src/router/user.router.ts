@@ -1,13 +1,13 @@
 import { RouteMethod } from "@/backend/router/enum";
 import type { IRoute, IRouter } from "@/backend/router/interface";
-import { Inject } from "typedi";
+import { Inject } from "ioc-class";
 import { UserTokenConst } from "@/backend/user/const";
 import type { UserController } from "@/backend/user/controller";
 
 export class UserRouter implements IRouter {
 	public constructor(
 		// Dependencies
-		@Inject(UserTokenConst.UserControllerToken) private readonly userController: UserController,
+		@Inject(UserTokenConst.UserControllerToken) private readonly userController: UserController = <UserController>{},
 	) {}
 
 	public registerRoutes(): Array<IRoute> {

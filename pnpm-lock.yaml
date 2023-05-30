@@ -57,17 +57,16 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
-  packages/backend/common:
-    devDependencies:
-      typedi:
-        specifier: ^0.10.0
-        version: 0.10.0
+  packages/backend/common: { }
 
   packages/backend/core:
-    devDependencies:
-      typedi:
-        specifier: ^0.10.0
-        version: 0.10.0
+    dependencies:
+      ioc-class:
+        specifier: ^1.0.0
+        version: 1.0.0(reflect-metadata@0.1.13)
+      reflect-metadata:
+        specifier: ^0.1.13
+        version: 0.1.13
 
   packages/backend/ignition:
     dependencies:
@@ -76,16 +75,22 @@ importers:
         version: 0.1.13
 
   packages/backend/router:
-    devDependencies:
-      typedi:
-        specifier: ^0.10.0
-        version: 0.10.0
+    dependencies:
+      ioc-class:
+        specifier: ^1.0.0
+        version: 1.0.0(reflect-metadata@0.1.13)
+      reflect-metadata:
+        specifier: ^0.1.13
+        version: 0.1.13
 
   packages/backend/user:
-    devDependencies:
-      typedi:
-        specifier: ^0.10.0
-        version: 0.10.0
+    dependencies:
+      ioc-class:
+        specifier: ^1.0.0
+        version: 1.0.0(reflect-metadata@0.1.13)
+      reflect-metadata:
+        specifier: ^0.1.13
+        version: 0.1.13
 
   packages/common/utils: { }
 
@@ -185,6 +190,7 @@ packages:
       '@aws-cdk/cloud-assembly-schema': 2.79.1
     dependencies:
       '@aws-cdk/cloud-assembly-schema': 2.79.1
+      semver: 7.5.1
     dev: true
     bundledDependencies:
       - semver
@@ -4608,6 +4614,14 @@ packages:
     engines: { node: '>=0.10.0' }
     dev: true
 
+  /ioc-class@1.0.0(reflect-metadata@0.1.13):
+    resolution: { integrity: sha512-Qka8tj1oMOviiWO9LpFaWesShJxwdxVaVwj74X/WPjl/8IulMspbTAcGC0FC3wNmm4sh9jukHK6cjzJwmGcdVQ== }
+    peerDependencies:
+      reflect-metadata: ^0.1.13
+    dependencies:
+      reflect-metadata: 0.1.13
+    dev: false
+
   /ipaddr.js@1.9.1:
     resolution: { integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g== }
     engines: { node: '>= 0.10' }
@@ -6517,10 +6531,6 @@ packages:
 
   /typedarray@0.0.6:
     resolution: { integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA== }
-    dev: true
-
-  /typedi@0.10.0:
-    resolution: { integrity: sha512-v3UJF8xm68BBj6AF4oQML3ikrfK2c9EmZUyLOfShpJuItAqVBHWP/KtpGinkSsIiP6EZyyb6Z3NXyW9dgS9X1w== }
     dev: true
 
   /typescript@5.0.4:
