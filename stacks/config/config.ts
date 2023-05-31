@@ -4,6 +4,7 @@ import type { Key } from "@/stacks/types";
 export interface IConfig {
 	// Database
 	DATABASE_NAME: "DATABASE_NAME";
+	DATABASE_USER: "DATABASE_USER";
 
 	// Authentication
 	GOOGLE_CLIENT_ID: "GOOGLE_CLIENT_ID";

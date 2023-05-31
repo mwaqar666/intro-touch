@@ -1,11 +1,11 @@
 import type { Optional } from "@/stacks/types";
 import type { IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend/router/interface";
 
-export class RouteRegisterService<T = unknown> implements IRouteRegister<T> {
+export class RouteRegisterService implements IRouteRegister {
 	private moduleRoutes: Array<IRoute> = [];
 	private builtRoutes: Array<ISimpleRoute> = [];
 
-	public registerRouter(router: IRouter<T>): void {
+	public registerRouter(router: IRouter): void {
 		this.moduleRoutes.push(...router.registerRoutes());
 	}
 

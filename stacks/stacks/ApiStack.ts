@@ -1,6 +1,5 @@
 import type { StackContext } from "sst/constructs";
 import { Api, use } from "sst/constructs";
-import { routeRegisterHandler } from "@/backend/ignition/handlers";
 import { ApiConst } from "@/stacks/const";
 import { esBuildDecoratorPlugin } from "@/stacks/plugins";
 import type { IAuthStack } from "@/stacks/stacks/AuthStack";
@@ -34,12 +33,14 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 						plugins: [esBuildDecoratorPlugin],
 					},
 				},
+				bind: [database],
 			},
 		},
-		routes: await routeRegisterHandler(),
+		routes: {
+			$default: "packages/backend/ignition/src/handlers/route-invoker-handler.index",
+		},
 	});
 
-	api.bind([database]);
 	auth.attachPermissionsForAuthUsers(stack, [api]);
 
 	stack.addOutputs({

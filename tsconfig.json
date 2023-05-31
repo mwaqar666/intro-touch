@@ -28,9 +28,6 @@
       "@/stacks/*": [
         "stacks/*"
       ],
-      "@/backend/common/*": [
-        "packages/backend/common/src/*"
-      ],
       "@/backend/core/*": [
         "packages/backend/core/src/*"
       ],

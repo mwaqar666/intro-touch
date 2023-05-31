@@ -1,13 +1,15 @@
 import { RouteMethod } from "@/backend/router/enum";
-import type { IRoute } from "@/backend/router/interface";
-import { AbstractRouter } from "@/backend/router/services";
+import type { IRoute, IRouter } from "@/backend/router/interface";
+import { Inject } from "ioc-class";
+import { UserTokenConst } from "@/backend/user/const";
 import type { UserController } from "@/backend/user/controller";
 
-export interface IUserRouter {
-	user: UserController;
-}
+export class UserRouter implements IRouter {
+	public constructor(
+		// Dependencies
+		@Inject(UserTokenConst.UserControllerToken) private readonly userController: UserController,
+	) {}
 
-export class UserRouter extends AbstractRouter<IUserRouter> {
 	public registerRoutes(): Array<IRoute> {
 		return [
 			{
@@ -17,17 +19,17 @@ export class UserRouter extends AbstractRouter<IUserRouter> {
 					{
 						path: "/",
 						method: RouteMethod.GET,
-						handler: this.controllers.user.getUserList,
+						handler: this.userController.getUserList,
 					},
 					{
 						path: "/{userId}",
 						method: RouteMethod.GET,
-						handler: this.controllers.user.getUser,
+						handler: this.userController.getUser,
 					},
 					{
 						path: "/{userId}/delete",
 						method: RouteMethod.DELETE,
-						handler: this.controllers.user.deleteUser,
+						handler: this.userController.deleteUser,
 					},
 				],
 			},

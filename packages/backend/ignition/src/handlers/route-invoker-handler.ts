@@ -4,7 +4,7 @@ import type { IRequest, IResponse, IRouteHandler } from "@/backend/router/interf
 import type { Context } from "aws-lambda";
 import type { IntroTouch } from "@/backend/ignition/main";
 
-export const routeInvokerHandler = async (event: IRequest, context: Context): Promise<IResponse> => {
+export const index = async (event: IRequest, context: Context): Promise<IResponse> => {
 	const { IntroTouch } = await import("@/backend/ignition/main");
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 	const container = introTouch.getApplication().getApplicationContainer();
