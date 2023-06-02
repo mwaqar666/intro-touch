@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { env } from "node:process";
+import * as process from "process";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { config } from "dotenv";
 import type { App } from "sst/constructs";
@@ -11,16 +11,17 @@ export default {
 		config({ path: resolve(`.env.${stage ?? "dev"}`) });
 
 		return {
-			name: "intro-touch",
-			region: "us-east-2",
+			name: <string>process.env["APP_NAME"],
+			region: <string>process.env["APP_REGION"],
 		};
 	},
 	async stacks(app: App): Promise<void> {
 		app.setDefaultFunctionProps({
 			runtime: "nodejs18.x",
 			environment: {
-				STAGE: app.stage,
-				NODE_ENV: <string>env["NODE_ENV"],
+				NODE_ENV: app.stage,
+				APP_NAME: app.name,
+				APP_VERSION: <string>process.env["APP_VERSION"],
 			},
 			architecture: "arm_64",
 		});
