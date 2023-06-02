@@ -28,8 +28,14 @@
       "@/stacks/*": [
         "stacks/*"
       ],
+      "@/backend/config/*": [
+        "packages/backend/config/src/*"
+      ],
       "@/backend/core/*": [
         "packages/backend/core/src/*"
+      ],
+      "@/backend/database/*": [
+        "packages/backend/database/src/*"
       ],
       "@/backend/ignition/*": [
         "packages/backend/ignition/src/*"

@@ -4,6 +4,10 @@ export type Optional<T> = undefined | T;
 
 export type Nullable<T> = null | T;
 
+export interface AnyObject {
+	[key: string]: any;
+}
+
 export type Delegate<TArgs extends Array<unknown> = Array<void>, TReturn = void> = (...args: TArgs) => TReturn;
 
 export type Action<TArgs extends Array<unknown> = Array<void>> = Delegate<TArgs>;
