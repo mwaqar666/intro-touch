@@ -1,4 +1,5 @@
 import type { AvailableAuthorizers } from "@/stacks/types";
+import type { RouteMethod } from "@/backend/router/enum";
 import type { IRoute, IRouter, ISimpleRoute } from "@/backend/router/interface/route";
 
 export interface IRouteRegister {
@@ -8,7 +9,7 @@ export interface IRouteRegister {
 
 	getRegisteredRoutes(): Array<IRoute>;
 
-	resolveRoute(path: string): ISimpleRoute;
+	resolveRoute(path: string, method: RouteMethod): ISimpleRoute;
 }
 
 export interface IRouteGroup {

@@ -7,33 +7,41 @@ import { DatabaseConst } from "@/stacks/const";
 
 export interface IDatabaseStack {
 	database: RDS;
+	databaseSecret: Secret;
 }
 
 export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
 	const username: string = Config.get("DATABASE_USER");
-	const database: string = Config.get("DATABASE_NAME");
-	const databaseCredentialsName = `${database}-${username}`;
+	const databaseName: string = Config.get("DATABASE_NAME");
 
-	const databaseCredentials: Credentials = Credentials.fromGeneratedSecret(username, { secretName: databaseCredentialsName });
-	const password: string = Secret.fromSecretNameV2(stack, DatabaseConst.RDS_SECRET_ID, databaseCredentialsName).secretValue.toString();
+	const databaseSecret: Secret = new Secret(stack, DatabaseConst.RDS_SECRET_ID, {
+		secretName: DatabaseConst.RDS_CREDENTIALS_SECRET,
+		generateSecretString: {
+			secretStringTemplate: JSON.stringify({ username }),
+			generateStringKey: "password",
+			excludeCharacters: '/@" ',
+		},
+	});
 
-	const rds: RDS = new RDS(stack, DatabaseConst.RDS_ID, {
+	const database: RDS = new RDS(stack, DatabaseConst.RDS_ID, {
 		engine: "postgresql11.13",
-		defaultDatabaseName: Config.get("DATABASE_NAME"),
+		defaultDatabaseName: databaseName,
 		cdk: {
 			cluster: {
-				credentials: databaseCredentials,
+				credentials: Credentials.fromSecret(databaseSecret),
 			},
 		},
 	});
 
 	stack.addOutputs({
-		databaseName: rds.defaultDatabaseName,
+		databaseName: database.defaultDatabaseName,
 		databaseUser: username,
-		databasePass: password,
-		databaseHost: rds.cdk.cluster.clusterEndpoint.hostname,
-		databasePort: rds.cdk.cluster.clusterEndpoint.port.toString(),
+		databaseHost: database.cdk.cluster.clusterEndpoint.hostname,
+		databasePort: database.cdk.cluster.clusterEndpoint.port.toString(),
 	});
 
-	return { database: rds };
+	return {
+		database,
+		databaseSecret,
+	};
 };

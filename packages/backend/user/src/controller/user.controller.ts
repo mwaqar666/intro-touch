@@ -12,8 +12,7 @@ export class UserController {
 		@Inject(UserTokenConst.UserServiceToken) private readonly userService: UserService,
 	) {}
 
-	public getUserList(request: IRequest, context: Context): IResponse {
-		console.log(request, context);
+	public getUserList(_request: IRequest, _context: Context): IResponse {
 		this.userService.getUserList();
 
 		return {
@@ -22,8 +21,7 @@ export class UserController {
 		};
 	}
 
-	public getUser(request: IRequest, context: Context): IResponse {
-		console.log(request, context);
+	public getUser(_request: IRequest, _context: Context): IResponse {
 		this.userService.getUser();
 
 		return {
@@ -32,8 +30,7 @@ export class UserController {
 		};
 	}
 
-	public deleteUser(request: IRequest, context: Context): IResponse {
-		console.log(request, context);
+	public deleteUser(_request: IRequest, _context: Context): IResponse {
 		this.userService.deleteUser();
 
 		return {

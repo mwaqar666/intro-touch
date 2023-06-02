@@ -14,7 +14,7 @@ export interface IApiStack {
 
 export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 	const { auth }: IAuthStack = use(AuthStack);
-	const { database }: IDatabaseStack = use(DatabaseStack);
+	const { database, databaseSecret }: IDatabaseStack = use(DatabaseStack);
 
 	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.ApplicationApi, {
 		authorizers: {
@@ -33,7 +33,13 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 						plugins: [esBuildDecoratorPlugin],
 					},
 				},
-				bind: [database],
+				environment: {
+					DB_NAME: database.defaultDatabaseName,
+					DB_HOST: database.cdk.cluster.clusterEndpoint.hostname,
+					DB_PORT: database.cdk.cluster.clusterEndpoint.port.toString(10),
+					DB_USER: databaseSecret.secretValueFromJson("username").unsafeUnwrap(),
+					DB_PASS: databaseSecret.secretValueFromJson("password").unsafeUnwrap(),
+				},
 			},
 		},
 		routes: {
