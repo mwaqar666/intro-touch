@@ -1,4 +1,4 @@
-import type { IContainer } from "ioc-class";
+import type { IContainer } from "iocc";
 import type { IModule } from "@/backend/core/contracts/module";
 
 export abstract class AbstractModule implements IModule {
@@ -8,15 +8,7 @@ export abstract class AbstractModule implements IModule {
 		this.container = container;
 	}
 
-	public async preRegister(): Promise<void> {
-		// Implement in subsequent module
-	}
-
 	public async register(): Promise<void> {
-		// Implement in subsequent module
-	}
-
-	public async postRegister(): Promise<void> {
 		// Implement in subsequent module
 	}
 
@@ -29,6 +21,14 @@ export abstract class AbstractModule implements IModule {
 	}
 
 	public async postBoot(): Promise<void> {
+		// Implement in subsequent module
+	}
+
+	public async preRun(): Promise<void> {
+		// Implement in subsequent module
+	}
+
+	public async postRun(): Promise<void> {
 		// Implement in subsequent module
 	}
 }

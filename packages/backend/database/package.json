@@ -1,4 +1,9 @@
 {
   "name": "@intro-touch/backend-database",
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "dependencies": {
+    "iocc": "^2.1.1",
+    "sequelize": "^6.32.0",
+    "sequelize-typescript": "^2.1.5"
+  }
 }

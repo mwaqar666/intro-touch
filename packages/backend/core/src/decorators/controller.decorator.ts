@@ -1,14 +1,14 @@
 import type { Constructable, Key } from "@/stacks/types";
-import { copyMetadata } from "ioc-class";
+import { copyMetadata } from "iocc";
 import "reflect-metadata";
 
-export const Controller = <T extends object, TArgs extends Array<unknown>>(target: Constructable<T, TArgs>): Constructable<T, TArgs> => {
+export const Controller = <T extends object>(target: Constructable<T, Array<any>>): Constructable<T, Array<any>> => {
 	/**
 	 * Trap the class instantiation, so when an instance of the class is created, we can add
 	 * another trap on property accessor
 	 */
-	const proxifiedTarget: Constructable<T, TArgs> = new Proxy(target, {
-		construct(concreteController: Constructable<T, TArgs>, argumentsArray: TArgs): T {
+	const proxifiedTarget: Constructable<T, Array<any>> = new Proxy(target, {
+		construct(concreteController: Constructable<T, Array<any>>, argumentsArray: Array<any>): T {
 			const controllerInstance: T = Reflect.construct(concreteController, argumentsArray);
 
 			/**

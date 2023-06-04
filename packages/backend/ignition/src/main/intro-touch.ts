@@ -1,7 +1,8 @@
 import { Application } from "@/backend/core/concrete/application";
 import type { IApplication } from "@/backend/core/contracts/application";
 import type { IModule } from "@/backend/core/contracts/module";
-import type { Constructable } from "@/stacks/types";
+import type { Constructable, Delegate } from "@/stacks/types";
+import type { IContainer } from "iocc";
 import { ModuleRegister } from "@/backend/ignition/module.register";
 
 export class IntroTouch {
@@ -22,32 +23,35 @@ export class IntroTouch {
 		return IntroTouch.instance;
 	}
 
-	public getApplication(): IApplication {
-		if (this.bootstrapped) return this.application;
-
-		throw new Error("Application not bootstrapped");
-	}
-
 	public async bootstrapApplication(): Promise<IntroTouch> {
 		if (this.bootstrapped) return this;
 
-		await this.registerApplicationModules().runApplicationModulesLifeCycle();
+		await this.registerApplicationModules();
+		await this.runApplicationModulesLifeCycle();
 
 		this.bootstrapped = true;
 
 		return this;
 	}
 
-	private registerApplicationModules(): IntroTouch {
-		ModuleRegister.applicationModules().forEach((applicationModule: Constructable<IModule>): void => {
-			this.application.registerModule(applicationModule);
-		});
+	public async runApplication<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
+		if (!this.bootstrapped) throw new Error("Application not bootstrapped");
+
+		return await this.application.runApplicationContext<T>(executionContext);
+	}
+
+	private async registerApplicationModules(): Promise<IntroTouch> {
+		const applicationModules: Array<Constructable<IModule>> = ModuleRegister.applicationModules();
+
+		for (const applicationModule of applicationModules) {
+			await this.application.registerModule(applicationModule);
+		}
 
 		return this;
 	}
 
 	private async runApplicationModulesLifeCycle(): Promise<IntroTouch> {
-		await this.application.runModuleLifeCycle();
+		await this.application.bootApplicationModules();
 
 		return this;
 	}

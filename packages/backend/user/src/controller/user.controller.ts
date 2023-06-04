@@ -1,7 +1,7 @@
 import { Controller } from "@/backend/core/decorators";
 import type { IRequest, IResponse } from "@/backend/router/interface";
 import type { Context } from "aws-lambda";
-import { Inject } from "ioc-class";
+import { Inject } from "iocc";
 import { UserTokenConst } from "@/backend/user/const";
 import type { UserService } from "@/backend/user/services";
 

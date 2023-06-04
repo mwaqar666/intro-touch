@@ -1,4 +1,4 @@
-import { Token } from "ioc-class";
+import { Token } from "iocc";
 import type { IConfigResolver, IConfigValidator } from "@/backend/config/interface";
 import type { IConfig, IConfigValidation } from "@/backend/config/types";
 

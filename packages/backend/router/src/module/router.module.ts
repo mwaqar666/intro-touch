@@ -7,7 +7,7 @@ export class RouterModule extends AbstractModule {
 	public override async register(): Promise<void> {
 		this.container.registerSingleton(RouterTokenConst.RouteBuilderToken, RouteBuilderService);
 		this.container.registerSingleton(RouterTokenConst.RouteRegisterToken, RouteRegisterService);
-		this.container.registerSingleton(RouterTokenConst.RouteHandlerToken, RouteHandlerService);
+		this.container.registerTransient(RouterTokenConst.RouteHandlerToken, RouteHandlerService);
 	}
 
 	public override async postBoot(): Promise<void> {

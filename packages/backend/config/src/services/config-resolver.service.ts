@@ -15,12 +15,12 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
 			},
 			database: {
-				name: EnvExtractor.env(schema, ConfigConst.DB_NAME),
+				database: EnvExtractor.env(schema, ConfigConst.DB_NAME),
 				schema: EnvExtractor.env(schema, ConfigConst.DB_SCHEMA),
 				host: EnvExtractor.env(schema, ConfigConst.DB_HOST),
 				port: parseInt(EnvExtractor.env(schema, ConfigConst.DB_PORT), 10),
-				user: EnvExtractor.env(schema, ConfigConst.DB_USER),
-				pass: EnvExtractor.env(schema, ConfigConst.DB_PASS),
+				username: EnvExtractor.env(schema, ConfigConst.DB_USER),
+				password: EnvExtractor.env(schema, ConfigConst.DB_PASS),
 			},
 		};
 	}

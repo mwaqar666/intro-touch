@@ -1,5 +1,5 @@
 import type { IRouter } from "@/backend/router/interface";
-import { Token } from "ioc-class";
+import { Token } from "iocc";
 import type { UserController } from "@/backend/user/controller";
 import type { UserService } from "@/backend/user/services";
 

@@ -5,12 +5,12 @@ export interface IAppConfig {
 }
 
 export interface IDatabaseConfig {
-	readonly name: string;
+	readonly database: string;
 	readonly schema: string;
 	readonly host: string;
 	readonly port: number;
-	readonly user: string;
-	readonly pass: string;
+	readonly username: string;
+	readonly password: string;
 }
 
 export interface IConfig {
