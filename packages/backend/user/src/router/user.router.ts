@@ -1,5 +1,5 @@
-import { RouteMethod } from "@/backend/router/enum";
-import type { IRoute, IRouter } from "@/backend/router/interface";
+import { RouteMethod } from "@/backend-core/router/enum";
+import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
 import { UserTokenConst } from "@/backend/user/const";
 import type { UserController } from "@/backend/user/controller";

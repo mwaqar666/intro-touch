@@ -1,6 +1,6 @@
-import { AbstractModule } from "@/backend/core/concrete/module";
-import { RouterTokenConst } from "@/backend/router/const";
-import type { IRouter, IRouteRegister } from "@/backend/router/interface";
+import { AbstractModule } from "@/backend-core/core/concrete/module";
+import { RouterTokenConst } from "@/backend-core/router/const";
+import type { IRouter, IRouteRegister } from "@/backend-core/router/interface";
 import { UserTokenConst } from "@/backend/user/const";
 import { UserController } from "@/backend/user/controller";
 import { UserRouter } from "@/backend/user/router";

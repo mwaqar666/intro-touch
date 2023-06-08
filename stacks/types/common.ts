@@ -4,7 +4,7 @@ export type Optional<T> = undefined | T;
 
 export type Nullable<T> = null | T;
 
-export interface AnyObject {
+export interface IAnyObject {
 	[key: string]: any;
 }
 

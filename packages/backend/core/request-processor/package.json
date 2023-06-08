@@ -1,0 +1,8 @@
+{
+  "name": "@intro-touch/backend-core-request-processor",
+  "version": "0.0.0",
+  "dependencies": {
+    "iocc": "^2.1.2",
+    "reflect-metadata": "^0.1.13"
+  }
+}

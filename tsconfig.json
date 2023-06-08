@@ -28,20 +28,23 @@
       "@/stacks/*": [
         "stacks/*"
       ],
-      "@/backend/config/*": [
-        "packages/backend/config/src/*"
+      "@/backend-core/config/*": [
+        "packages/backend/core/config/src/*"
       ],
-      "@/backend/core/*": [
-        "packages/backend/core/src/*"
+      "@/backend-core/core/*": [
+        "packages/backend/core/core/src/*"
       ],
-      "@/backend/database/*": [
-        "packages/backend/database/src/*"
+      "@/backend-core/database/*": [
+        "packages/backend/core/database/src/*"
       ],
-      "@/backend/ignition/*": [
-        "packages/backend/ignition/src/*"
+      "@/backend-core/ignition/*": [
+        "packages/backend/core/ignition/src/*"
       ],
-      "@/backend/router/*": [
-        "packages/backend/router/src/*"
+      "@/backend-core/request-processor/*": [
+        "packages/backend/core/request-processor/src/*"
+      ],
+      "@/backend-core/router/*": [
+        "packages/backend/core/router/src/*"
       ],
       "@/backend/user/*": [
         "packages/backend/user/src/*"

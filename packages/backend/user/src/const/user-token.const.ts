@@ -1,4 +1,4 @@
-import type { IRouter } from "@/backend/router/interface";
+import type { IRouter } from "@/backend-core/router/interface";
 import { Token } from "iocc";
 import type { UserController } from "@/backend/user/controller";
 import type { UserService } from "@/backend/user/services";

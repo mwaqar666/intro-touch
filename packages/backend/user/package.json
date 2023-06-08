@@ -2,7 +2,7 @@
   "name": "@intro-touch/backend-user",
   "version": "0.0.0",
   "dependencies": {
-    "iocc": "^2.1.1",
+    "iocc": "^2.1.2",
     "reflect-metadata": "^0.1.13"
   }
 }

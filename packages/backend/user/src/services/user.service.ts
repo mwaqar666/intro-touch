@@ -1,13 +1,16 @@
+import type { IRequest } from "@/backend-core/request-processor/types";
+import type { Context } from "aws-lambda";
+
 export class UserService {
-	public getUserList(): void {
-		console.log("UserService => getUserList");
+	public getUserList(request: IRequest, context: Context): void {
+		console.log("UserService => getUserList", "Request: ", request, "Context: ", context);
 	}
 
-	public getUser(): void {
-		console.log("UserService => getUser");
+	public getUser(request: IRequest, context: Context): void {
+		console.log("UserService => getUser", "Request: ", request, "Context: ", context);
 	}
 
-	public deleteUser(): void {
-		console.log("UserService => deleteUser");
+	public deleteUser(request: IRequest, context: Context): void {
+		console.log("UserService => deleteUser", "Request: ", request, "Context: ", context);
 	}
 }
