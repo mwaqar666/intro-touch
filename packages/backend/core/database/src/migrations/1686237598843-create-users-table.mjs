@@ -1,11 +1,11 @@
 /**
- * @param {import("kysely").Kysely<IDatabase>} db
+ * @param {Kysely<IDatabase>} db
  * @return {Promise<void>}
  */
 export async function up(db) {
 	await db.schema
 		.createTable("users")
-		.addColumn("userId", "bigint", (col) => col.primaryKey().autoIncrement())
+		.addColumn("userId", "bigint", (col) => col.primaryKey())
 		.addColumn("userUuid", "varchar", (col) => col.unique().notNull())
 		.addColumn("userCognitoId", "varchar", (col) => col.unique())
 		.addColumn("userFirstName", "varchar", (col) => col.notNull())
@@ -19,7 +19,7 @@ export async function up(db) {
 }
 
 /**
- * @param {import("kysely").Kysely<IDatabase>} db
+ * @param {Kysely<IDatabase>} db
  * @return {Promise<void>}
  */
 export async function down(db) {
