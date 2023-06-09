@@ -1,6 +1,7 @@
-import type { StackContext } from "sst/constructs";
+import type { ApiProps, StackContext } from "sst/constructs";
 import { Api, use } from "sst/constructs";
 import { routeRegisterHandler } from "@/backend-core/ignition/handlers/route-register-handler";
+import { Config } from "@/stacks/config";
 import { ApiConst } from "@/stacks/const";
 import { esBuildDecoratorPlugin } from "@/stacks/plugins";
 import type { IAuthStack } from "@/stacks/stacks/AuthStack";
@@ -13,11 +14,11 @@ export interface IApiStack {
 	api: Api<AuthorizedApi>;
 }
 
-export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
-	const { auth, awsProfile }: IAuthStack = use(AuthStack);
+export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack> => {
 	const { database, databaseUser }: IDatabaseStack = use(DatabaseStack);
+	const { auth, awsProfile }: IAuthStack = use(AuthStack);
 
-	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.ApplicationApi, {
+	const apiProps: ApiProps<AuthorizedApi> = {
 		authorizers: {
 			jwt: {
 				type: "user_pool",
@@ -36,16 +37,21 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 					},
 				},
 				environment: {
+					NODE_ENV: app.stage,
+					APP_NAME: app.name,
+					APP_VERSION: Config.get("APP_VERSION"),
+					AWS_PROFILE: awsProfile,
 					DB_NAME: database.defaultDatabaseName,
 					DB_USER: databaseUser,
 					DB_SECRET_ARN: database.secretArn,
 					DB_RESOURCE_ARN: database.clusterArn,
-					AWS_PROFILE: awsProfile,
 				},
 			},
 		},
 		routes: await routeRegisterHandler(),
-	});
+	};
+
+	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.API_ID, apiProps);
 
 	auth.attachPermissionsForAuthUsers(stack, [api]);
 

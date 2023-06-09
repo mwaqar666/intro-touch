@@ -1,28 +1,25 @@
 import { resolve } from "node:path";
-import * as process from "process";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { config } from "dotenv";
 import type { App } from "sst/constructs";
 import type { ConfigOptions, SSTConfig } from "sst/project";
+import { Config } from "@/stacks/config";
 import { ApiStack, AuthStack, DatabaseStack } from "@/stacks/stacks";
 
 export default {
 	config({ stage }): ConfigOptions {
-		config({ path: resolve(`.env.${stage ?? "dev"}`) });
+		const appStage: string = stage ?? "dev";
+		config({ path: resolve(`.env.${appStage}`) });
 
 		return {
-			name: <string>process.env["APP_NAME"],
-			region: <string>process.env["APP_REGION"],
+			name: Config.get("APP_NAME"),
+			region: Config.get("APP_REGION"),
+			stage: appStage,
 		};
 	},
 	async stacks(app: App): Promise<void> {
 		app.setDefaultFunctionProps({
 			runtime: "nodejs18.x",
-			environment: {
-				NODE_ENV: app.stage,
-				APP_NAME: app.name,
-				APP_VERSION: <string>process.env["APP_VERSION"],
-			},
 			architecture: "arm_64",
 		});
 

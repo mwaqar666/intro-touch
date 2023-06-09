@@ -1,6 +1,11 @@
 import type { Key } from "@/stacks/types";
 
 export interface IConfig {
+	// App
+	APP_NAME: "APP_NAME";
+	APP_REGION: "APP_REGION";
+	APP_VERSION: "APP_VERSION";
+
 	// Database
 	DB_NAME: "DB_NAME";
 	DB_USER: "DB_USER";

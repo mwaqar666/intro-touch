@@ -1,3 +1,3 @@
 export class ApiConst {
-	public static readonly ApplicationApi: string = "ApplicationApi";
+	public static readonly API_ID: string = "api";
 }

@@ -11,7 +11,7 @@ export interface IAuthStack {
 export const AuthStack = ({ stack }: StackContext): IAuthStack => {
 	const awsProfile: string = Config.get("AWS_PROFILE");
 
-	const auth: Cognito = new Cognito(stack, AuthConst.CognitoUserPool, {
+	const auth: Cognito = new Cognito(stack, AuthConst.COGNITO_USER_POOL_ID, {
 		login: ["email", "username"],
 	});
 
