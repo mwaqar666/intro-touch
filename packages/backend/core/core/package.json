@@ -1,7 +1,7 @@
 {
-	"name": "@intro-touch/backend-core-core",
-	"version": "0.0.0",
-	"dependencies": {
-		"iocc": "^2.1.2"
-	}
+  "name": "@intro-touch/backend-core-core",
+  "version": "0.0.0",
+  "dependencies": {
+    "iocc": "^2.1.2"
+  }
 }
