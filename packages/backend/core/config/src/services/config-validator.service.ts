@@ -21,7 +21,7 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.APP_NAME]: joi.string().required(),
 				[ConfigConst.APP_VERSION]: joi.string().required(),
 
-				[ConfigConst.AWS_PROFILE]: joi.string().required(),
+				[ConfigConst.AWS_ACCOUNT]: joi.string().required(),
 
 				[ConfigConst.DB_NAME]: joi.string().required(),
 				[ConfigConst.DB_USER]: joi.string().required(),

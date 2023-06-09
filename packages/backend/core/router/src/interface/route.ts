@@ -48,9 +48,11 @@ export interface ISimpleRoute {
 
 export type IRoute = ExclusiveUnion<[ISimpleRoute, IGroupedRoute]>;
 
-export interface IRouteParams {
-	routeParams: Record<string, string>;
-	queryParams: Record<string, string | Array<string>>;
+export type IParams = Record<string, string>;
+
+export interface IRouteParams<P extends IParams = IParams, Q extends IParams = IParams> {
+	routeParams: P;
+	queryParams: Q;
 }
 
 export interface IResolvedRoute extends ISimpleRoute, IRouteParams {}

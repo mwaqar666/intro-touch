@@ -3,7 +3,7 @@ export class ConfigConst {
 	public static readonly APP_NAME = "APP_NAME";
 	public static readonly APP_VERSION = "APP_VERSION";
 
-	public static readonly AWS_PROFILE = "AWS_PROFILE";
+	public static readonly AWS_ACCOUNT = "AWS_ACCOUNT";
 
 	public static readonly DB_NAME = "DB_NAME";
 	public static readonly DB_USER = "DB_USER";

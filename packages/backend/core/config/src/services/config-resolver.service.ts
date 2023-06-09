@@ -14,8 +14,8 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				env: EnvExtractor.env(schema, ConfigConst.NODE_ENV),
 				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
 			},
-			account: {
-				profile: EnvExtractor.env(schema, ConfigConst.AWS_PROFILE),
+			aws: {
+				account: EnvExtractor.env(schema, ConfigConst.AWS_ACCOUNT),
 			},
 			database: {
 				database: EnvExtractor.env(schema, ConfigConst.DB_NAME),

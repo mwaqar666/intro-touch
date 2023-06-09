@@ -6,7 +6,7 @@ export interface IConfigValidation {
 	[ConfigConst.APP_NAME]: StringSchema<string>;
 	[ConfigConst.APP_VERSION]: StringSchema<string>;
 
-	[ConfigConst.AWS_PROFILE]: StringSchema<string>;
+	[ConfigConst.AWS_ACCOUNT]: StringSchema<string>;
 
 	[ConfigConst.DB_NAME]: StringSchema<string>;
 	[ConfigConst.DB_USER]: StringSchema<string>;

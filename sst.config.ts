@@ -1,6 +1,8 @@
 import { resolve } from "node:path";
 import { RemovalPolicy } from "aws-cdk-lib";
+import type { DotenvConfigOutput } from "dotenv";
 import { config } from "dotenv";
+import { expand } from "dotenv-expand";
 import type { App } from "sst/constructs";
 import type { ConfigOptions, SSTConfig } from "sst/project";
 import { Config } from "@/stacks/config";
@@ -9,7 +11,10 @@ import { ApiStack, AuthStack, DatabaseStack } from "@/stacks/stacks";
 export default {
 	config({ stage }): ConfigOptions {
 		const appStage: string = stage ?? "dev";
-		config({ path: resolve(`.env.${appStage}`) });
+
+		const dotEnvFilePath: string = resolve(`.env.${appStage}`);
+		const environment: DotenvConfigOutput = config({ path: dotEnvFilePath });
+		expand(environment);
 
 		return {
 			name: Config.get("APP_NAME"),

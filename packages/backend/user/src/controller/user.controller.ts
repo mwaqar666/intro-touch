@@ -13,7 +13,7 @@ export class UserController {
 	) {}
 
 	public async getUserList(request: IRequest, context: Context): Promise<IResponse> {
-		this.userService.getUserList(request, context);
+		await this.userService.getUserList(request, context);
 
 		return {
 			body: "None",
@@ -22,7 +22,25 @@ export class UserController {
 	}
 
 	public async getUser(request: IRequest, context: Context): Promise<IResponse> {
-		this.userService.getUser(request, context);
+		await this.userService.getUser(request, context);
+
+		return {
+			body: "None",
+			statusCode: 200,
+		};
+	}
+
+	public async createUser(request: IRequest, context: Context): Promise<IResponse> {
+		await this.userService.createUser(request, context);
+
+		return {
+			body: "None",
+			statusCode: 200,
+		};
+	}
+
+	public async updateUser(request: IRequest, context: Context): Promise<IResponse> {
+		await this.userService.updateUser(request, context);
 
 		return {
 			body: "None",
@@ -31,7 +49,7 @@ export class UserController {
 	}
 
 	public async deleteUser(request: IRequest, context: Context): Promise<IResponse> {
-		this.userService.deleteUser(request, context);
+		await this.userService.deleteUser(request, context);
 
 		return {
 			body: "None",

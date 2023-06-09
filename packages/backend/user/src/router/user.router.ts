@@ -27,7 +27,17 @@ export class UserRouter implements IRouter {
 						handler: this.userController.getUser,
 					},
 					{
-						path: "/{userId}/delete",
+						path: "/create/{userId}",
+						method: RouteMethod.POST,
+						handler: this.userController.createUser,
+					},
+					{
+						path: "/update/{userId}",
+						method: RouteMethod.PUT,
+						handler: this.userController.updateUser,
+					},
+					{
+						path: "/delete/{userId}",
 						method: RouteMethod.DELETE,
 						handler: this.userController.deleteUser,
 					},

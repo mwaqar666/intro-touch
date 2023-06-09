@@ -40,7 +40,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 					NODE_ENV: app.stage,
 					APP_NAME: app.name,
 					APP_VERSION: Config.get("APP_VERSION"),
-					AWS_PROFILE: awsProfile,
+					AWS_ACCOUNT: awsProfile,
 					DB_NAME: database.defaultDatabaseName,
 					DB_USER: databaseUser,
 					DB_SECRET_ARN: database.secretArn,

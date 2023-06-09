@@ -1,5 +1,5 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
-import type { IAccountConfig, IAppConfigResolver, IDatabaseConfig } from "@/backend-core/config/types";
+import type { IAppConfigResolver, IAwsConfig, IDatabaseConfig } from "@/backend-core/config/types";
 import { RDSData } from "@aws-sdk/client-rds-data";
 import { fromIni } from "@aws-sdk/credential-providers";
 import { Inject } from "iocc";
@@ -17,8 +17,8 @@ export class DbConnectorService implements IDbConnector<IDatabase> {
 	) {}
 
 	public async connectToDatabase(): Promise<void> {
+		const awsConfig: IAwsConfig = this.configResolver.resolveConfig("aws");
 		const dbConfig: IDatabaseConfig = this.configResolver.resolveConfig("database");
-		const accountConfig: IAccountConfig = this.configResolver.resolveConfig("account");
 
 		this.rdsClient = new Kysely({
 			dialect: new DataApiDialect({
@@ -28,7 +28,7 @@ export class DbConnectorService implements IDbConnector<IDatabase> {
 					resourceArn: dbConfig.resourceArn,
 					database: dbConfig.database,
 					client: new RDSData({
-						credentials: fromIni({ profile: accountConfig.profile }),
+						credentials: fromIni({ profile: awsConfig.account }),
 					}),
 				},
 			}),

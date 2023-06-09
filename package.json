@@ -22,6 +22,7 @@
     "aws-cdk-lib": "2.79.1",
     "constructs": "10.1.156",
     "dotenv": "^16.1.1",
+    "dotenv-expand": "^10.0.0",
     "esbuild": "0.16.13",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",

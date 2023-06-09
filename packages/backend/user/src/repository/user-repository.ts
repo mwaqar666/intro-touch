@@ -10,17 +10,19 @@ export class UserRepository {
 	) {}
 
 	public async findAll(userName: string): Promise<void> {
-		await this.dbConnector
-			.getDatabaseConnection()
-			.selectFrom("users")
-			.where((query) => {
-				return query.or([
-					//
-					query.cmpr("userFirstName", "=", userName),
-					query.cmpr("userMiddleName", "=", userName),
-					query.cmpr("userLastName", "=", userName),
-				]);
-			})
-			.execute();
+		console.log(
+			await this.dbConnector
+				.getDatabaseConnection()
+				.selectFrom("users")
+				.where((query) => {
+					return query.or([
+						//
+						query.cmpr("userFirstName", "=", userName),
+						query.cmpr("userMiddleName", "=", userName),
+						query.cmpr("userLastName", "=", userName),
+					]);
+				})
+				.execute(),
+		);
 	}
 }

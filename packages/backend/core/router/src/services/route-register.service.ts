@@ -1,7 +1,6 @@
-import type { Nullable, Optional } from "@/stacks/types";
-import { RouteBuilderConst } from "@/backend-core/router/const";
+import type { ApiRequest, Optional } from "@/stacks/types";
 import type { RouteMethod } from "@/backend-core/router/enum";
-import type { IResolvedRoute, IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend-core/router/interface";
+import type { IParams, IResolvedRoute, IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend-core/router/interface";
 
 export class RouteRegisterService implements IRouteRegister {
 	private moduleRoutes: Array<IRoute> = [];
@@ -19,54 +18,28 @@ export class RouteRegisterService implements IRouteRegister {
 		this.builtRoutes = routes;
 	}
 
-	public resolveRoute(path: string, method: RouteMethod): IResolvedRoute {
-		const requestedPathSegments: Array<string> = path.split("/");
-		let routeParams: Record<string, string> = {};
+	public resolveRoute(apiRequest: ApiRequest): IResolvedRoute {
+		const [method, path] = <[RouteMethod, string]>apiRequest.routeKey.split(" ");
 
 		const matchedRoute: Optional<ISimpleRoute> = this.builtRoutes.find((builtRoute: ISimpleRoute): boolean => {
-			if (builtRoute.method !== method) return false;
-
-			const routeToMatchSegments: Array<string> = builtRoute.path.split("/");
-			if (requestedPathSegments.length !== routeToMatchSegments.length) return false;
-
-			// Compare each segment separated by "/" for both requested route and each route from cache
-			const matchedRouteParams: Nullable<Record<string, string>> = this.matchRouteSegmentBySegment(requestedPathSegments, routeToMatchSegments);
-
-			if (matchedRouteParams) {
-				routeParams = matchedRouteParams;
-
-				return true;
-			}
-
-			return false;
+			return builtRoute.method === method && builtRoute.path === path;
 		});
 
 		if (matchedRoute)
 			return {
 				...matchedRoute,
-				routeParams,
-				queryParams: {},
+				routeParams: this.getTypedRouteParams(apiRequest),
+				queryParams: this.getTypedQueryParams(apiRequest),
 			};
 
 		throw new Error(`Route with path: "${method} ${path}" not found!`);
 	}
 
-	private matchRouteSegmentBySegment(requestedPathSegments: Array<string>, routeToMatchSegments: Array<string>): Nullable<Record<string, string>> {
-		const routeParams: Record<string, string> = {};
+	private getTypedRouteParams(apiRequest: ApiRequest): IParams {
+		return <IParams>(apiRequest.pathParameters ?? {});
+	}
 
-		for (let segmentIndex = 0; segmentIndex < requestedPathSegments.length; segmentIndex++) {
-			const routeToMatchCurrentSegment: string = <string>routeToMatchSegments[segmentIndex];
-			const requestedPathCurrentSegment: string = <string>requestedPathSegments[segmentIndex];
-
-			if (routeToMatchCurrentSegment === requestedPathCurrentSegment) continue;
-
-			const isNotRouteSegment: boolean = !routeToMatchCurrentSegment.startsWith(RouteBuilderConst.RouteSegmentStart) || !routeToMatchCurrentSegment.endsWith(RouteBuilderConst.RouteSegmentEnd);
-			if (isNotRouteSegment) return null;
-
-			const currentRouteParameter: string = routeToMatchCurrentSegment.slice(1, routeToMatchCurrentSegment.length - 1);
-			routeParams[currentRouteParameter] = requestedPathCurrentSegment;
-		}
-
-		return routeParams;
+	private getTypedQueryParams(apiRequest: ApiRequest): IParams {
+		return <IParams>(apiRequest.queryStringParameters ?? {});
 	}
 }

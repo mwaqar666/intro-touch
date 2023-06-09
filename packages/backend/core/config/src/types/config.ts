@@ -4,8 +4,8 @@ export interface IAppConfig {
 	readonly version: string;
 }
 
-export interface IAccountConfig {
-	readonly profile: string;
+export interface IAwsConfig {
+	readonly account: string;
 }
 
 export interface IDatabaseConfig {
@@ -17,6 +17,6 @@ export interface IDatabaseConfig {
 
 export interface IConfig {
 	app: IAppConfig;
-	account: IAccountConfig;
+	aws: IAwsConfig;
 	database: IDatabaseConfig;
 }
