@@ -10,9 +10,7 @@ export const index = async (event: ApiRequest, context: Context): Promise<ApiRes
 	const { IntroTouch } = await import("@/backend-core/ignition/main");
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 
-	return await introTouch.runInApplicationContext(async (container: IContainer): Promise<ApiResponse> => {
-		console.log(container);
-
+	return await introTouch.hotExecuteWithinApplicationContext(async (container: IContainer): Promise<ApiResponse> => {
 		const { RequestProcessorTokenConst } = await import("@/backend-core/request-processor/const");
 		const requestProcessor: IRequestProcessor = container.resolve(RequestProcessorTokenConst.RequestProcessor);
 

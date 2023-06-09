@@ -34,16 +34,16 @@ export class IntroTouch {
 		return this;
 	}
 
-	public async runInApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
+	public async hotExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
 		if (!this.bootstrapped) throw new Error("Application not bootstrapped");
 
-		return await this.application.runInApplicationContext<T>(executionContext);
+		return await this.application.hotExecuteWithinApplicationContext<T>(executionContext);
 	}
 
-	public async runInApplicationContextWithoutModuleRunHook<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
+	public async coldExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
 		if (!this.bootstrapped) throw new Error("Application not bootstrapped");
 
-		return await this.application.runInApplicationContextWithoutModuleRunHook<T>(executionContext);
+		return await this.application.coldExecuteWithinApplicationContext<T>(executionContext);
 	}
 
 	private async registerApplicationModules(): Promise<IntroTouch> {
@@ -65,6 +65,6 @@ export class IntroTouch {
 	private createUnderlyingApplication(): void {
 		this.application = new Application();
 
-		this.application.registerContainer();
+		this.application.initializeContainer();
 	}
 }

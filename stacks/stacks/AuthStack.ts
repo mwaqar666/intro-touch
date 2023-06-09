@@ -1,12 +1,16 @@
 import type { StackContext } from "sst/constructs";
 import { Cognito } from "sst/constructs";
+import { Config } from "@/stacks/config";
 import { AuthConst } from "@/stacks/const";
 
 export interface IAuthStack {
 	auth: Cognito;
+	awsProfile: string;
 }
 
 export const AuthStack = ({ stack }: StackContext): IAuthStack => {
+	const awsProfile: string = Config.get("AWS_PROFILE");
+
 	const auth: Cognito = new Cognito(stack, AuthConst.CognitoUserPool, {
 		login: ["email", "username"],
 	});
@@ -16,5 +20,8 @@ export const AuthStack = ({ stack }: StackContext): IAuthStack => {
 		cognitoUserPoolClientId: auth.userPoolClientId,
 	});
 
-	return { auth };
+	return {
+		auth,
+		awsProfile,
+	};
 };

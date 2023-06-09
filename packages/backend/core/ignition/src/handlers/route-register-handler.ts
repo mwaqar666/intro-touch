@@ -10,7 +10,7 @@ export const routeRegisterHandler = async (): Promise<Record<string, ApiRoutePro
 	const { IntroTouch } = await import("@/backend-core/ignition/main");
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 
-	return await introTouch.runInApplicationContextWithoutModuleRunHook(async (container: IContainer): Promise<Record<string, ApiRouteProps<AvailableAuthorizers>>> => {
+	return await introTouch.coldExecuteWithinApplicationContext(async (container: IContainer): Promise<Record<string, ApiRouteProps<AvailableAuthorizers>>> => {
 		const { RouterTokenConst } = await import("@/backend-core/router/const");
 		const stackRouter: IStackRouter = container.resolve(RouterTokenConst.StackRouterToken);
 

@@ -9,7 +9,7 @@ export interface IApplication {
 	 * @return {void}
 	 * @author Muhammad Waqar
 	 */
-	registerContainer(): void;
+	initializeContainer(): void;
 
 	/**
 	 * Register the module with the application and run its register hook
@@ -29,22 +29,26 @@ export interface IApplication {
 	bootApplicationModules(): Promise<void>;
 
 	/**
-	 * Run any arbitrary operation in the application context.
+	 * Run within the application context.
+	 * This will also run the registered modules' pre- and post-run hooks.
+	 * Use this when you need to bootstrap some code for every execution.
 	 *
 	 * @template T
 	 * @param {Delegate<[IContainer], Promise<T>>} executionContext Application request
 	 * @return {Promise<T>} Application response
 	 * @author Muhammad Waqar
 	 */
-	runInApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T>;
+	hotExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T>;
 
 	/**
-	 * Run any arbitrary operation in the application context. It will not trigger module pre- and postRun hooks
+	 * Run within the application context.
+	 * This will not run the registered modules' pre- and post-run hooks.
+	 * Use this when you just need to run some code that is initialized once in the app lifecycle
 	 *
 	 * @template T
 	 * @param {Delegate<[IContainer], Promise<T>>} executionContext Application request
 	 * @return {Promise<T>} Application response
 	 * @author Muhammad Waqar
 	 */
-	runInApplicationContextWithoutModuleRunHook<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T>;
+	coldExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T>;
 }

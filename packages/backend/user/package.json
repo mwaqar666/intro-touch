@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "iocc": "^2.1.2",
+    "kysely": "^0.25.0",
     "reflect-metadata": "^0.1.13"
   }
 }

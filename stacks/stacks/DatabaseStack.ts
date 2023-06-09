@@ -7,12 +7,12 @@ import { DatabaseConst } from "@/stacks/const";
 
 export interface IDatabaseStack {
 	database: RDS;
-	databaseSecret: Secret;
+	databaseUser: string;
 }
 
 export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
-	const username: string = Config.get("DATABASE_USER");
-	const databaseName: string = Config.get("DATABASE_NAME");
+	const username: string = Config.get("DB_USER");
+	const databaseName: string = Config.get("DB_NAME");
 
 	const databaseSecret: Secret = new Secret(stack, DatabaseConst.RDS_SECRET_ID, {
 		secretName: DatabaseConst.RDS_CREDENTIALS_SECRET,
@@ -26,6 +26,7 @@ export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
 	const database: RDS = new RDS(stack, DatabaseConst.RDS_ID, {
 		engine: "postgresql11.13",
 		defaultDatabaseName: databaseName,
+		migrations: "packages/backend/core/database/src/migrations",
 		cdk: {
 			cluster: {
 				credentials: Credentials.fromSecret(databaseSecret),
@@ -38,10 +39,13 @@ export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
 		databaseUser: username,
 		databaseHost: database.cdk.cluster.clusterEndpoint.hostname,
 		databasePort: database.cdk.cluster.clusterEndpoint.port.toString(),
+		databaseSecretArn: database.secretArn,
+		databaseClusterArn: database.clusterArn,
+		databaseClusterIdentifier: database.clusterIdentifier,
 	});
 
 	return {
 		database,
-		databaseSecret,
+		databaseUser: username,
 	};
 };

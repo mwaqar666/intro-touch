@@ -1,12 +1,15 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
-import type { IAppConfigResolver, IDatabaseConfig } from "@/backend-core/config/types";
+import type { IAccountConfig, IAppConfigResolver, IDatabaseConfig } from "@/backend-core/config/types";
+import { RDSData } from "@aws-sdk/client-rds-data";
+import { fromIni } from "@aws-sdk/credential-providers";
 import { Inject } from "iocc";
-import * as pg from "pg";
-import { Sequelize } from "sequelize-typescript";
+import { Kysely } from "kysely";
+import { DataApiDialect } from "kysely-data-api";
 import type { IDbConnector } from "@/backend-core/database/interface";
+import type { IDatabase } from "@/backend-core/database/types";
 
-export class DbConnectorService implements IDbConnector {
-	private sequelizeInstance: Sequelize;
+export class DbConnectorService implements IDbConnector<IDatabase> {
+	private rdsClient: Kysely<IDatabase>;
 
 	public constructor(
 		// Dependencies
@@ -14,60 +17,29 @@ export class DbConnectorService implements IDbConnector {
 	) {}
 
 	public async connectToDatabase(): Promise<void> {
-		try {
-			await this.prepareSequelizeInstance(this.sequelizeInstance);
-		} catch (exception) {
-			throw new Error(`Error connecting database: ${exception}`);
-		}
+		const dbConfig: IDatabaseConfig = this.configResolver.resolveConfig("database");
+		const accountConfig: IAccountConfig = this.configResolver.resolveConfig("account");
+
+		this.rdsClient = new Kysely({
+			dialect: new DataApiDialect({
+				mode: "postgres",
+				driver: {
+					secretArn: dbConfig.secretArn,
+					resourceArn: dbConfig.resourceArn,
+					database: dbConfig.database,
+					client: new RDSData({
+						credentials: fromIni({ profile: accountConfig.profile }),
+					}),
+				},
+			}),
+		});
 	}
 
 	public async releaseDatabaseConnection(): Promise<void> {
-		// Close any opened connections during the invocation
-		// This will wait for any in-progress queries to finish before closing the connections
-		await this.sequelizeInstance.connectionManager.close();
+		await this.rdsClient.destroy();
 	}
 
-	private async prepareSequelizeInstance(sequelize: Sequelize): Promise<Sequelize> {
-		// Re-use the sequelize instance across invocations to improve performance
-		if (!sequelize) return await this.createDatabaseConnection();
-
-		// Restart connection pool to ensure connections are not re used across invocations
-		sequelize.connectionManager.initPools();
-
-		// Restore `get connection()` if it has been overwritten by `close()`
-		const hasGetConnectionProperty: boolean = Object.prototype.hasOwnProperty.call(sequelize.connectionManager, "getConnection");
-		if (hasGetConnectionProperty) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			delete sequelize.connectionManager.getConnection;
-		}
-
-		return sequelize;
-	}
-
-	private async createDatabaseConnection(): Promise<Sequelize> {
-		const databaseConfig: IDatabaseConfig = this.configResolver.resolveConfig("database");
-
-		const sequelize: Sequelize = new Sequelize({
-			...databaseConfig,
-			dialect: "postgres",
-			dialectModule: pg,
-			logging: console.log,
-			dialectOptions: {
-				ssl: "Amazon RDS",
-			},
-			pool: {
-				max: 2,
-				min: 0,
-				idle: 0,
-				acquire: 3000,
-			},
-		});
-
-		console.log(databaseConfig);
-		await sequelize.authenticate();
-		console.log(databaseConfig);
-
-		return sequelize;
+	public getDatabaseConnection(): Kysely<IDatabase> {
+		return this.rdsClient;
 	}
 }

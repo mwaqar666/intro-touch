@@ -14,13 +14,14 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				env: EnvExtractor.env(schema, ConfigConst.NODE_ENV),
 				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
 			},
+			account: {
+				profile: EnvExtractor.env(schema, ConfigConst.AWS_PROFILE),
+			},
 			database: {
 				database: EnvExtractor.env(schema, ConfigConst.DB_NAME),
-				schema: EnvExtractor.env(schema, ConfigConst.DB_SCHEMA),
-				host: EnvExtractor.env(schema, ConfigConst.DB_HOST),
-				port: parseInt(EnvExtractor.env(schema, ConfigConst.DB_PORT), 10),
-				username: EnvExtractor.env(schema, ConfigConst.DB_USER),
-				password: EnvExtractor.env(schema, ConfigConst.DB_PASS),
+				databaseUser: EnvExtractor.env(schema, ConfigConst.DB_USER),
+				secretArn: EnvExtractor.env(schema, ConfigConst.DB_SECRET_ARN),
+				resourceArn: EnvExtractor.env(schema, ConfigConst.DB_RESOURCE_ARN),
 			},
 		};
 	}

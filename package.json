@@ -9,6 +9,7 @@
     "remove": "sst remove",
     "console": "sst console",
     "typecheck": "tsc --noEmit",
+    "gen": "hygen",
     "fix": "npm run fix:eslint && npm run fix:prettier",
     "fix:eslint": "eslint --fix --ignore-path .eslintignore --ext .js,.ts .",
     "fix:prettier": "prettier --write --check --ignore-path .prettierignore \"**/*.+(js|ts|json)\""
@@ -27,6 +28,7 @@
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
+    "hygen": "^6.2.11",
     "prettier": "^2.8.8",
     "sst": "^2.11.2",
     "typescript": "^5.0.4"

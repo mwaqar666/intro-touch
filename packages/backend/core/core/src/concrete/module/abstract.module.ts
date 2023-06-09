@@ -9,26 +9,26 @@ export abstract class AbstractModule implements IModule {
 	}
 
 	public async register(): Promise<void> {
-		// Implement in subsequent module
+		// Override in child module
 	}
 
 	public async preBoot(): Promise<void> {
-		// Implement in subsequent module
+		// Override in child module
 	}
 
 	public async boot(): Promise<void> {
-		// Implement in subsequent module
+		// Override in child module
 	}
 
 	public async postBoot(): Promise<void> {
-		// Implement in subsequent module
+		// Override in child module
 	}
 
 	public async preRun(): Promise<void> {
-		// Implement in subsequent module
+		// Override in child module
 	}
 
 	public async postRun(): Promise<void> {
-		// Implement in subsequent module
+		// Override in child module
 	}
 }

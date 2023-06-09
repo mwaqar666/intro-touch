@@ -14,8 +14,8 @@ export interface IApiStack {
 }
 
 export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
-	const { auth }: IAuthStack = use(AuthStack);
-	const { database, databaseSecret }: IDatabaseStack = use(DatabaseStack);
+	const { auth, awsProfile }: IAuthStack = use(AuthStack);
+	const { database, databaseUser }: IDatabaseStack = use(DatabaseStack);
 
 	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.ApplicationApi, {
 		authorizers: {
@@ -29,6 +29,7 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 		},
 		defaults: {
 			function: {
+				bind: [database],
 				nodejs: {
 					esbuild: {
 						plugins: [esBuildDecoratorPlugin],
@@ -36,17 +37,17 @@ export const ApiStack = async ({ stack }: StackContext): Promise<IApiStack> => {
 				},
 				environment: {
 					DB_NAME: database.defaultDatabaseName,
-					DB_HOST: database.cdk.cluster.clusterEndpoint.hostname,
-					DB_PORT: database.cdk.cluster.clusterEndpoint.port.toString(10),
-					DB_USER: databaseSecret.secretValueFromJson("username").unsafeUnwrap(),
-					DB_PASS: databaseSecret.secretValueFromJson("password").unsafeUnwrap(),
+					DB_USER: databaseUser,
+					DB_SECRET_ARN: database.secretArn,
+					DB_RESOURCE_ARN: database.clusterArn,
+					AWS_PROFILE: awsProfile,
 				},
 			},
 		},
 		routes: await routeRegisterHandler(),
 	});
 
-	api.bind([database]);
+	auth.attachPermissionsForAuthUsers(stack, [api]);
 
 	stack.addOutputs({
 		apiUrl: api.url,

@@ -10,7 +10,7 @@ export class Application implements IApplication {
 	private registeredModules: Array<IModule> = [];
 	private registeredModuleNames: Array<string> = [];
 
-	public registerContainer(): void {
+	public initializeContainer(): void {
 		this.container = Container.of();
 	}
 
@@ -30,7 +30,7 @@ export class Application implements IApplication {
 		this.lifeCycleRan = true;
 	}
 
-	public async runInApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
+	public async hotExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
 		this.validateContainerPresence();
 
 		this.validateModuleLifeCycleExecutedState();
@@ -38,7 +38,7 @@ export class Application implements IApplication {
 		return this.runRegisteredModuleRunCycle(executionContext);
 	}
 
-	public async runInApplicationContextWithoutModuleRunHook<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
+	public async coldExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
 		this.validateContainerPresence();
 
 		this.validateModuleLifeCycleExecutedState();

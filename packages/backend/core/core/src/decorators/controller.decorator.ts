@@ -1,6 +1,5 @@
 import type { Constructable, Key } from "@/stacks/types";
 import { copyMetadata } from "iocc";
-import "reflect-metadata";
 
 export const Controller = <T extends object>(target: Constructable<T, Array<any>>): Constructable<T, Array<any>> => {
 	/**
