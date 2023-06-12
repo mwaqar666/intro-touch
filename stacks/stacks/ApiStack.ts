@@ -44,8 +44,6 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 		},
 	});
 
-	databaseSecret.grantRead(apiGatewayHandlerLambda);
-
 	const stackRoutes: Array<IStackRoute> = await routeRegisterHandler();
 
 	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.API_ID, {
@@ -75,6 +73,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 	});
 
 	auth.attachPermissionsForAuthUsers(stack, [api]);
+	databaseSecret.grantRead(apiGatewayHandlerLambda);
 
 	stack.addOutputs({
 		nodeEnvironment: app.stage,
