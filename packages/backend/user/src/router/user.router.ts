@@ -13,7 +13,7 @@ export class UserRouter implements IRouter {
 	public registerRoutes(): Array<IRoute> {
 		return [
 			{
-				prefix: "/user",
+				prefix: "/",
 				authorizer: "none",
 				routes: [
 					{

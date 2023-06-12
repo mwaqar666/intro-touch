@@ -10,18 +10,16 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 	public buildConfig(schema: IConfigValidation): void {
 		this.configCache = {
 			app: {
-				name: EnvExtractor.env(schema, ConfigConst.APP_NAME),
 				env: EnvExtractor.env(schema, ConfigConst.NODE_ENV),
+				name: EnvExtractor.env(schema, ConfigConst.APP_NAME),
 				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
 			},
-			aws: {
-				account: EnvExtractor.env(schema, ConfigConst.AWS_ACCOUNT),
-			},
 			database: {
-				database: EnvExtractor.env(schema, ConfigConst.DB_NAME),
+				databaseName: EnvExtractor.env(schema, ConfigConst.DB_NAME),
+				databaseHost: EnvExtractor.env(schema, ConfigConst.DB_HOST),
+				databasePort: parseInt(EnvExtractor.env(schema, ConfigConst.DB_PORT)),
 				databaseUser: EnvExtractor.env(schema, ConfigConst.DB_USER),
-				secretArn: EnvExtractor.env(schema, ConfigConst.DB_SECRET_ARN),
-				resourceArn: EnvExtractor.env(schema, ConfigConst.DB_RESOURCE_ARN),
+				databasePass: EnvExtractor.env(schema, ConfigConst.DB_PASS),
 			},
 		};
 	}

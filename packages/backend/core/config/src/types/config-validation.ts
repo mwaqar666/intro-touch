@@ -1,15 +1,14 @@
-import type { StringSchema } from "joi";
+import type { NumberSchema, StringSchema } from "joi";
 import type { ConfigConst } from "@/backend-core/config/const";
 
 export interface IConfigValidation {
-	[ConfigConst.NODE_ENV]: StringSchema<string>;
-	[ConfigConst.APP_NAME]: StringSchema<string>;
-	[ConfigConst.APP_VERSION]: StringSchema<string>;
+	[ConfigConst.NODE_ENV]: StringSchema;
+	[ConfigConst.APP_NAME]: StringSchema;
+	[ConfigConst.APP_VERSION]: StringSchema;
 
-	[ConfigConst.AWS_ACCOUNT]: StringSchema<string>;
-
-	[ConfigConst.DB_NAME]: StringSchema<string>;
-	[ConfigConst.DB_USER]: StringSchema<string>;
-	[ConfigConst.DB_SECRET_ARN]: StringSchema<string>;
-	[ConfigConst.DB_RESOURCE_ARN]: StringSchema<string>;
+	[ConfigConst.DB_NAME]: StringSchema;
+	[ConfigConst.DB_HOST]: StringSchema;
+	[ConfigConst.DB_PORT]: NumberSchema;
+	[ConfigConst.DB_USER]: StringSchema;
+	[ConfigConst.DB_PASS]: StringSchema;
 }

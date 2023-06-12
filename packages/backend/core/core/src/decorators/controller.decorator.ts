@@ -15,7 +15,7 @@ export const Controller = <T extends object>(target: Constructable<T, Array<any>
 			 */
 			return new Proxy(controllerInstance, {
 				get(controller: T, property: string): T[Key<T>] {
-					const targetProp: T[Key<T>] = Reflect.get(controller, property);
+					const targetProp = Reflect.get(controller, property);
 
 					/**
 					 * We check if the property being accessed is a class method, if so, we

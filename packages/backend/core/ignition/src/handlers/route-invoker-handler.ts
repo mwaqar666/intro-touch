@@ -4,7 +4,7 @@ import type { Context } from "aws-lambda";
 import type { IContainer } from "iocc";
 import type { IntroTouch } from "@/backend-core/ignition/main";
 
-export const index = async (event: ApiRequest, context: Context): Promise<ApiResponse> => {
+export const routeInvokerHandler = async (event: ApiRequest, context: Context): Promise<ApiResponse> => {
 	await import("reflect-metadata");
 
 	const { IntroTouch } = await import("@/backend-core/ignition/main");

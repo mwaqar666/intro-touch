@@ -1,22 +1,18 @@
 export interface IAppConfig {
-	readonly name: string;
 	readonly env: string;
+	readonly name: string;
 	readonly version: string;
 }
 
-export interface IAwsConfig {
-	readonly account: string;
-}
-
 export interface IDatabaseConfig {
-	readonly database: string;
+	readonly databaseName: string;
+	readonly databaseHost: string;
+	readonly databasePort: number;
 	readonly databaseUser: string;
-	readonly secretArn: string;
-	readonly resourceArn: string;
+	readonly databasePass: string;
 }
 
 export interface IConfig {
 	app: IAppConfig;
-	aws: IAwsConfig;
 	database: IDatabaseConfig;
 }

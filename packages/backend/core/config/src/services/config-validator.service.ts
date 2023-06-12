@@ -21,12 +21,11 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.APP_NAME]: joi.string().required(),
 				[ConfigConst.APP_VERSION]: joi.string().required(),
 
-				[ConfigConst.AWS_ACCOUNT]: joi.string().required(),
-
 				[ConfigConst.DB_NAME]: joi.string().required(),
+				[ConfigConst.DB_HOST]: joi.string().default(""),
+				[ConfigConst.DB_PORT]: joi.number().default(5432),
 				[ConfigConst.DB_USER]: joi.string().required(),
-				[ConfigConst.DB_SECRET_ARN]: joi.string().default(""),
-				[ConfigConst.DB_RESOURCE_ARN]: joi.string().default(""),
+				[ConfigConst.DB_PASS]: joi.string().default(""),
 			})
 			.unknown(true);
 	}
