@@ -16,6 +16,18 @@ export type Constructable<T, TArgs extends Array<unknown> = Array<void>> = new (
 
 export type PartialOnly<T, K extends Key<T>> = Partial<Pick<T, K>> & Omit<T, K>;
 
+export type PositiveFilterCondition<T, P extends Key<T>, C> = T[P] extends C ? P : never;
+
+export type InverseFilterCondition<T, P extends Key<T>, C> = T[P] extends C ? never : P;
+
+export type PositiveFilter<T, C> = { [P in Key<T>]: PositiveFilterCondition<T, P, C> }[Key<T>];
+
+export type InverseFilter<T, C> = { [P in Key<T>]: InverseFilterCondition<T, P, C> }[Key<T>];
+
+export type FilterWhere<T, C> = Pick<T, PositiveFilter<T, C>>;
+
+export type FilterWhereNot<T, C> = Pick<T, InverseFilter<T, C>>;
+
 export type Without<T, R> = { [K in Exclude<Key<T>, Key<R>>]?: never };
 
 export type SingleExclusiveUnion<T, U> = T | U extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;

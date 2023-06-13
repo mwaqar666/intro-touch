@@ -6,9 +6,11 @@
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.0",
-    "sequelize-typescript": "^2.1.5"
+    "sequelize-typescript": "^2.1.5",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/pg": "^8.10.2"
+    "@types/pg": "^8.10.2",
+    "@types/uuid": "^9.0.2"
   }
 }

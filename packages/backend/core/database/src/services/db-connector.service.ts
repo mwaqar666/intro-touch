@@ -1,14 +1,17 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IDatabaseConfig } from "@/backend-core/config/types";
 import { Inject } from "iocc";
+import type { ModelCtor } from "sequelize-typescript";
 import { Sequelize } from "sequelize-typescript";
-import type { IDbConnector } from "@/backend-core/database/interface";
+import { DbTokenConst } from "@/backend-core/database/const";
+import type { IDbConnector, IEntityManager } from "@/backend-core/database/interface";
 
 export class DbConnectorService implements IDbConnector<Sequelize> {
 	private dbConnection: Sequelize;
 
 	public constructor(
 		// Dependencies
+		@Inject(DbTokenConst.EntityManagerToken) private readonly entityManager: IEntityManager,
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
@@ -61,6 +64,7 @@ export class DbConnectorService implements IDbConnector<Sequelize> {
 				acquire: 3000,
 				evict: 60000,
 			},
+			models: this.entityManager.resolveEntities() as unknown as Array<ModelCtor>,
 		});
 
 		await sequelize.authenticate();

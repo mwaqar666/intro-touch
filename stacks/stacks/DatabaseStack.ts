@@ -47,6 +47,7 @@ export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
 		removalPolicy: RemovalPolicy.DESTROY,
 		credentials: Credentials.fromSecret(databaseSecret),
 		defaultDatabaseName: databaseName,
+		instances: 1,
 		instanceProps: {
 			vpc,
 			vpcSubnets: vpc.selectSubnets({

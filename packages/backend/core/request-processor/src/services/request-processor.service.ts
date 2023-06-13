@@ -3,8 +3,9 @@ import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/inter
 import type { ApiRequest, ApiResponse, Nullable } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
+import { ResponseExtension } from "@/backend-core/request-processor/extensions";
 import type { IRequestProcessor } from "@/backend-core/request-processor/interface";
-import type { IRequest, IResponse } from "@/backend-core/request-processor/types";
+import type { IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
 
 export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
@@ -15,23 +16,30 @@ export class RequestProcessorService implements IRequestProcessor {
 	public async processRequest(apiRequest: ApiRequest, context: Context): Promise<ApiResponse> {
 		const matchedRoute: IResolvedRoute = this.routeRegister.resolveRoute(apiRequest);
 
-		const request: IRequest = this.prepareRequestObject(apiRequest, matchedRoute);
-		const response: IResponse = await matchedRoute.handler(request, context);
+		const request: IControllerRequest = this.prepareRequestObject(apiRequest, matchedRoute);
+		let response: IControllerResponse;
+
+		try {
+			response = await matchedRoute.handler(request, context);
+		} catch (exception) {
+			response = ResponseExtension.handleException(exception);
+		}
+
 		return this.prepareResponseObject(response);
 	}
 
-	private prepareRequestObject(request: ApiRequest, matchedRoute: IResolvedRoute): IRequest {
+	private prepareRequestObject(request: ApiRequest, matchedRoute: IResolvedRoute): IControllerRequest {
 		const requestBody: Nullable<unknown> = request.body ? JSON.parse(request.body) : null;
 
 		return {
 			...request,
-			routeParams: matchedRoute.routeParams,
+			pathParams: matchedRoute.pathParams,
 			queryParams: matchedRoute.queryParams,
 			body: requestBody,
 		};
 	}
 
-	private prepareResponseObject(response: IResponse): ApiResponse {
+	private prepareResponseObject(response: IControllerResponse): ApiResponse {
 		return {
 			...response,
 			body: JSON.stringify(response.body),

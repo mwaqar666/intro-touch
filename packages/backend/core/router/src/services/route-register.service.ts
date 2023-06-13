@@ -1,6 +1,6 @@
 import type { ApiRequest, Optional } from "@/stacks/types";
 import type { RouteMethod } from "@/backend-core/router/enum";
-import type { IParams, IResolvedRoute, IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend-core/router/interface";
+import type { IPathParams, IQueryParams, IResolvedRoute, IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend-core/router/interface";
 
 export class RouteRegisterService implements IRouteRegister {
 	private moduleRoutes: Array<IRoute> = [];
@@ -28,18 +28,18 @@ export class RouteRegisterService implements IRouteRegister {
 		if (matchedRoute)
 			return {
 				...matchedRoute,
-				routeParams: this.getTypedRouteParams(apiRequest),
+				pathParams: this.getTypedPathParams(apiRequest),
 				queryParams: this.getTypedQueryParams(apiRequest),
 			};
 
 		throw new Error(`Route with path: "${method} ${path}" not found!`);
 	}
 
-	private getTypedRouteParams(apiRequest: ApiRequest): IParams {
-		return <IParams>(apiRequest.pathParameters ?? {});
+	private getTypedPathParams(apiRequest: ApiRequest): IPathParams {
+		return <IPathParams>apiRequest.pathParameters ?? {};
 	}
 
-	private getTypedQueryParams(apiRequest: ApiRequest): IParams {
-		return <IParams>(apiRequest.queryStringParameters ?? {});
+	private getTypedQueryParams(apiRequest: ApiRequest): IQueryParams {
+		return <IQueryParams>(apiRequest.queryStringParameters ?? {});
 	}
 }
