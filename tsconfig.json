@@ -28,6 +28,9 @@
       "@/stacks/*": [
         "stacks/*"
       ],
+      "@/backend-core/auth/*": [
+        "packages/backend/core/auth/src/*"
+      ],
       "@/backend-core/config/*": [
         "packages/backend/core/config/src/*"
       ],

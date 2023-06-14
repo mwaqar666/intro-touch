@@ -1,7 +1,4 @@
 export class AuthConst {
-	public static readonly COGNITO_USER_POOL_ID = "cognitoUserPool";
-	public static readonly COGNITO_USER_POOL_NAME = "cognitoUserPoolIntrotouch";
-
-	public static readonly COGNITO_USER_POOL_CLIENT_ID = "cognitoUserPoolClient";
-	public static readonly COGNITO_USER_POOL_CLIENT_NAME = "cognitoUserPoolClientIntrotouch";
+	public static readonly API_AUTH_ID = "apiAuth";
+	public static readonly API_AUTH_HANDLER_LAMBDA_ID = "apiAuthHandlerLambda";
 }

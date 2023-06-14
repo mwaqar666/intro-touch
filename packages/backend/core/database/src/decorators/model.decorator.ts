@@ -1,4 +1,5 @@
-import { CreatedAt, DeletedAt, UpdatedAt } from "sequelize-typescript";
+import { CreatedAt, Default, DeletedAt, Unique, UpdatedAt } from "sequelize-typescript";
+import { v4 as uuid } from "uuid";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { EntityType } from "@/backend-core/database/types";
 
@@ -17,11 +18,16 @@ export const DeletedAtColumn: PropertyDecorator = <PropertyDecorator>(<TEntity e
 export const UuidColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 	const concreteEntity: EntityType<TEntity> = <EntityType<TEntity>>target.constructor;
 	concreteEntity.uuidColumnName = propertyKey;
+
+	Unique(target, propertyKey);
+	Default(uuid)(target, propertyKey);
 });
 
 export const IsActiveColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 	const concreteEntity: EntityType<TEntity> = <EntityType<TEntity>>target.constructor;
 	concreteEntity.isActiveColumnName = propertyKey;
+
+	Default(true)(target, propertyKey);
 });
 
 const ApplyTimestampDecorator = <TEntity extends BaseEntity<TEntity>, TimestampKey extends "createdAtColumnName" | "updatedAtColumnName" | "deletedAtColumnName">(

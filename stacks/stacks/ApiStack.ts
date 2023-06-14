@@ -10,10 +10,10 @@ import type { IAuthStack } from "@/stacks/stacks/AuthStack";
 import { AuthStack } from "@/stacks/stacks/AuthStack";
 import type { IDatabaseStack } from "@/stacks/stacks/DatabaseStack";
 import { DatabaseStack } from "@/stacks/stacks/DatabaseStack";
-import type { AuthorizedApi, AvailableAuthorizers } from "@/stacks/types";
+import type { AvailableAuthorizers } from "@/stacks/types";
 
 export interface IApiStack {
-	api: Api<AuthorizedApi>;
+	api: Api;
 }
 
 export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack> => {
@@ -23,6 +23,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 	const appVersion: string = Config.get("APP_VERSION");
 
 	const apiGatewayHandlerLambda = new Function(stack, ApiConst.API_GATEWAY_LAMBDA_ID, {
+		timeout: "30 seconds",
 		runtime: "nodejs18.x",
 		architecture: "arm_64",
 		handler: "packages/backend/core/ignition/src/handlers/route-invoker-handler.routeInvokerHandler",
@@ -46,16 +47,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 
 	const stackRoutes: Array<IStackRoute> = await routeRegisterHandler();
 
-	const api: Api<AuthorizedApi> = new Api<AuthorizedApi>(stack, ApiConst.API_ID, {
-		authorizers: {
-			jwt: {
-				type: "user_pool",
-				userPool: {
-					id: auth.userPoolId,
-					clientIds: [auth.userPoolClientId],
-				},
-			},
-		},
+	const api: Api = new Api(stack, ApiConst.API_ID, {
 		routes: Object.fromEntries(
 			stackRoutes.map((stackRoute: IStackRoute): [string, ApiFunctionRouteProps<AvailableAuthorizers>] => {
 				const methodAndPath = `${stackRoute.method} ${stackRoute.path}`;
@@ -72,7 +64,11 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 		),
 	});
 
-	auth.attachPermissionsForAuthUsers(stack, [api]);
+	auth.attach(stack, {
+		api,
+		prefix: "/auth",
+	});
+
 	databaseSecret.grantRead(apiGatewayHandlerLambda);
 
 	stack.addOutputs({

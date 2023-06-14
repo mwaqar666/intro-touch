@@ -62,7 +62,7 @@ export class DbConnectorService implements IDbConnector<Sequelize> {
 				min: 0,
 				idle: 0,
 				acquire: 3000,
-				evict: 60000,
+				evict: 30000,
 			},
 			models: this.entityManager.resolveEntities() as unknown as Array<ModelCtor>,
 		});
