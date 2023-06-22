@@ -14,6 +14,10 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				name: EnvExtractor.env(schema, ConfigConst.APP_NAME),
 				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
 			},
+			auth: {
+				googleClientId: EnvExtractor.env(schema, ConfigConst.GOOGLE_CLIENT_ID),
+				googleRedirectUrl: EnvExtractor.env(schema, ConfigConst.GOOGLE_REDIRECT_URL),
+			},
 			database: {
 				databaseName: EnvExtractor.env(schema, ConfigConst.DB_NAME),
 				databaseHost: EnvExtractor.env(schema, ConfigConst.DB_HOST),

@@ -17,21 +17,21 @@ export interface IDatabaseStack {
 	databaseSecret: Secret;
 }
 
-export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
+export const DatabaseStack = ({ app, stack }: StackContext): IDatabaseStack => {
 	const { vpc }: IVpcStack = use(VpcStack);
 
 	const username: string = Config.get("DB_USER");
 	const databaseName: string = Config.get("DB_NAME");
 	const databasePort: string = Config.get("DB_PORT");
 
-	const dbSecurityGroup: SecurityGroup = new SecurityGroup(stack, DatabaseConst.DB_SECURITY_GROUP, {
+	const dbSecurityGroup: SecurityGroup = new SecurityGroup(stack, DatabaseConst.DbSecurityGroup(app.stage), {
 		vpc: vpc,
 		allowAllOutbound: true,
 	});
-	dbSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432), DatabaseConst.DB_SECURITY_GROUP_DESCRIPTION);
+	dbSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432), DatabaseConst.DbSecurityGroupDescription());
 
-	const databaseSecret: Secret = new Secret(stack, DatabaseConst.DATABASE_SECRET_ID, {
-		secretName: DatabaseConst.DATABASE_CREDENTIALS_SECRET,
+	const databaseSecret: Secret = new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), {
+		secretName: DatabaseConst.DatabaseCredentialsSecret(app.stage),
 		generateSecretString: {
 			secretStringTemplate: JSON.stringify({ username }),
 			generateStringKey: "password",
@@ -39,7 +39,7 @@ export const DatabaseStack = ({ stack }: StackContext): IDatabaseStack => {
 		},
 	});
 
-	const database: DatabaseCluster = new DatabaseCluster(stack, DatabaseConst.DATABASE_ID, {
+	const database: DatabaseCluster = new DatabaseCluster(stack, DatabaseConst.DatabaseId(app.stage), {
 		engine: DatabaseClusterEngine.auroraPostgres({
 			version: AuroraPostgresEngineVersion.VER_15_2,
 		}),

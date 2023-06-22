@@ -1,6 +1,6 @@
 import type { Constructable, Delegate } from "@/stacks/types";
 import type { IContainer } from "iocc";
-import { Container } from "iocc";
+import { ContainerFactory } from "iocc";
 import type { IApplication } from "@/backend-core/core/contracts/application";
 import type { IModule } from "@/backend-core/core/contracts/module";
 
@@ -11,7 +11,7 @@ export class Application implements IApplication {
 	private registeredModuleNames: Array<string> = [];
 
 	public initializeContainer(): void {
-		this.container = Container.of();
+		this.container = ContainerFactory.getContainer();
 	}
 
 	public async registerModule(appModule: Constructable<IModule>): Promise<void> {

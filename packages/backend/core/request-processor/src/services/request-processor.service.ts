@@ -3,29 +3,31 @@ import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/inter
 import type { ApiRequest, ApiResponse, Nullable } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
-import { ResponseExtension } from "@/backend-core/request-processor/extensions";
-import type { IRequestProcessor } from "@/backend-core/request-processor/interface";
+import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
+import type { IRequestProcessor, IResponseHandler } from "@/backend-core/request-processor/interface";
 import type { IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
 
 export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
 		// Dependencies
 		@Inject(RouterTokenConst.RouteRegisterToken) private readonly routeRegister: IRouteRegister,
+		@Inject(RequestProcessorTokenConst.ResponseHandler) private readonly responseHandler: IResponseHandler,
 	) {}
 
 	public async processRequest(apiRequest: ApiRequest, context: Context): Promise<ApiResponse> {
 		const matchedRoute: IResolvedRoute = this.routeRegister.resolveRoute(apiRequest);
 
 		const request: IControllerRequest = this.prepareRequestObject(apiRequest, matchedRoute);
-		let response: IControllerResponse;
 
 		try {
-			response = await matchedRoute.handler(request, context);
-		} catch (exception) {
-			response = ResponseExtension.handleException(exception);
-		}
+			const response: IControllerResponse = await matchedRoute.handler(request, context);
 
-		return this.prepareResponseObject(response);
+			return this.prepareResponseObject(response);
+		} catch (exception) {
+			const response: IControllerResponse = this.responseHandler.handleException(exception);
+
+			return this.prepareResponseObject(response);
+		}
 	}
 
 	private prepareRequestObject(request: ApiRequest, matchedRoute: IResolvedRoute): IControllerRequest {

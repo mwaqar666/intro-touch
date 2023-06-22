@@ -6,6 +6,6 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "iocc": "^2.1.2"
+    "iocc": "^2.1.4"
   }
 }

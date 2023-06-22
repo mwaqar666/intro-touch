@@ -1,5 +1,6 @@
+import { PlatformModule } from "@/backend/platform/module";
 import { UserModule } from "@/backend/user/module";
-import { AuthModule } from "@/backend-core/auth/module";
+import { AuthenticationModule } from "@/backend-core/authentication/module";
 import { ConfigModule } from "@/backend-core/config/module";
 import type { IModule } from "@/backend-core/core/contracts/module";
 import { DatabaseModule } from "@/backend-core/database/module";
@@ -15,10 +16,11 @@ export class ModuleRegister {
 			DatabaseModule,
 			RequestProcessorModule,
 			RouterModule,
-			AuthModule,
+			AuthenticationModule,
 
 			// Application business modules
 			UserModule,
+			PlatformModule,
 		];
 	}
 }

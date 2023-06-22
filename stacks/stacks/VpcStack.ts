@@ -7,8 +7,8 @@ export interface IVpcStack {
 	vpc: Vpc;
 }
 
-export const VpcStack = ({ stack }: StackContext): IVpcStack => {
-	const vpc: Vpc = new Vpc(stack, VpcConst.VPC_ID, {
+export const VpcStack = ({ app, stack }: StackContext): IVpcStack => {
+	const vpc: Vpc = new Vpc(stack, VpcConst.VpcId(app.stage), {
 		ipAddresses: IpAddresses.cidr("10.0.0.0/16"),
 		subnetConfiguration: [
 			{

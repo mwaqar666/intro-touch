@@ -28,8 +28,8 @@
       "@/stacks/*": [
         "stacks/*"
       ],
-      "@/backend-core/auth/*": [
-        "packages/backend/core/auth/src/*"
+      "@/backend-core/authentication/*": [
+        "packages/backend/core/authentication/src/*"
       ],
       "@/backend-core/config/*": [
         "packages/backend/core/config/src/*"
@@ -49,11 +49,11 @@
       "@/backend-core/router/*": [
         "packages/backend/core/router/src/*"
       ],
+      "@/backend/platform/*": [
+        "packages/backend/platform/src/*"
+      ],
       "@/backend/user/*": [
         "packages/backend/user/src/*"
-      ],
-      "@/common/utils/*": [
-        "packages/common/utils/src/*"
       ]
     }
   }

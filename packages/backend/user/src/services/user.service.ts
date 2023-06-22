@@ -11,11 +11,11 @@ export class UserService {
 	}
 
 	public async createUser(request: IControllerRequest, context: Context): Promise<void> {
-		console.log("UserService => getUser", "Request: ", request, "Context: ", context);
+		console.log("UserService => createUser", "Request: ", request, "Context: ", context);
 	}
 
 	public async updateUser(request: IControllerRequest, context: Context): Promise<void> {
-		console.log("UserService => getUser", "Request: ", request, "Context: ", context);
+		console.log("UserService => updateUser", "Request: ", request, "Context: ", context);
 	}
 
 	public async deleteUser(request: IControllerRequest, context: Context): Promise<void> {

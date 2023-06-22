@@ -35,6 +35,25 @@ cdk.context.json
 .nyc_output
 coverage
 
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Angular
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
 # SQLite db used for unit testing
 database.sqlite
 

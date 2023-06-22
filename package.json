@@ -11,8 +11,8 @@
     "typecheck": "tsc --noEmit",
     "gen": "hygen",
     "fix": "npm run fix:eslint && npm run fix:prettier",
-    "fix:eslint": "eslint --fix --ignore-path .eslintignore --ext .js,.ts .",
-    "fix:prettier": "prettier --write --check --ignore-path .prettierignore \"**/*.+(js|ts|json)\""
+    "fix:eslint": "eslint --fix --ignore-path .eslintignore --ext .js,.ts,.jsx,.tsx,.cjs,.mjs .",
+    "fix:prettier": "prettier --write --check --ignore-path .prettierignore \"**/*.+(js|ts|jsx|tsx|cjs|mjs|json)\""
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.117",

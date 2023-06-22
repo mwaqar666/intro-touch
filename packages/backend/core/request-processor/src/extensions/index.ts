@@ -1,1 +1,1 @@
-export * from "./response.extension";
+export * from "./response-handler.extension";

@@ -1,4 +1,4 @@
-import type { IAuthAdapterResolver } from "@/backend-core/auth/interface";
+import type { IAuthAdapterResolver } from "@/backend-core/authentication/interface";
 import type { ApiRequest, ApiResponse } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import type { IContainer } from "iocc";
@@ -8,7 +8,7 @@ export const authInvokerHandler = async (request: ApiRequest, context: Context):
 	await import("reflect-metadata");
 	const { AuthHandler } = await import("sst/node/auth");
 	const { IntroTouch } = await import("@/backend-core/ignition/main");
-	const { AuthTokenConst } = await import("@/backend-core/auth/const");
+	const { AuthTokenConst } = await import("@/backend-core/authentication/const");
 
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 

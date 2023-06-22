@@ -8,29 +8,35 @@ import { DatabaseStack } from "@/stacks/stacks/DatabaseStack";
 
 export interface IAuthStack {
 	auth: Auth;
-	awsProfile: string;
+	lambdaEnvironment: Record<string, string>;
 }
 
 export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 	const { database, databaseName, databaseSecret }: IDatabaseStack = use(DatabaseStack);
 
 	const appVersion: string = Config.get("APP_VERSION");
+	const googleClientId: string = Config.get("GOOGLE_CLIENT_ID");
+	const googleRedirectUrl: string = Config.get("GOOGLE_REDIRECT_URL");
 
-	const apiAuthHandlerLambda = new Function(stack, AuthConst.API_AUTH_HANDLER_LAMBDA_ID, {
+	const lambdaEnvironment: Record<string, string> = {
+		NODE_ENV: app.stage,
+		APP_NAME: app.name,
+		APP_VERSION: appVersion,
+		DB_NAME: databaseName,
+		DB_HOST: database.clusterEndpoint.hostname,
+		DB_PORT: database.clusterEndpoint.port.toString(),
+		DB_USER: databaseSecret.secretValueFromJson("username").toString(),
+		DB_PASS: databaseSecret.secretValueFromJson("password").toString(),
+		GOOGLE_CLIENT_ID: googleClientId,
+		GOOGLE_REDIRECT_URL: googleRedirectUrl,
+	};
+
+	const apiAuthHandlerLambda = new Function(stack, AuthConst.ApiAuthHandlerLambdaId(app.stage), {
 		timeout: "30 seconds",
 		runtime: "nodejs18.x",
 		architecture: "arm_64",
 		handler: "packages/backend/core/ignition/src/handlers/auth-invoker-handler.authInvokerHandler",
-		environment: {
-			NODE_ENV: app.stage,
-			APP_NAME: app.name,
-			APP_VERSION: appVersion,
-			DB_NAME: databaseName,
-			DB_HOST: database.clusterEndpoint.hostname,
-			DB_PORT: database.clusterEndpoint.port.toString(),
-			DB_USER: databaseSecret.secretValueFromJson("username").toString(),
-			DB_PASS: databaseSecret.secretValueFromJson("password").toString(),
-		},
+		environment: lambdaEnvironment,
 		nodejs: {
 			install: ["pg", "pg-hstore"],
 			esbuild: {
@@ -39,7 +45,7 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 		},
 	});
 
-	const auth: Auth = new Auth(stack, AuthConst.API_AUTH_ID, {
+	const auth: Auth = new Auth(stack, AuthConst.ApiAuthId(app.stage), {
 		authenticator: apiAuthHandlerLambda,
 	});
 
@@ -50,6 +56,6 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 
 	return {
 		auth,
-		awsProfile: app.account,
+		lambdaEnvironment,
 	};
 };

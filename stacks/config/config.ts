@@ -4,6 +4,7 @@ export interface IConfig {
 	// App
 	APP_NAME: "APP_NAME";
 	APP_VERSION: "APP_VERSION";
+	APP_DOMAIN: "APP_DOMAIN";
 
 	// Account
 	AWS_REGION: "AWS_REGION";
@@ -12,6 +13,10 @@ export interface IConfig {
 	DB_NAME: "DB_NAME";
 	DB_USER: "DB_USER";
 	DB_PORT: "DB_PORT";
+
+	// Auth
+	GOOGLE_CLIENT_ID: "GOOGLE_CLIENT_ID";
+	GOOGLE_REDIRECT_URL: "GOOGLE_REDIRECT_URL";
 }
 
 export class Config {

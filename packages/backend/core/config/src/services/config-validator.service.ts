@@ -26,6 +26,9 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.DB_PORT]: joi.number().default(5432),
 				[ConfigConst.DB_USER]: joi.string().required(),
 				[ConfigConst.DB_PASS]: joi.string().default(""),
+
+				[ConfigConst.GOOGLE_CLIENT_ID]: joi.string().required(),
+				[ConfigConst.GOOGLE_REDIRECT_URL]: joi.string().required(),
 			})
 			.unknown(true);
 	}

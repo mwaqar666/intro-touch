@@ -27,4 +27,4 @@ export type EntityScopes<T> = { [K in Key<T>]: ScopesOptions };
 
 export type AvailableScopes = EntityScopes<typeof EntityScopeConst>;
 
-export type EntityType<TEntity extends BaseEntity<TEntity>> = Constructable<TEntity> & typeof BaseEntity<TEntity>;
+export type EntityType<TEntity extends BaseEntity<TEntity>> = Constructable<TEntity, any> & typeof BaseEntity<TEntity>;

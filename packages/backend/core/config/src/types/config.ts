@@ -1,3 +1,8 @@
+export interface IAuthConfig {
+	readonly googleClientId: string;
+	readonly googleRedirectUrl: string;
+}
+
 export interface IAppConfig {
 	readonly env: string;
 	readonly name: string;
@@ -14,5 +19,6 @@ export interface IDatabaseConfig {
 
 export interface IConfig {
 	app: IAppConfig;
+	auth: IAuthConfig;
 	database: IDatabaseConfig;
 }

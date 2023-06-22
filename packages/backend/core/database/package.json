@@ -2,7 +2,7 @@
   "name": "@intro-touch/backend-core-database",
   "version": "0.0.0",
   "dependencies": {
-    "iocc": "^2.1.2",
+    "iocc": "^2.1.4",
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.0",

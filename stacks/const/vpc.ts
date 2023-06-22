@@ -1,3 +1,3 @@
 export class VpcConst {
-	public static readonly VPC_ID = "vpc";
+	public static readonly VpcId = (stage: string): string => `vpc-${stage}`;
 }
