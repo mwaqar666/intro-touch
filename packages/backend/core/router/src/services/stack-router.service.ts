@@ -14,12 +14,6 @@ export class StackRouterService implements IStackRouter {
 	}
 
 	private prepareRoutes(simpleRoutes: Array<ISimpleRoute>): Array<IStackRoute> {
-		return simpleRoutes.map(
-			(route: ISimpleRoute): IStackRoute => ({
-				path: route.path,
-				method: route.method,
-				authorizer: route.authorizer ?? "none",
-			}),
-		);
+		return simpleRoutes.map(({ path, method }: ISimpleRoute): IStackRoute => ({ path, method }));
 	}
 }

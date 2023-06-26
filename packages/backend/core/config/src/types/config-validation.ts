@@ -11,6 +11,7 @@ export interface IConfigValidation {
 	[ConfigConst.DB_PORT]: NumberSchema;
 	[ConfigConst.DB_USER]: StringSchema;
 	[ConfigConst.DB_PASS]: StringSchema;
+	[ConfigConst.DB_MIGRATION_PASS]: StringSchema;
 
 	[ConfigConst.GOOGLE_CLIENT_ID]: StringSchema;
 	[ConfigConst.GOOGLE_REDIRECT_URL]: StringSchema;

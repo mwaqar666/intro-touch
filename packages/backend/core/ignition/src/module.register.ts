@@ -6,6 +6,8 @@ import type { IModule } from "@/backend-core/core/contracts/module";
 import { DatabaseModule } from "@/backend-core/database/module";
 import { RequestProcessorModule } from "@/backend-core/request-processor/module";
 import { RouterModule } from "@/backend-core/router/module";
+import { ServiceBusModule } from "@/backend-core/service-bus/module";
+import { ValidationModule } from "@/backend-core/validation/module";
 import type { Constructable } from "@/stacks/types";
 
 export class ModuleRegister {
@@ -17,6 +19,8 @@ export class ModuleRegister {
 			RequestProcessorModule,
 			RouterModule,
 			AuthenticationModule,
+			ValidationModule,
+			ServiceBusModule,
 
 			// Application business modules
 			UserModule,

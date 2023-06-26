@@ -1,18 +1,17 @@
 ---
-to: packages/backend/core/database/src/migrations/<%= Date.now() %>-<%= name.replace(/\s/g, "-") %>.mjs
+to: packages/<%= migrationPath %>/<%= name.replace(/\s/g, "-") %>.migration.ts
 ---
-/**
- * @param {import("kysely").Kysely<IDatabase>} db
- * @return {Promise<void>}
- */
-export async function up(db) {
-	//
-}
+import type { IMigration } from "@/backend-core/database/interface";
+import type { QueryInterface } from "sequelize";
 
-/**
- * @param {import("kysely").Kysely<IDatabase>} db
- * @return {Promise<void>}
- */
-export async function down(db) {
-	//
+export class <%= h.changeCase.pascal(name) %> implements IMigration {
+	public timestamp = <%= Date.now() %>;
+
+	public async up(queryInterface: QueryInterface): Promise<void> {
+		//
+	}
+
+	public async down(queryInterface: QueryInterface): Promise<void> {
+		//
+	}
 }

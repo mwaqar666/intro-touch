@@ -12,13 +12,14 @@ export class UserRouter implements IRouter {
 	public registerRoutes(): Array<IRoute> {
 		return [
 			{
-				prefix: "/",
+				prefix: "/user",
 				authorizer: "none",
 				routes: [
 					{
 						path: "/",
 						method: RouteMethod.GET,
 						handler: this.userController.getUserList,
+						authorizer: "auth",
 					},
 					{
 						path: "/{userId}",

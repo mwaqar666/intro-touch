@@ -17,6 +17,7 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 	const appVersion: string = Config.get("APP_VERSION");
 	const googleClientId: string = Config.get("GOOGLE_CLIENT_ID");
 	const googleRedirectUrl: string = Config.get("GOOGLE_REDIRECT_URL");
+	const dbMigrationPass: string = Config.get("DB_MIGRATION_PASS");
 
 	const lambdaEnvironment: Record<string, string> = {
 		NODE_ENV: app.stage,
@@ -27,6 +28,7 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 		DB_PORT: database.clusterEndpoint.port.toString(),
 		DB_USER: databaseSecret.secretValueFromJson("username").toString(),
 		DB_PASS: databaseSecret.secretValueFromJson("password").toString(),
+		DB_MIGRATION_PASS: dbMigrationPass,
 		GOOGLE_CLIENT_ID: googleClientId,
 		GOOGLE_REDIRECT_URL: googleRedirectUrl,
 	};

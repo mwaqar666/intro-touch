@@ -28,6 +28,10 @@ export class UserEntity extends BaseEntity<UserEntity> {
 	@Column({ type: DataType.STRING(50) })
 	public userLastName: string;
 
+	@AllowNull(false)
+	@Column({ type: DataType.STRING(255) })
+	public userPicture: string;
+
 	@Unique
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(50) })

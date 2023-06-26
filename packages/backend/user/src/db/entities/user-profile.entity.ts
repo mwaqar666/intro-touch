@@ -1,8 +1,9 @@
+import { PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserEntity } from "@/backend/user/db/entities/user.entity";
 
 @Scopes(() => ({
@@ -22,8 +23,8 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 
 	@ForeignKey(() => UserEntity)
 	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
-	public readonly userProfileUserId: string;
+	@Column({ type: DataType.INTEGER })
+	public readonly userProfileUserId: number;
 
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(50) })
@@ -95,4 +96,11 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 		foreignKey: "userProfileUserId",
 	})
 	public userProfileUser: UserEntity;
+
+	@HasMany(() => PlatformProfileEntity, {
+		as: "userProfilePlatformProfiles",
+		sourceKey: "userProfileId",
+		foreignKey: "platformProfileProfileId",
+	})
+	public userProfilePlatformProfiles: Array<PlatformProfileEntity>;
 }

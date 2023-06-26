@@ -1,4 +1,4 @@
-import type { IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { IControllerAuthRequest, IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import type { AvailableAuthorizers, Delegate, ExclusiveUnion, Optional } from "@/stacks/types";
 import type { Context } from "aws-lambda/handler";
 import type { RouteMethod } from "@/backend-core/router/enum";
@@ -38,7 +38,7 @@ export interface ISimpleRoute {
 	 * If the handler is in packages/backend/user/src/controllers/user.controller, then the handler property will be like:
 	 * user/src/controllers/user-controller.handler
 	 */
-	handler: Delegate<[IControllerRequest, Context], Promise<ISuccessfulResponse<unknown>>>;
+	handler: Delegate<[IControllerRequest | IControllerAuthRequest, Context], Promise<ISuccessfulResponse<unknown>>>;
 
 	/**
 	 * Authorizer to apply to this route. This takes precedence over the authorizer that is applied on the group

@@ -2,8 +2,10 @@ import type { IMigration } from "@/backend-core/database/interface";
 import type { QueryInterface } from "sequelize";
 import { DataType } from "sequelize-typescript";
 
-export class UserMigration implements IMigration {
-	public async down(queryInterface: QueryInterface): Promise<void> {
+export class CreateUsersTable implements IMigration {
+	public timestamp = 1687790919506;
+
+	public async up(queryInterface: QueryInterface): Promise<void> {
 		await queryInterface.createTable("users", {
 			userId: {
 				primaryKey: true,
@@ -15,15 +17,31 @@ export class UserMigration implements IMigration {
 				allowNull: false,
 				type: DataType.STRING(50),
 			},
-			userCognitoId: {
+			userFirstName: {
+				allowNull: false,
+				type: DataType.STRING(50),
+			},
+			userLastName: {
+				allowNull: false,
+				type: DataType.STRING(50),
+			},
+			userPicture: {
+				allowNull: false,
+				type: DataType.STRING(255),
+			},
+			userEmail: {
 				unique: true,
+				allowNull: false,
+				type: DataType.STRING(50),
+			},
+			userPassword: {
 				allowNull: true,
 				type: DataType.STRING(50),
 			},
 			userIsActive: {
 				defaultValue: true,
 				allowNull: false,
-				type: DataType.STRING(50),
+				type: DataType.BOOLEAN,
 			},
 			userCreatedAt: {
 				allowNull: false,
@@ -40,7 +58,7 @@ export class UserMigration implements IMigration {
 		});
 	}
 
-	public async up(queryInterface: QueryInterface): Promise<void> {
+	public async down(queryInterface: QueryInterface): Promise<void> {
 		await queryInterface.dropTable("users");
 	}
 }

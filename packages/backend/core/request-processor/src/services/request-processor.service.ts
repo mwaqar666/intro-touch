@@ -1,30 +1,35 @@
+import type { UserEntity } from "@/backend/user/db/entities";
+import { AuthTokenConst } from "@/backend-core/authentication/const";
+import type { AuthRequestService } from "@/backend-core/authentication/services";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/interface";
 import type { ApiRequest, ApiResponse, Nullable } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
-import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
-import type { IRequestProcessor, IResponseHandler } from "@/backend-core/request-processor/interface";
-import type { IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
+import { ResponseHandler } from "@/backend-core/request-processor/extensions";
+import type { IRequestProcessor } from "@/backend-core/request-processor/interface";
+import type { IControllerAuthRequest, IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
 
 export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
 		// Dependencies
 		@Inject(RouterTokenConst.RouteRegisterToken) private readonly routeRegister: IRouteRegister,
-		@Inject(RequestProcessorTokenConst.ResponseHandler) private readonly responseHandler: IResponseHandler,
+		@Inject(AuthTokenConst.AuthRequestServiceToken) private readonly authRequestService: AuthRequestService,
 	) {}
 
 	public async processRequest(apiRequest: ApiRequest, context: Context): Promise<ApiResponse> {
-		const matchedRoute: IResolvedRoute = this.routeRegister.resolveRoute(apiRequest);
-
-		const request: IControllerRequest = this.prepareRequestObject(apiRequest, matchedRoute);
-
 		try {
+			const matchedRoute: IResolvedRoute = this.routeRegister.resolveRoute(apiRequest);
+
+			let request: IControllerRequest | IControllerAuthRequest<UserEntity> = this.prepareRequestObject(apiRequest, matchedRoute);
+
+			request = await this.authRequestService.authenticateRequestIfApplicable(request, context, matchedRoute.authorizer);
+
 			const response: IControllerResponse = await matchedRoute.handler(request, context);
 
 			return this.prepareResponseObject(response);
 		} catch (exception) {
-			const response: IControllerResponse = this.responseHandler.handleException(exception);
+			const response: IControllerResponse = ResponseHandler.handleException(exception);
 
 			return this.prepareResponseObject(response);
 		}

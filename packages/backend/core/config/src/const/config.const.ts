@@ -8,6 +8,7 @@ export class ConfigConst {
 	public static readonly DB_PORT = "DB_PORT";
 	public static readonly DB_USER = "DB_USER";
 	public static readonly DB_PASS = "DB_PASS";
+	public static readonly DB_MIGRATION_PASS = "DB_MIGRATION_PASS";
 
 	public static readonly GOOGLE_CLIENT_ID = "GOOGLE_CLIENT_ID";
 	public static readonly GOOGLE_REDIRECT_URL = "GOOGLE_REDIRECT_URL";

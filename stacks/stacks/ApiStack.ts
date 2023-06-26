@@ -1,6 +1,6 @@
 import type { StackContext } from "sst/constructs";
 import { Api, Function, use } from "sst/constructs";
-import type { ApiFunctionRouteProps } from "sst/constructs/Api";
+import type { ApiFunctionRouteProps, ApiProps } from "sst/constructs/Api";
 import { routeRegisterHandler } from "@/backend-core/ignition/handlers/route-register-handler";
 import type { IStackRoute } from "@/backend-core/router/interface";
 import { Config } from "@/stacks/config";
@@ -36,13 +36,13 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 
 	const stackRoutes: Array<IStackRoute> = await routeRegisterHandler();
 
-	const api: Api = new Api(stack, ApiConst.ApiId(app.stage), {
+	const apiRouteProps: ApiProps = {
 		routes: Object.fromEntries(
 			stackRoutes.map((stackRoute: IStackRoute): [string, ApiFunctionRouteProps<AvailableAuthorizers>] => {
 				const methodAndPath = `${stackRoute.method} ${stackRoute.path}`;
 				const routeHandler: ApiFunctionRouteProps<AvailableAuthorizers> = {
 					type: "function",
-					authorizer: stackRoute.authorizer,
+					authorizer: "none",
 					cdk: {
 						function: apiGatewayHandlerLambda,
 					},
@@ -51,10 +51,11 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 				return [methodAndPath, routeHandler];
 			}),
 		),
-		customDomain: {
-			domainName,
-		},
-	});
+	};
+
+	if (domainName) apiRouteProps.customDomain = { domainName };
+
+	const api: Api = new Api(stack, ApiConst.ApiId(app.stage), apiRouteProps);
 
 	auth.attach(stack, {
 		api,

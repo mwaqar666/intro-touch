@@ -1,7 +1,8 @@
+import type { Nullable } from "@/stacks/types";
 import type { IAppException } from "@/backend-core/request-processor/types";
 
-export class Exception extends Error {
-	public constructor(public override readonly message: string, public readonly code: number) {
+export class Exception<T> extends Error {
+	public constructor(message: string, public readonly code: number, public readonly context: Nullable<T> = null) {
 		super(message);
 	}
 
@@ -9,6 +10,7 @@ export class Exception extends Error {
 		return {
 			code: this.code,
 			message: this.message,
+			context: this.context,
 		};
 	}
 }

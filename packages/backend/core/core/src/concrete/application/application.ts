@@ -1,3 +1,4 @@
+import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { Constructable, Delegate } from "@/stacks/types";
 import type { IContainer } from "iocc";
 import { ContainerFactory } from "iocc";
@@ -79,19 +80,19 @@ export class Application implements IApplication {
 	private validateContainerPresence(): void {
 		if (this.container) return;
 
-		throw new Error('Application container has not been initialized. Run the "registerContainer" method on the application instance to register the container');
+		throw new InternalServerException('Application container has not been initialized. Run the "registerContainer" method on the application instance to register the container');
 	}
 
 	private validateModuleLifeCycleExecutedState(): void {
 		if (this.lifeCycleRan) return;
 
-		throw new Error(`Module life cycle has not been executed. Run the "runModuleLifeCycle" method on the application instance to execute the registered modules' lifecycle`);
+		throw new InternalServerException(`Module life cycle has not been executed. Run the "runModuleLifeCycle" method on the application instance to execute the registered modules' lifecycle`);
 	}
 
 	private validateModuleAbsence(appModule: Constructable<IModule>): void {
 		const modulePresent: boolean = this.registeredModuleNames.includes(appModule.name);
 		if (!modulePresent) return;
 
-		throw new Error(`Module "${appModule.name}" has already been registered`);
+		throw new InternalServerException(`Module "${appModule.name}" has already been registered`);
 	}
 }

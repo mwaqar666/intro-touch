@@ -1,3 +1,4 @@
+import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { ApiRequest, Optional } from "@/stacks/types";
 import type { RouteMethod } from "@/backend-core/router/enum";
 import type { IPathParams, IQueryParams, IResolvedRoute, IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend-core/router/interface";
@@ -32,7 +33,7 @@ export class RouteRegisterService implements IRouteRegister {
 				queryParams: this.getTypedQueryParams(apiRequest),
 			};
 
-		throw new Error(`Route with path: "${method} ${path}" not found!`);
+		throw new InternalServerException(`Route with path: "${apiRequest.routeKey}" not found!`);
 	}
 
 	private getTypedPathParams(apiRequest: ApiRequest): IPathParams {

@@ -15,6 +15,7 @@ export interface IDatabaseConfig {
 	readonly databasePort: number;
 	readonly databaseUser: string;
 	readonly databasePass: string;
+	readonly databaseMigrationPass: string;
 }
 
 export interface IConfig {

@@ -8,16 +8,16 @@ import type { CreateOrUpdateOptions, DeleteOptions, EntityKeyValues, EntityResol
 export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 	protected constructor(protected readonly concreteEntity: EntityType<TEntity>) {}
 
-	public async find(findOptions: ScopedFinderOptions<TEntity>): Promise<Nullable<TEntity>> {
+	public async findOne(findOptions: ScopedFinderOptions<TEntity>): Promise<Nullable<TEntity>> {
 		findOptions = this.providedOrDefaultScopedFindOptions(findOptions);
 
 		return await this.concreteEntity.applyScopes<TEntity>(findOptions.scopes).findOne<TEntity>(findOptions.findOptions);
 	}
 
-	public async findOrFail(findOptions: ScopedFinderOptions<TEntity>): Promise<TEntity> {
+	public async findOneOrFail(findOptions: ScopedFinderOptions<TEntity>): Promise<TEntity> {
 		findOptions = this.providedOrDefaultScopedFindOptions(findOptions);
 
-		const foundEntity: Nullable<TEntity> = await this.find(findOptions);
+		const foundEntity: Nullable<TEntity> = await this.findOne(findOptions);
 
 		if (foundEntity) return foundEntity;
 
@@ -30,7 +30,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		return await this.concreteEntity.applyScopes<TEntity>(findOptions.scopes).findAll<TEntity>(findOptions.findOptions);
 	}
 
-	public async resolve(entity: EntityResolution<TEntity>, scopes?: EntityScope): Promise<Nullable<TEntity>> {
+	public async resolveOne(entity: EntityResolution<TEntity>, scopes?: EntityScope): Promise<Nullable<TEntity>> {
 		if (typeof entity !== "string" && typeof entity !== "number") return entity;
 
 		const scopedFindOptions: ScopedFinderOptions<TEntity> = this.providedOrDefaultScopedFindOptions({ scopes });
@@ -39,15 +39,15 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 			if (!this.concreteEntity.uuidColumnName) throw new InternalServerException(`Uuid column name not defined on ${this.concreteEntity.name}`);
 
 			scopedFindOptions.findOptions = { where: { [this.concreteEntity.uuidColumnName]: entity } as WhereOptions<TEntity> };
-			return await this.find(scopedFindOptions);
+			return await this.findOne(scopedFindOptions);
 		}
 
 		scopedFindOptions.findOptions = { where: { [this.concreteEntity.primaryKeyAttribute]: entity } as WhereOptions<TEntity> };
-		return await this.find(scopedFindOptions);
+		return await this.findOne(scopedFindOptions);
 	}
 
-	public async resolveOrFail(entity: EntityResolution<TEntity>, scopes?: EntityScope): Promise<TEntity> {
-		const foundEntity: Nullable<TEntity> = await this.resolve(entity, scopes);
+	public async resolveOneOrFail(entity: EntityResolution<TEntity>, scopes?: EntityScope): Promise<TEntity> {
+		const foundEntity: Nullable<TEntity> = await this.resolveOne(entity, scopes);
 
 		if (foundEntity) return foundEntity;
 
@@ -71,24 +71,24 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 
 		const foundEntity: TEntity =
 			"findOptions" in updateOptions
-				? await this.findOrFail({
+				? await this.findOneOrFail({
 						findOptions: updateOptions.findOptions,
 						scopes,
 				  })
-				: await this.resolveOrFail(updateOptions.entity, scopes);
+				: await this.resolveOneOrFail(updateOptions.entity, scopes);
 
 		return foundEntity.update(updateOptions.valuesToUpdate as EntityKeyValues<TEntity>, { transaction });
 	}
 
 	public async findOrCreate(findOrCreateOptions: FindOrCreateOptions<TEntity>): Promise<TEntity> {
 		if ("entity" in findOrCreateOptions && findOrCreateOptions.entity) {
-			const foundEntity: Nullable<TEntity> = await this.resolve(findOrCreateOptions.entity, findOrCreateOptions.scopes);
+			const foundEntity: Nullable<TEntity> = await this.resolveOne(findOrCreateOptions.entity, findOrCreateOptions.scopes);
 
 			if (foundEntity) return foundEntity;
 		}
 
 		if ("findOptions" in findOrCreateOptions && findOrCreateOptions.findOptions) {
-			const foundEntity: Nullable<TEntity> = await this.find({
+			const foundEntity: Nullable<TEntity> = await this.findOne({
 				findOptions: findOrCreateOptions.findOptions,
 				scopes: findOrCreateOptions.scopes,
 			});
@@ -104,13 +104,13 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 
 	public async updateOrCreate(createOrUpdateOptions: CreateOrUpdateOptions<TEntity>): Promise<TEntity> {
 		if ("entity" in createOrUpdateOptions && createOrUpdateOptions.entity) {
-			const foundEntity: Nullable<TEntity> = await this.resolve(createOrUpdateOptions.entity, createOrUpdateOptions.scopes);
+			const foundEntity: Nullable<TEntity> = await this.resolveOne(createOrUpdateOptions.entity, createOrUpdateOptions.scopes);
 
 			if (foundEntity) return await foundEntity.update(createOrUpdateOptions.valuesToUpdate as EntityKeyValues<TEntity>, { transaction: createOrUpdateOptions.transaction });
 		}
 
 		if ("findOptions" in createOrUpdateOptions && createOrUpdateOptions.findOptions) {
-			const foundEntity: Nullable<TEntity> = await this.find({
+			const foundEntity: Nullable<TEntity> = await this.findOne({
 				findOptions: createOrUpdateOptions.findOptions,
 				scopes: createOrUpdateOptions.scopes,
 			});
@@ -126,7 +126,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 
 	public async delete(deleteOptions: DeleteOptions<TEntity>): Promise<boolean> {
 		if ("findOptions" in deleteOptions) {
-			const foundEntity: Nullable<TEntity> = await this.find({
+			const foundEntity: Nullable<TEntity> = await this.findOne({
 				findOptions: deleteOptions.findOptions,
 				scopes: deleteOptions.scopes,
 			});
@@ -139,7 +139,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 			return true;
 		}
 
-		const foundEntity: Nullable<TEntity> = await this.resolve(deleteOptions.entity, deleteOptions.scopes);
+		const foundEntity: Nullable<TEntity> = await this.resolveOne(deleteOptions.entity, deleteOptions.scopes);
 		if (!foundEntity) return false;
 
 		await foundEntity.destroy({

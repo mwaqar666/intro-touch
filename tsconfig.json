@@ -49,6 +49,12 @@
       "@/backend-core/router/*": [
         "packages/backend/core/router/src/*"
       ],
+      "@/backend-core/service-bus/*": [
+        "packages/backend/core/service-bus/src/*"
+      ],
+      "@/backend-core/validation/*": [
+        "packages/backend/core/validation/src/*"
+      ],
       "@/backend/platform/*": [
         "packages/backend/platform/src/*"
       ],

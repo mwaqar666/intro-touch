@@ -1,0 +1,8 @@
+{
+  "name": "@intro-touch/backend-core-service-bus",
+  "version": "0.0.0",
+  "dependencies": {
+    "iocc": "^2.1.4",
+    "rxjs": "^7.8.1"
+  }
+}

@@ -1,3 +1,4 @@
+import { BadRequestException } from "@/backend-core/request-processor/exceptions";
 import type { IAnyObject } from "@/stacks/types";
 import type { ObjectSchema, ValidationResult } from "joi";
 import * as joi from "joi";
@@ -9,7 +10,7 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 	public validateConfig(config: IAnyObject): IConfigValidation {
 		const { error, value }: ValidationResult<IConfigValidation> = this.createValidatorSchema().validate(config);
 
-		if (error) throw new Error(error.message);
+		if (error) throw new BadRequestException(error.message);
 
 		return value;
 	}
@@ -26,6 +27,7 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.DB_PORT]: joi.number().default(5432),
 				[ConfigConst.DB_USER]: joi.string().required(),
 				[ConfigConst.DB_PASS]: joi.string().default(""),
+				[ConfigConst.DB_MIGRATION_PASS]: joi.string().required(),
 
 				[ConfigConst.GOOGLE_CLIENT_ID]: joi.string().required(),
 				[ConfigConst.GOOGLE_REDIRECT_URL]: joi.string().required(),

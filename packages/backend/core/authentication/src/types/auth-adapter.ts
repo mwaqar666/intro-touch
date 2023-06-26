@@ -5,6 +5,9 @@ declare module "sst/node/auth" {
 	export interface SessionTypes {
 		user: {
 			userUuid: string;
+			userFirstName: string;
+			userLastName: string;
+			userEmail: string;
 		};
 	}
 }

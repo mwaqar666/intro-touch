@@ -8,6 +8,8 @@ export interface IAnyObject {
 	[key: string]: any;
 }
 
+export type PossiblePromise<T> = T | Promise<T>;
+
 export type Delegate<TArgs extends Array<unknown> = Array<void>, TReturn = void> = (...args: TArgs) => TReturn;
 
 export type Action<TArgs extends Array<unknown> = Array<void>> = Delegate<TArgs>;

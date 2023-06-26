@@ -1,6 +1,7 @@
 import { Application } from "@/backend-core/core/concrete/application";
 import type { IApplication } from "@/backend-core/core/contracts/application";
 import type { IModule } from "@/backend-core/core/contracts/module";
+import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { Constructable, Delegate } from "@/stacks/types";
 import type { IContainer } from "iocc";
 import { ModuleRegister } from "@/backend-core/ignition/module.register";
@@ -35,13 +36,13 @@ export class IntroTouch {
 	}
 
 	public async hotExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
-		if (!this.bootstrapped) throw new Error("Application not bootstrapped");
+		if (!this.bootstrapped) throw new InternalServerException("Application not bootstrapped");
 
 		return await this.application.hotExecuteWithinApplicationContext<T>(executionContext);
 	}
 
 	public async coldExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
-		if (!this.bootstrapped) throw new Error("Application not bootstrapped");
+		if (!this.bootstrapped) throw new InternalServerException("Application not bootstrapped");
 
 		return await this.application.coldExecuteWithinApplicationContext<T>(executionContext);
 	}

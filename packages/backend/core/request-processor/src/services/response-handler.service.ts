@@ -2,23 +2,26 @@ import { Exception } from "@/backend-core/request-processor/exceptions";
 import type { IResponseHandler } from "@/backend-core/request-processor/interface";
 import type { IAppException, IError, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
-export class ResponseHandlerExtension implements IResponseHandler {
+export class ResponseHandlerService implements IResponseHandler {
 	public handleException(exception: unknown): IFailedResponse<IError> {
 		if (exception instanceof Exception) {
-			const { message, code }: IAppException = exception.toError();
+			const { message, code, context }: IAppException = exception.toError();
 			return this.sendFailedResponse(
 				{
 					message,
+					context,
 				},
 				code,
 			);
 		}
 
-		const error: IError = {
-			message: (<Error>exception).message,
-		};
-
-		return this.sendFailedResponse(error, 500);
+		return this.sendFailedResponse(
+			{
+				message: (<Error>exception).message,
+				context: null,
+			},
+			500,
+		);
 	}
 
 	public sendResponse<T>(data: T): ISuccessfulResponse<T>;

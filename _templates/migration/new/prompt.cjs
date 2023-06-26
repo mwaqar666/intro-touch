@@ -7,4 +7,9 @@ module.exports = [
 		name: "name",
 		message: "Migration name",
 	},
+	{
+		type: "input",
+		name: "migrationPath",
+		message: "Path from packages",
+	},
 ];

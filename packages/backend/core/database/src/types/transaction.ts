@@ -10,12 +10,11 @@ export interface IRunningTransaction {
 	createdOnThisLevel: boolean;
 }
 
-export type TransactionCallback<T> = (runningTransaction: IRunningTransaction) => Promise<T>;
+export type TransactionCallback<T> = (runningTransaction: ITransactionStore) => Promise<T>;
 
 export type TransactionError = Delegate<[unknown], Promise<void>>;
 
 export interface ITransactionalOperation<TransactionReturn> {
-	withTransaction?: IRunningTransaction;
-	transactionCallback: TransactionCallback<TransactionReturn>;
-	failureCallback?: TransactionError;
+	operation: TransactionCallback<TransactionReturn>;
+	failure?: TransactionError;
 }

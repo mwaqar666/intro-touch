@@ -18,9 +18,10 @@ export interface IFail<E> {
 
 export interface IError {
 	message: string;
+	context: Nullable<unknown>;
 }
 
 export type ISuccessfulResponse<T> = IAppResponse<ISuccess<T>>;
 export type IFailedResponse<E extends IError> = IAppResponse<IFail<E>>;
 
-export type IControllerResponse<R = unknown> = ISuccessfulResponse<R> | IFailedResponse<IError>;
+export type IControllerResponse<R = unknown, E extends IError = IError> = ISuccessfulResponse<R> | IFailedResponse<E>;
