@@ -37,7 +37,7 @@ export class MigrationRunnerService implements IMigrationRunner {
 		this.umzug = new Umzug<QueryInterface>({
 			migrations: this.gatherApplicationMigrations(),
 			context: sequelize.getQueryInterface(),
-			storage: new SequelizeStorage({ sequelize }),
+			storage: new SequelizeStorage({ sequelize, tableName: "migrations" }),
 			logger: console,
 		});
 	}
