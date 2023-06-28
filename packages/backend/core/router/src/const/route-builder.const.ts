@@ -1,11 +1,10 @@
-import type { IRouteGroup } from "@/backend-core/router/interface";
+import type { IBuiltGroupRoute } from "@/backend-core/router/interface";
 
 export class RouteBuilderConst {
-	public static readonly DefaultRouteGroup: IRouteGroup = {
+	public static readonly DefaultRouteGroup: IBuiltGroupRoute = {
+		guards: [],
 		prefix: "/",
-		authorizer: "none",
+		requestInterceptors: [],
+		responseInterceptors: [],
 	};
-
-	public static readonly RouteSegmentStart = "{";
-	public static readonly RouteSegmentEnd = "}";
 }

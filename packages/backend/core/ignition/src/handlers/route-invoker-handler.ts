@@ -13,7 +13,7 @@ export const routeInvokerHandler = async (request: ApiRequest, context: Context)
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 
 	return await introTouch.hotExecuteWithinApplicationContext(async (container: IContainer): Promise<ApiResponse> => {
-		const requestProcessor: IRequestProcessor = container.resolve(RequestProcessorTokenConst.RequestProcessor);
+		const requestProcessor: IRequestProcessor = container.resolve(RequestProcessorTokenConst.RequestProcessorToken);
 
 		const apiHandler = ApiHandler(async (request: ApiRequest, context: Context): Promise<ApiResponse> => {
 			return await requestProcessor.processRequest(request, context);

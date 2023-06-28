@@ -1,2 +1,2 @@
 export * from "./auth-adapter-resolver.service";
-export * from "./auth-request.service";
+export * from "./guard-resolver.service";

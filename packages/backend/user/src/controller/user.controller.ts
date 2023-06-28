@@ -1,8 +1,9 @@
 import { Controller } from "@/backend-core/core/decorators";
 import { ResponseHandler } from "@/backend-core/request-processor/extensions";
-import type { IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { IControllerAuthRequest, IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
+import type { UserEntity } from "@/backend/user/db/entities";
 import { UserService } from "@/backend/user/services";
 
 @Controller
@@ -12,7 +13,7 @@ export class UserController {
 		@Inject(UserService) private readonly userService: UserService,
 	) {}
 
-	public async getUserList(request: IControllerRequest, context: Context): Promise<ISuccessfulResponse<string>> {
+	public async getUserList(request: IControllerAuthRequest<UserEntity>, context: Context): Promise<ISuccessfulResponse<string>> {
 		await this.userService.getUserList(request, context);
 
 		return ResponseHandler.sendResponse("None");

@@ -17,7 +17,14 @@ export interface IFail<E> {
 }
 
 export interface IError {
+	/**
+	 * Error message
+	 */
 	message: string;
+
+	/**
+	 * Error details
+	 */
 	context: Nullable<unknown>;
 }
 

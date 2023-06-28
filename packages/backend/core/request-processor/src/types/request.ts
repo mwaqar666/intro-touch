@@ -7,8 +7,8 @@ export interface IRequestBody<T> {
 	body: Nullable<T>;
 }
 
-export type IAppRequest<T, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> = Omit<ApiRequest, "body"> & IRequestBody<T> & IRouteParams<P, Q>;
+export interface IAppRequest<T, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> extends Omit<ApiRequest, "body">, IRequestBody<T>, IRouteParams<P, Q> {}
 
 export type IControllerRequest<T = unknown, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> = IAppRequest<T, P, Q>;
 
-export type IControllerAuthRequest<E extends BaseEntity<E> = BaseEntity<any>, T = unknown, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> = IControllerRequest<T, P, Q> & IAuthParams<E>;
+export interface IControllerAuthRequest<E extends BaseEntity<E> = BaseEntity<any>, T = unknown, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> extends IControllerRequest<T, P, Q>, IAuthParams<E> {}

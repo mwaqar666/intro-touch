@@ -1,3 +1,4 @@
+import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
@@ -13,13 +14,12 @@ export class UserRouter implements IRouter {
 		return [
 			{
 				prefix: "/user",
-				authorizer: "none",
 				routes: [
 					{
 						path: "/",
 						method: RouteMethod.GET,
 						handler: this.userController.getUserList,
-						authorizer: "auth",
+						guards: [AuthRequestGuard],
 					},
 					{
 						path: "/{userId}",

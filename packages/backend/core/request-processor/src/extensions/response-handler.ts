@@ -5,7 +5,7 @@ import type { IError, IFailedResponse, ISuccessfulResponse } from "@/backend-cor
 
 export class ResponseHandler {
 	public static handleException(exception: unknown): IFailedResponse<IError> {
-		const responseHandler: IResponseHandler = AppContainer.resolve(RequestProcessorTokenConst.ResponseHandler);
+		const responseHandler: IResponseHandler = AppContainer.resolve(RequestProcessorTokenConst.ResponseHandlerToken);
 
 		return responseHandler.handleException(exception);
 	}
@@ -13,7 +13,7 @@ export class ResponseHandler {
 	public static sendResponse<T>(data: T): ISuccessfulResponse<T>;
 	public static sendResponse<T>(data: T, code: number): ISuccessfulResponse<T>;
 	public static sendResponse<T>(data: T, code = 200): ISuccessfulResponse<T> {
-		const responseHandler: IResponseHandler = AppContainer.resolve(RequestProcessorTokenConst.ResponseHandler);
+		const responseHandler: IResponseHandler = AppContainer.resolve(RequestProcessorTokenConst.ResponseHandlerToken);
 
 		return responseHandler.sendResponse(data, code);
 	}
@@ -21,7 +21,7 @@ export class ResponseHandler {
 	public static sendFailedResponse<T extends IError>(data: T): IFailedResponse<T>;
 	public static sendFailedResponse<T extends IError>(data: T, code: number): IFailedResponse<T>;
 	public static sendFailedResponse<T extends IError>(data: T, code = 500): IFailedResponse<T> {
-		const responseHandler: IResponseHandler = AppContainer.resolve(RequestProcessorTokenConst.ResponseHandler);
+		const responseHandler: IResponseHandler = AppContainer.resolve(RequestProcessorTokenConst.ResponseHandlerToken);
 
 		return responseHandler.sendFailedResponse(data, code);
 	}

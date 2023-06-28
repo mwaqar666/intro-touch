@@ -1,31 +1,36 @@
-import type { UserEntity } from "@/backend/user/db/entities";
 import { AuthTokenConst } from "@/backend-core/authentication/const";
-import type { AuthRequestService } from "@/backend-core/authentication/services";
+import type { IGuardResolver } from "@/backend-core/authentication/interface";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/interface";
 import type { ApiRequest, ApiResponse, Nullable } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
+import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
 import { ResponseHandler } from "@/backend-core/request-processor/extensions";
-import type { IRequestProcessor } from "@/backend-core/request-processor/interface";
-import type { IControllerAuthRequest, IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
+import type { IInterceptorResolver, IRequestProcessor } from "@/backend-core/request-processor/interface";
+import type { IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
 
 export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
 		// Dependencies
 		@Inject(RouterTokenConst.RouteRegisterToken) private readonly routeRegister: IRouteRegister,
-		@Inject(AuthTokenConst.AuthRequestServiceToken) private readonly authRequestService: AuthRequestService,
+		@Inject(AuthTokenConst.GuardResolverToken) private readonly guardResolver: IGuardResolver,
+		@Inject(RequestProcessorTokenConst.InterceptorResolverToken) private readonly interceptorResolver: IInterceptorResolver,
 	) {}
 
 	public async processRequest(apiRequest: ApiRequest, context: Context): Promise<ApiResponse> {
 		try {
 			const matchedRoute: IResolvedRoute = this.routeRegister.resolveRoute(apiRequest);
 
-			let request: IControllerRequest | IControllerAuthRequest<UserEntity> = this.prepareRequestObject(apiRequest, matchedRoute);
+			let request: IControllerRequest = this.prepareRequestObject(apiRequest, matchedRoute);
 
-			request = await this.authRequestService.authenticateRequestIfApplicable(request, context, matchedRoute.authorizer);
+			await this.guardResolver.runRouteGuards(request, context, matchedRoute.guards);
 
-			const response: IControllerResponse = await matchedRoute.handler(request, context);
+			request = await this.interceptorResolver.runRouteRequestInterceptors(request, context, matchedRoute.requestInterceptors);
+
+			let response: IControllerResponse = await matchedRoute.handler(request, context);
+
+			response = await this.interceptorResolver.runRouteResponseInterceptors(response, context, matchedRoute.responseInterceptors);
 
 			return this.prepareResponseObject(response);
 		} catch (exception) {

@@ -1,16 +1,14 @@
 import { AbstractModule } from "@/backend-core/core/concrete/module";
 import { GoogleAuthAdapter } from "@/backend-core/authentication/adapters";
 import { AuthTokenConst } from "@/backend-core/authentication/const";
-import { AuthRequestInterceptor } from "@/backend-core/authentication/interceptors";
 import type { IAuthAdapter, IAuthAdapterResolver } from "@/backend-core/authentication/interface";
-import { AuthAdapterResolverService, AuthRequestService } from "@/backend-core/authentication/services";
+import { AuthAdapterResolverService, GuardResolverService } from "@/backend-core/authentication/services";
 import type { IGoogleAdapter } from "@/backend-core/authentication/types";
 
 export class AuthenticationModule extends AbstractModule {
 	public override async register(): Promise<void> {
 		// Auth interceptors & services
-		this.container.registerSingleton(AuthTokenConst.AuthRequestServiceToken, AuthRequestService);
-		this.container.registerSingleton(AuthTokenConst.AuthRequestInterceptorToken, AuthRequestInterceptor);
+		this.container.registerSingleton(AuthTokenConst.GuardResolverToken, GuardResolverService);
 
 		// Authentication adapters
 		this.container.registerSingleton(AuthTokenConst.GoogleAdapterToken, GoogleAuthAdapter);

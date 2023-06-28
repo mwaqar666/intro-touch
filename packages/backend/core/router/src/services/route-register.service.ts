@@ -1,11 +1,11 @@
 import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { ApiRequest, Optional } from "@/stacks/types";
 import type { RouteMethod } from "@/backend-core/router/enum";
-import type { IPathParams, IQueryParams, IResolvedRoute, IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend-core/router/interface";
+import type { IBuiltRoute, IPathParams, IQueryParams, IResolvedRoute, IRoute, IRouter, IRouteRegister } from "@/backend-core/router/interface";
 
 export class RouteRegisterService implements IRouteRegister {
 	private moduleRoutes: Array<IRoute> = [];
-	private builtRoutes: Array<ISimpleRoute> = [];
+	private builtRoutes: Array<IBuiltRoute> = [];
 
 	public registerRouter(router: IRouter): void {
 		this.moduleRoutes.push(...router.registerRoutes());
@@ -15,14 +15,14 @@ export class RouteRegisterService implements IRouteRegister {
 		return this.moduleRoutes;
 	}
 
-	public registerBuiltRoutes(routes: Array<ISimpleRoute>): void {
+	public registerBuiltRoutes(routes: Array<IBuiltRoute>): void {
 		this.builtRoutes = routes;
 	}
 
 	public resolveRoute(apiRequest: ApiRequest): IResolvedRoute {
-		const [method, path] = <[RouteMethod, string]>apiRequest.routeKey.split(" ");
+		const [method, path]: [RouteMethod, string] = <[RouteMethod, string]>apiRequest.routeKey.split(" ");
 
-		const matchedRoute: Optional<ISimpleRoute> = this.builtRoutes.find((builtRoute: ISimpleRoute): boolean => {
+		const matchedRoute: Optional<IBuiltRoute> = this.builtRoutes.find((builtRoute: IBuiltRoute): boolean => {
 			return builtRoute.method === method && builtRoute.path === path;
 		});
 

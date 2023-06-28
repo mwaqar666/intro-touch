@@ -1,5 +1,7 @@
-import type { IControllerAuthRequest, IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
-import type { AvailableAuthorizers, Delegate, ExclusiveUnion, Optional } from "@/stacks/types";
+import type { IGuard } from "@/backend-core/authentication/interface";
+import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
+import type { IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { Constructable, Delegate, ExclusiveUnion, Optional } from "@/stacks/types";
 import type { Context } from "aws-lambda/handler";
 import type { RouteMethod } from "@/backend-core/router/enum";
 
@@ -15,12 +17,22 @@ export interface IGroupedRoute {
 	routes: Array<IRoute>;
 
 	/**
-	 * Authorizers to apply for this group of routes
+	 * Guards to apply to this group of route
 	 */
-	authorizer?: AvailableAuthorizers;
+	guards?: Array<Constructable<IGuard, Array<any>>>;
+
+	/**
+	 * Request interceptors to apply for this group of routes
+	 */
+	requestInterceptors?: Array<Constructable<IRequestInterceptor, Array<any>>>;
+
+	/**
+	 * Response interceptors to apply for this group of routes
+	 */
+	responseInterceptors?: Array<Constructable<IResponseInterceptor, Array<any>>>;
 }
 
-export interface ISimpleRoute {
+export interface ISimpleRoute<T extends IControllerRequest = IControllerRequest> {
 	/**
 	 * Route path
 	 */
@@ -32,19 +44,34 @@ export interface ISimpleRoute {
 	method: RouteMethod;
 
 	/**
-	 * Route handler that will be inside packages/backend
-	 *
-	 * Example:
-	 * If the handler is in packages/backend/user/src/controllers/user.controller, then the handler property will be like:
-	 * user/src/controllers/user-controller.handler
+	 * Route handler that will be called when the route is invoked
 	 */
-	handler: Delegate<[IControllerRequest | IControllerAuthRequest, Context], Promise<ISuccessfulResponse<unknown>>>;
+	handler: Delegate<[T, Context], Promise<ISuccessfulResponse<unknown>>>;
 
 	/**
-	 * Authorizer to apply to this route. This takes precedence over the authorizer that is applied on the group
+	 * Guards to apply to this group of route
 	 */
-	authorizer?: AvailableAuthorizers;
+	guards?: Array<Constructable<IGuard, Array<any>>>;
+
+	/**
+	 * Request interceptors to apply for this group of routes
+	 */
+	requestInterceptors?: Array<Constructable<IRequestInterceptor, Array<any>>>;
+
+	/**
+	 * Response interceptors to apply for this group of routes
+	 */
+	responseInterceptors?: Array<Constructable<IResponseInterceptor, Array<any>>>;
 }
+
+export interface IStackRoute {
+	path: string;
+	method: RouteMethod;
+}
+
+export type IBuiltRoute = Required<ISimpleRoute>;
+
+export type IBuiltGroupRoute = Required<Omit<IGroupedRoute, "routes">>;
 
 export type IRoute = ExclusiveUnion<[ISimpleRoute, IGroupedRoute]>;
 
@@ -61,7 +88,7 @@ export interface IRouteParams<P extends IPathParams = IPathParams, Q extends IQu
 	queryParams: Q;
 }
 
-export interface IResolvedRoute extends ISimpleRoute, IRouteParams {}
+export interface IResolvedRoute extends IBuiltRoute, IRouteParams {}
 
 export interface IRouter {
 	registerRoutes(): Array<IRoute>;

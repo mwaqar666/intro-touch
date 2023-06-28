@@ -1,4 +1,4 @@
-import type { ISimpleRoute, IStackRoute, IStackRouter } from "@/backend-core/router/interface";
+import type { IBuiltRoute, IStackRoute, IStackRouter } from "@/backend-core/router/interface";
 
 export class StackRouterService implements IStackRouter {
 	private stackRoutes: Array<IStackRoute>;
@@ -7,13 +7,13 @@ export class StackRouterService implements IStackRouter {
 		return this.stackRoutes;
 	}
 
-	public prepareApiStackRoutes(builtRoutes: Array<ISimpleRoute>): void {
+	public prepareApiStackRoutes(builtRoutes: Array<IBuiltRoute>): void {
 		if (this.stackRoutes) return;
 
 		this.stackRoutes = this.prepareRoutes(builtRoutes);
 	}
 
-	private prepareRoutes(simpleRoutes: Array<ISimpleRoute>): Array<IStackRoute> {
-		return simpleRoutes.map(({ path, method }: ISimpleRoute): IStackRoute => ({ path, method }));
+	private prepareRoutes(simpleRoutes: Array<IBuiltRoute>): Array<IStackRoute> {
+		return simpleRoutes.map(({ path, method }: IBuiltRoute): IStackRoute => ({ path, method }));
 	}
 }

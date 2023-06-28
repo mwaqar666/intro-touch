@@ -1,17 +1,12 @@
-import type { ApiRequest, AvailableAuthorizers } from "@/stacks/types";
-import type { IResolvedRoute, IRoute, IRouter, ISimpleRoute } from "@/backend-core/router/interface/route";
+import type { ApiRequest } from "@/stacks/types";
+import type { IBuiltRoute, IResolvedRoute, IRoute, IRouter } from "@/backend-core/router/interface/route";
 
 export interface IRouteRegister {
 	registerRouter(routes: IRouter): void;
 
-	registerBuiltRoutes(routes: Array<ISimpleRoute>): void;
+	registerBuiltRoutes(routes: Array<IBuiltRoute>): void;
 
 	getRegisteredRoutes(): Array<IRoute>;
 
 	resolveRoute(apiRequest: ApiRequest): IResolvedRoute;
-}
-
-export interface IRouteGroup {
-	prefix: string;
-	authorizer: AvailableAuthorizers;
 }
