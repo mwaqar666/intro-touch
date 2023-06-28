@@ -14,12 +14,12 @@ export class UserRouter implements IRouter {
 		return [
 			{
 				prefix: "/user",
+				guards: [AuthRequestGuard],
 				routes: [
 					{
 						path: "/",
 						method: RouteMethod.GET,
 						handler: this.userController.getUserList as any,
-						guards: [AuthRequestGuard],
 					},
 					{
 						path: "/{userId}",

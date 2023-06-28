@@ -7,6 +7,7 @@ export interface IAppConfig {
 	readonly env: string;
 	readonly name: string;
 	readonly version: string;
+	readonly key: string;
 }
 
 export interface IDatabaseConfig {
@@ -19,7 +20,7 @@ export interface IDatabaseConfig {
 }
 
 export interface IConfig {
-	app: IAppConfig;
-	auth: IAuthConfig;
-	database: IDatabaseConfig;
+	readonly app: IAppConfig;
+	readonly auth: IAuthConfig;
+	readonly database: IDatabaseConfig;
 }

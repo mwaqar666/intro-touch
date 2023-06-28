@@ -13,6 +13,7 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				env: EnvExtractor.env(schema, ConfigConst.NODE_ENV),
 				name: EnvExtractor.env(schema, ConfigConst.APP_NAME),
 				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
+				key: EnvExtractor.env(schema, ConfigConst.APP_KEY),
 			},
 			auth: {
 				googleClientId: EnvExtractor.env(schema, ConfigConst.GOOGLE_CLIENT_ID),

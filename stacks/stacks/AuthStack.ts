@@ -15,6 +15,7 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 	const { database, databaseName, databaseSecret }: IDatabaseStack = use(DatabaseStack);
 
 	const appVersion: string = Config.get("APP_VERSION");
+	const appKey: string = Config.get("APP_KEY");
 	const googleClientId: string = Config.get("GOOGLE_CLIENT_ID");
 	const googleRedirectUrl: string = Config.get("GOOGLE_REDIRECT_URL");
 	const dbMigrationPass: string = Config.get("DB_MIGRATION_PASS");
@@ -23,6 +24,7 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 		NODE_ENV: app.stage,
 		APP_NAME: app.name,
 		APP_VERSION: appVersion,
+		APP_KEY: appKey,
 		DB_NAME: databaseName,
 		DB_HOST: database.clusterEndpoint.hostname,
 		DB_PORT: database.clusterEndpoint.port.toString(),

@@ -13,10 +13,10 @@ export class UserController {
 		@Inject(UserService) private readonly userService: UserService,
 	) {}
 
-	public async getUserList(request: IControllerAuthRequest<UserEntity>, context: Context): Promise<ISuccessfulResponse<string>> {
-		await this.userService.getUserList(request, context);
+	public async getUserList(request: IControllerAuthRequest<UserEntity>, context: Context): Promise<ISuccessfulResponse<Array<UserEntity>>> {
+		const userList: Array<UserEntity> = await this.userService.getUserList(request, context);
 
-		return ResponseHandler.sendResponse("None");
+		return ResponseHandler.sendResponse(userList);
 	}
 
 	public async getUser(request: IControllerRequest, context: Context): Promise<ISuccessfulResponse<string>> {

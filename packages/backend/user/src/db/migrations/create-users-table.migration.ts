@@ -36,7 +36,7 @@ export class CreateUsersTable implements IMigration {
 			},
 			userPassword: {
 				allowNull: true,
-				type: DataType.STRING(50),
+				type: DataType.STRING(255),
 			},
 			userIsActive: {
 				defaultValue: true,

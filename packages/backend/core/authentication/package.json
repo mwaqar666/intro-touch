@@ -5,6 +5,8 @@
     "openid-client": "^5.4.2"
   },
   "dependencies": {
-    "iocc": "^2.1.5"
+    "class-validator": "^0.14.0",
+    "iocc": "^2.1.5",
+    "jose": "^4.14.4"
   }
 }

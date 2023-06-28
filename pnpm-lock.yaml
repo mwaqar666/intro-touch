@@ -65,9 +65,15 @@ importers:
 
   packages/backend/core/authentication:
     dependencies:
+      class-validator:
+        specifier: ^0.14.0
+        version: 0.14.0
       iocc:
         specifier: ^2.1.5
         version: 2.1.5(reflect-metadata@0.1.13)
+      jose:
+        specifier: ^4.14.4
+        version: 4.14.4
     devDependencies:
       openid-client:
         specifier: ^5.4.2
@@ -5317,7 +5323,6 @@ packages:
 
   /jose@4.14.4:
     resolution: { integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g== }
-    dev: true
 
   /js-sdsl@4.3.0:
     resolution: { integrity: sha512-mifzlm2+5nZ+lEcLJMoBK0/IH/bDg8XnJfd/Wq6IP+xoCjLZsTOnV2QpxlVbX9bMnkl5PdEjNtBJ9Cj1NjifhQ== }

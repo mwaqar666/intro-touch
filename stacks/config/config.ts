@@ -5,6 +5,7 @@ export interface IConfig {
 	APP_NAME: "APP_NAME";
 	APP_VERSION: "APP_VERSION";
 	APP_DOMAIN: "APP_DOMAIN";
+	APP_KEY: "APP_KEY";
 
 	// Account
 	AWS_REGION: "AWS_REGION";
