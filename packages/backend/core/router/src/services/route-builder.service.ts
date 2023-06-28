@@ -1,4 +1,6 @@
+import type { IGuard } from "@/backend-core/authentication/interface";
 import { AppContainer } from "@/backend-core/core/extensions";
+import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
 import type { Constructable } from "@/stacks/types";
 import { RouteBuilderConst } from "@/backend-core/router/const";
 import type { IBuiltGroupRoute, IBuiltRoute, IGroupedRoute, IRoute, IRouteBuilder } from "@/backend-core/router/interface";
@@ -23,23 +25,11 @@ export class RouteBuilderService implements IRouteBuilder {
 
 				routeGroupToPrepare.prefix = this.prepareRouteSegments(routeGroupToPrepare.prefix, route.prefix);
 
-				if (route.guards) {
-					this.registerRouteRunnersWithContainer(route.guards);
+				if (route.guards) routeGroupToPrepare.guards = [...routeGroupToPrepare.guards, ...route.guards];
 
-					routeGroupToPrepare.guards = [...routeGroupToPrepare.guards, ...route.guards];
-				}
+				if (route.requestInterceptors) routeGroupToPrepare.requestInterceptors = [...routeGroupToPrepare.requestInterceptors, ...route.requestInterceptors];
 
-				if (route.requestInterceptors) {
-					this.registerRouteRunnersWithContainer(route.requestInterceptors);
-
-					routeGroupToPrepare.requestInterceptors = [...routeGroupToPrepare.requestInterceptors, ...route.requestInterceptors];
-				}
-
-				if (route.responseInterceptors) {
-					this.registerRouteRunnersWithContainer(route.responseInterceptors);
-
-					routeGroupToPrepare.responseInterceptors = [...routeGroupToPrepare.responseInterceptors, ...route.responseInterceptors];
-				}
+				if (route.responseInterceptors) routeGroupToPrepare.responseInterceptors = [...routeGroupToPrepare.responseInterceptors, ...route.responseInterceptors];
 
 				this.prepareRoutes(route.routes, routeGroupToPrepare);
 
@@ -55,23 +45,20 @@ export class RouteBuilderService implements IRouteBuilder {
 				responseInterceptors: [],
 			};
 
-			if (route.guards) {
-				this.registerRouteRunnersWithContainer(route.guards);
+			const routeGuards: Constructable<IGuard, Array<any>>[] = [...routeGroup.guards];
+			if (route.guards) routeGuards.push(...route.guards);
+			this.registerRouteRunnersWithContainer(routeGuards);
+			routeToPrepare.guards = routeGuards;
 
-				routeToPrepare.guards = [...routeGroup.guards, ...route.guards];
-			}
+			const routeRequestInterceptors: Constructable<IRequestInterceptor, Array<any>>[] = [...routeGroup.requestInterceptors];
+			if (route.requestInterceptors) routeRequestInterceptors.push(...route.requestInterceptors);
+			this.registerRouteRunnersWithContainer(routeRequestInterceptors);
+			routeToPrepare.requestInterceptors = routeRequestInterceptors;
 
-			if (route.requestInterceptors) {
-				this.registerRouteRunnersWithContainer(route.requestInterceptors);
-
-				routeToPrepare.requestInterceptors = [...routeGroup.requestInterceptors, ...route.requestInterceptors];
-			}
-
-			if (route.responseInterceptors) {
-				this.registerRouteRunnersWithContainer(route.responseInterceptors);
-
-				routeToPrepare.responseInterceptors = [...routeGroup.responseInterceptors, ...route.responseInterceptors];
-			}
+			const routeResponseInterceptors: Constructable<IResponseInterceptor, Array<any>>[] = [...routeGroup.responseInterceptors];
+			if (route.responseInterceptors) routeResponseInterceptors.push(...route.responseInterceptors);
+			this.registerRouteRunnersWithContainer(routeResponseInterceptors);
+			routeToPrepare.responseInterceptors = routeResponseInterceptors;
 
 			this.builtRoutes.push(routeToPrepare);
 		});
@@ -100,7 +87,7 @@ export class RouteBuilderService implements IRouteBuilder {
 
 	private registerRouteRunnersWithContainer<T>(runners: Array<Constructable<T, Array<any>>>): void {
 		runners.forEach((runner: Constructable<T, Array<any>>): void => {
-			AppContainer.registerSingleton(runner);
+			AppContainer.registerSingleton(runner, { onDuplicate: "ignore" });
 		});
 	}
 }

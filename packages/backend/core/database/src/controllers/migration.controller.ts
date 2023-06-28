@@ -1,3 +1,4 @@
+import { Controller } from "@/backend-core/core/decorators";
 import { ResponseHandler } from "@/backend-core/request-processor/extensions";
 import type { IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import type { IPathParams, IQueryParams } from "@/backend-core/router/interface";
@@ -7,9 +8,10 @@ import { DbTokenConst } from "@/backend-core/database/const";
 import type { IMigrationRunner } from "@/backend-core/database/interface";
 
 export interface IMigrationRevertQueryParams extends IQueryParams {
-	step?: Optional<string>;
+	step: Optional<string>;
 }
 
+@Controller
 export class MigrationController {
 	public constructor(
 		// Dependencies

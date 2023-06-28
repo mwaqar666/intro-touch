@@ -26,12 +26,13 @@ export class RouteRegisterService implements IRouteRegister {
 			return builtRoute.method === method && builtRoute.path === path;
 		});
 
-		if (matchedRoute)
+		if (matchedRoute) {
 			return {
 				...matchedRoute,
 				pathParams: this.getTypedPathParams(apiRequest),
 				queryParams: this.getTypedQueryParams(apiRequest),
 			};
+		}
 
 		throw new InternalServerException(`Route with path: "${apiRequest.routeKey}" not found!`);
 	}

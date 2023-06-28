@@ -12,22 +12,22 @@ export interface IGroupedRoute {
 	prefix: string;
 
 	/**
-	 * Routes that follows the above-mentioned prefix
+	 * Routes that fall under this group's prefix
 	 */
 	routes: Array<IRoute>;
 
 	/**
-	 * Guards to apply to this group of route
+	 * Guards to apply to this group of routes
 	 */
 	guards?: Array<Constructable<IGuard, Array<any>>>;
 
 	/**
-	 * Request interceptors to apply for this group of routes
+	 * Request interceptors to apply to this group of routes
 	 */
 	requestInterceptors?: Array<Constructable<IRequestInterceptor, Array<any>>>;
 
 	/**
-	 * Response interceptors to apply for this group of routes
+	 * Response interceptors to apply to this group of routes
 	 */
 	responseInterceptors?: Array<Constructable<IResponseInterceptor, Array<any>>>;
 }
@@ -44,22 +44,22 @@ export interface ISimpleRoute<T extends IControllerRequest = IControllerRequest>
 	method: RouteMethod;
 
 	/**
-	 * Route handler that will be called when the route is invoked
+	 * Route handler that will be called when this route is invoked
 	 */
 	handler: Delegate<[T, Context], Promise<ISuccessfulResponse<unknown>>>;
 
 	/**
-	 * Guards to apply to this group of route
+	 * Guards to apply to this route
 	 */
 	guards?: Array<Constructable<IGuard, Array<any>>>;
 
 	/**
-	 * Request interceptors to apply for this group of routes
+	 * Request interceptors to apply to this route
 	 */
 	requestInterceptors?: Array<Constructable<IRequestInterceptor, Array<any>>>;
 
 	/**
-	 * Response interceptors to apply for this group of routes
+	 * Response interceptors to apply to this route
 	 */
 	responseInterceptors?: Array<Constructable<IResponseInterceptor, Array<any>>>;
 }

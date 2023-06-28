@@ -1,1 +1,1 @@
-export * from "./validation.const";
+export * from "./validation-token.const";

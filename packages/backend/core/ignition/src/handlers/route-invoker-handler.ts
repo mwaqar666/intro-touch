@@ -8,7 +8,7 @@ export const routeInvokerHandler = async (request: ApiRequest, context: Context)
 	await import("reflect-metadata");
 
 	const { ApiHandler } = await import("sst/node/api");
-	const { IntroTouch } = await import("@/backend-core/ignition/main");
+	const { IntroTouch } = await import("../main/intro-touch");
 	const { RequestProcessorTokenConst } = await import("@/backend-core/request-processor/const");
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 

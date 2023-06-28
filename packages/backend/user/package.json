@@ -2,7 +2,7 @@
   "name": "@intro-touch/backend-user",
   "version": "0.0.0",
   "dependencies": {
-    "iocc": "^2.1.4",
+    "iocc": "^2.1.5",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.32.0",
     "sequelize-typescript": "^2.1.5"

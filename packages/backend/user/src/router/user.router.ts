@@ -18,7 +18,7 @@ export class UserRouter implements IRouter {
 					{
 						path: "/",
 						method: RouteMethod.GET,
-						handler: this.userController.getUserList,
+						handler: this.userController.getUserList as any,
 						guards: [AuthRequestGuard],
 					},
 					{
@@ -27,7 +27,7 @@ export class UserRouter implements IRouter {
 						handler: this.userController.getUser,
 					},
 					{
-						path: "/create/{userId}",
+						path: "/create",
 						method: RouteMethod.POST,
 						handler: this.userController.createUser,
 					},

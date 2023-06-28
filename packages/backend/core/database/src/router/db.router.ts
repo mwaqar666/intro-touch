@@ -1,3 +1,4 @@
+import { MigrationRunnerGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
@@ -13,6 +14,7 @@ export class DbRouter implements IRouter {
 		return [
 			{
 				prefix: "__database",
+				guards: [MigrationRunnerGuard],
 				routes: [
 					{
 						path: "migration/up",
@@ -22,7 +24,7 @@ export class DbRouter implements IRouter {
 					{
 						path: "migration/down",
 						method: RouteMethod.GET,
-						handler: this.migrationController.revertMigrations,
+						handler: this.migrationController.revertMigrations as any,
 					},
 				],
 			},

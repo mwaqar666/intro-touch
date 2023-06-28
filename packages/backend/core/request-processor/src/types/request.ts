@@ -11,4 +11,4 @@ export interface IAppRequest<T, P extends IPathParams = IPathParams, Q extends I
 
 export type IControllerRequest<T = unknown, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> = IAppRequest<T, P, Q>;
 
-export interface IControllerAuthRequest<E extends BaseEntity<E> = BaseEntity<any>, T = unknown, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> extends IControllerRequest<T, P, Q>, IAuthParams<E> {}
+export interface IControllerAuthRequest<E extends BaseEntity<E> = any, T = unknown, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> extends IControllerRequest<T, P, Q>, IAuthParams<E> {}
