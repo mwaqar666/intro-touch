@@ -1,8 +1,8 @@
-import { MigrationRunnerGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
 import { MigrationController } from "@/backend-core/database/controllers";
+import { MigrationRunnerGuard } from "@/backend-core/database/guards";
 
 export class DbRouter implements IRouter {
 	public constructor(
