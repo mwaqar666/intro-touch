@@ -15,12 +15,12 @@ export class ValidatorService implements IValidator {
 
 		if (errors.length === 0) return transformedObject;
 
-		const validationErrors: Record<string, string> = {};
+		const validationErrors: Record<string, Array<string>> = {};
 
 		for (const validationError of errors) {
-			validationErrors[validationError.property] = validationError.toString();
+			validationErrors[validationError.property] = validationError.constraints ? Object.values(validationError.constraints) : [];
 		}
 
-		throw new BadRequestException("Request validation failed", validationErrors);
+		throw new BadRequestException("Request validation failed", { validationErrors });
 	}
 }

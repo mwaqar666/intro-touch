@@ -21,7 +21,11 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 		const controllerMetaMap: Optional<IHandlerMetaMap> = Reflect.getMetadata(HandlerMetaConst.HandlerMetaMapKey, controllerInstance);
 		if (!controllerMetaMap) return [];
 
-		let handlerMetaArray: Optional<Array<IHandlerMetaType>> = controllerMetaMap.get(resolvedRoute.handler.name);
+		const boundMethodIdentifier = "bound ";
+		let methodName: string = resolvedRoute.handler.name;
+		if (methodName.startsWith(boundMethodIdentifier)) methodName = methodName.slice(boundMethodIdentifier.length);
+
+		let handlerMetaArray: Optional<Array<IHandlerMetaType>> = controllerMetaMap.get(methodName);
 		if (!handlerMetaArray) return [];
 
 		handlerMetaArray = handlerMetaArray.sort((firstHandlerMeta: IHandlerMetaType, secondHandlerMeta: IHandlerMetaType): number => {
