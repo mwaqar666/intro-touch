@@ -2,6 +2,7 @@
   "name": "@intro-touch/backend-core-database",
   "version": "0.0.0",
   "dependencies": {
+    "class-validator": "^0.14.0",
     "iocc": "^2.1.5",
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",

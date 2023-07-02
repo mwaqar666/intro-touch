@@ -1,4 +1,4 @@
-import type { Optional } from "@/stacks/types";
+import type { Constructable, Optional } from "@/stacks/types";
 import { HandlerMetaConst } from "@/backend-core/request-processor/const";
 import type { IHandlerBodyMeta, IHandlerContextMeta, IHandlerMeta, IHandlerMetaMap, IHandlerMetaType, IHandlerPathMeta, IHandlerQueryMeta, IHandlerRequestMeta } from "@/backend-core/request-processor/types";
 
@@ -18,11 +18,11 @@ const addHandlerMeta = (handler: string, handlerMetaMap: IHandlerMetaMap, handle
 	return handlerMetaMap.set(handler, handlerMetaArray ? [...handlerMetaArray, handlerMetaType] : [handlerMetaType]);
 };
 
-export const Body = <T, S>(schema: S): ParameterDecorator => {
+export const Body = <T>(schema: Constructable<object>): ParameterDecorator => {
 	return <ParameterDecorator>((target: T, propertyKey: string, parameterIndex: number): void => {
 		let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
-		const handlerBodyMeta: IHandlerBodyMeta<S> = { type: "body", schema, parameterIndex };
+		const handlerBodyMeta: IHandlerBodyMeta = { type: "body", schema, parameterIndex };
 
 		handlerMetaMap = addHandlerMeta(propertyKey, handlerMetaMap, handlerBodyMeta);
 
@@ -30,11 +30,11 @@ export const Body = <T, S>(schema: S): ParameterDecorator => {
 	});
 };
 
-export const Query = <T, S>(schema: S): ParameterDecorator => {
+export const Query = <T>(schema: Constructable<object>): ParameterDecorator => {
 	return <ParameterDecorator>((target: T, propertyKey: string, parameterIndex: number): void => {
 		let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
-		const handlerQueryMeta: IHandlerQueryMeta<S> = { type: "query", schema, parameterIndex };
+		const handlerQueryMeta: IHandlerQueryMeta = { type: "query", schema, parameterIndex };
 
 		handlerMetaMap = addHandlerMeta(propertyKey, handlerMetaMap, handlerQueryMeta);
 
@@ -42,11 +42,11 @@ export const Query = <T, S>(schema: S): ParameterDecorator => {
 	});
 };
 
-export const Path = <T, S>(schema: S): ParameterDecorator => {
+export const Path = <T>(schema: Constructable<object>): ParameterDecorator => {
 	return <ParameterDecorator>((target: T, propertyKey: string, parameterIndex: number): void => {
 		let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
-		const handlerPathMeta: IHandlerPathMeta<S> = { type: "path", schema, parameterIndex };
+		const handlerPathMeta: IHandlerPathMeta = { type: "path", schema, parameterIndex };
 
 		handlerMetaMap = addHandlerMeta(propertyKey, handlerMetaMap, handlerPathMeta);
 

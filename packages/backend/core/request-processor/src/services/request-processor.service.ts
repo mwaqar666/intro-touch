@@ -2,12 +2,12 @@ import { AuthTokenConst } from "@/backend-core/authentication/const";
 import type { IGuardResolver } from "@/backend-core/authentication/interface";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/interface";
-import type { ApiRequest, ApiResponse, Nullable } from "@/stacks/types";
+import type { ApiRequest, ApiResponse } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
 import { ResponseHandler } from "@/backend-core/request-processor/extensions";
-import type { IInterceptorResolver, IRequestProcessor } from "@/backend-core/request-processor/interface";
+import type { IHandlerMetaResolver, IInterceptorResolver, IRequestProcessor } from "@/backend-core/request-processor/interface";
 import type { IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
 
 export class RequestProcessorService implements IRequestProcessor {
@@ -16,6 +16,7 @@ export class RequestProcessorService implements IRequestProcessor {
 		@Inject(RouterTokenConst.RouteRegisterToken) private readonly routeRegister: IRouteRegister,
 		@Inject(AuthTokenConst.GuardResolverToken) private readonly guardResolver: IGuardResolver,
 		@Inject(RequestProcessorTokenConst.InterceptorResolverToken) private readonly interceptorResolver: IInterceptorResolver,
+		@Inject(RequestProcessorTokenConst.HandlerMetaResolverToken) private readonly handlerMetaResolver: IHandlerMetaResolver,
 	) {}
 
 	public async processRequest(apiRequest: ApiRequest, context: Context): Promise<ApiResponse> {
@@ -28,7 +29,9 @@ export class RequestProcessorService implements IRequestProcessor {
 
 			request = await this.interceptorResolver.runRouteRequestInterceptors(request, context, matchedRoute.requestInterceptors);
 
-			let response: IControllerResponse = await matchedRoute.handler(request, context);
+			const handlerParams: Array<any> = await this.handlerMetaResolver.resolveHandlerMeta(request, context, matchedRoute);
+
+			let response: IControllerResponse = await matchedRoute.handler(...handlerParams);
 
 			response = await this.interceptorResolver.runRouteResponseInterceptors(response, context, matchedRoute.responseInterceptors);
 
@@ -41,7 +44,7 @@ export class RequestProcessorService implements IRequestProcessor {
 	}
 
 	private prepareRequestObject(request: ApiRequest, matchedRoute: IResolvedRoute): IControllerRequest {
-		const requestBody: Nullable<unknown> = request.body ? JSON.parse(request.body) : null;
+		const requestBody: object = request.body ? JSON.parse(request.body) : {};
 
 		return {
 			...request,

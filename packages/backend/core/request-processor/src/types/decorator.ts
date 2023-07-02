@@ -1,6 +1,8 @@
+import type { Constructable } from "@/stacks/types";
+
 export type IHandlerMetaMap = Map<string, IHandlerMeta>;
 
-export type IHandlerMetaType<T = unknown, P = unknown, Q = unknown> =
+export type IHandlerMetaType<T = object, P = object, Q = object> =
 	// Inject AWS request object
 	| IHandlerRequestMeta
 
@@ -16,7 +18,7 @@ export type IHandlerMetaType<T = unknown, P = unknown, Q = unknown> =
 	// Inject validated query params
 	| IHandlerQueryMeta<Q>;
 
-export type IHandlerMeta<T = unknown, P = unknown, Q = unknown> = Array<IHandlerMetaType<T, P, Q>>;
+export type IHandlerMeta<T = object, P = object, Q = object> = Array<IHandlerMetaType<T, P, Q>>;
 
 export interface IHandlerRequestMeta {
 	type: "request";
@@ -28,20 +30,20 @@ export interface IHandlerContextMeta {
 	parameterIndex: number;
 }
 
-export interface IHandlerBodyMeta<T> {
+export interface IHandlerBodyMeta<T = object> {
 	type: "body";
 	parameterIndex: number;
-	schema: T;
+	schema: Constructable<T>;
 }
 
-export interface IHandlerPathMeta<P> {
+export interface IHandlerPathMeta<P = object> {
 	type: "path";
 	parameterIndex: number;
-	schema: P;
+	schema: Constructable<P>;
 }
 
-export interface IHandlerQueryMeta<Q> {
+export interface IHandlerQueryMeta<Q = object> {
 	type: "query";
 	parameterIndex: number;
-	schema: Q;
+	schema: Constructable<Q>;
 }

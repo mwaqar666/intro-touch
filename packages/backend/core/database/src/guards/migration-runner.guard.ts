@@ -11,7 +11,7 @@ export interface IMigrationTokenQueryParams extends IQueryParams {
 	token: Optional<string>;
 }
 
-export type IMigrationRunnerRequest = IControllerRequest<unknown, IPathParams, IMigrationTokenQueryParams>;
+export type IMigrationRunnerRequest = IControllerRequest<object, IPathParams, IMigrationTokenQueryParams>;
 
 export class MigrationRunnerGuard implements IGuard<IMigrationRunnerRequest> {
 	public constructor(

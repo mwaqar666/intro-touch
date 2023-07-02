@@ -1,4 +1,4 @@
-import { Controller } from "@/backend-core/core/decorators";
+import { Controller } from "@/backend-core/request-processor/decorators";
 import { ResponseHandler } from "@/backend-core/request-processor/extensions";
 import type { IControllerAuthRequest, IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import type { Context } from "aws-lambda";

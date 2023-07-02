@@ -18,12 +18,12 @@ export class AuthRouter implements IRouter {
 					{
 						path: "login",
 						method: RouteMethod.POST,
-						handler: this.authenticationController.login as any,
+						handler: this.authenticationController.login,
 					},
 					{
 						path: "register",
 						method: RouteMethod.POST,
-						handler: this.authenticationController.login as any,
+						handler: this.authenticationController.login,
 					},
 				],
 			},

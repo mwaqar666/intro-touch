@@ -1,5 +1,4 @@
-import { Controller } from "@/backend-core/core/decorators";
-import { Body } from "@/backend-core/request-processor/decorators";
+import { Body, Controller } from "@/backend-core/request-processor/decorators";
 import { ResponseHandler } from "@/backend-core/request-processor/extensions";
 import type { ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import { Inject } from "iocc";

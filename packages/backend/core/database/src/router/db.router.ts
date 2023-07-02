@@ -24,7 +24,7 @@ export class DbRouter implements IRouter {
 					{
 						path: "migration/down",
 						method: RouteMethod.GET,
-						handler: this.migrationController.revertMigrations as any,
+						handler: this.migrationController.revertMigrations,
 					},
 				],
 			},
