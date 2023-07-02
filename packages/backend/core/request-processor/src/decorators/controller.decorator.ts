@@ -24,9 +24,10 @@ export const Controller = <T extends object>(target: Constructable<T, Array<any>
 					 * we can pass around the method signature as callback to another function
 					 */
 					if (targetProp instanceof Function) {
-						Reflect.defineMetadata(HandlerMetaConst.HandlerControllerKey, controller, targetProp);
+						const boundHandler = targetProp.bind(controller);
+						Reflect.defineMetadata(HandlerMetaConst.HandlerControllerKey, controller, boundHandler);
 
-						targetProp.bind(controller);
+						return boundHandler;
 					}
 
 					return targetProp;
