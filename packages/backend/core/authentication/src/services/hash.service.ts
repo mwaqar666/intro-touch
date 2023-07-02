@@ -1,11 +1,11 @@
-import { createHash } from "crypto";
+import { compare, hash } from "bcryptjs";
 
 export class HashService {
-	public hash(text: string): string {
-		return createHash("sha256").update(text).digest("hex");
+	public async hash(text: string): Promise<string> {
+		return await hash(text, 10);
 	}
 
-	public compare(text: string, hash: string): boolean {
-		return this.hash(text) === hash;
+	public async compare(text: string, hash: string): Promise<boolean> {
+		return compare(text, hash);
 	}
 }

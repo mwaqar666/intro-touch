@@ -11,12 +11,15 @@ import type { IGoogleAdapter } from "@/backend-core/authentication/types";
 
 export class AuthenticationModule extends AbstractModule {
 	public override async register(): Promise<void> {
+		// Controllers
 		this.container.registerSingleton(AuthenticationController);
 
+		// Services
 		this.container.registerSingleton(HashService);
 		this.container.registerSingleton(AuthService);
 		this.container.registerSingleton(AuthTokenService);
 
+		// Router
 		this.container.registerSingleton(AuthRouter);
 
 		// Auth interceptors & services

@@ -1,6 +1,9 @@
 import { Aspects, RemovalPolicy } from "aws-cdk-lib";
+import type { SecurityGroupProps } from "aws-cdk-lib/aws-ec2";
 import { InstanceType, Peer, Port, SecurityGroup, SubnetType } from "aws-cdk-lib/aws-ec2";
+import type { DatabaseClusterProps } from "aws-cdk-lib/aws-rds";
 import { AuroraPostgresEngineVersion, CfnDBCluster, Credentials, DatabaseCluster, DatabaseClusterEngine } from "aws-cdk-lib/aws-rds";
+import type { SecretProps } from "aws-cdk-lib/aws-secretsmanager";
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
 import type { IConstruct } from "constructs";
 import type { StackContext } from "sst/constructs";
@@ -11,35 +14,71 @@ import { VpcStack } from "@/stacks/stacks/VpcStack";
 import type { IVpcStack } from "@/stacks/stacks/VpcStack";
 
 export interface IDatabaseStack {
-	database: DatabaseCluster;
 	databaseName: string;
-	databaseUserName: string;
-	databaseSecret: Secret;
+	databaseHost: string;
+	databasePort: string;
+	databaseUser: string;
+	databasePass: string;
+	databaseMigrationPass: string;
 }
 
-export const DatabaseStack = ({ app, stack }: StackContext): IDatabaseStack => {
+export type IDbCommonConfig = Omit<IDatabaseStack, "databaseHost" | "databasePass">;
+
+const databaseCommonConfig: IDbCommonConfig = {
+	databaseName: Config.get("DB_NAME"),
+	databasePort: Config.get("DB_PORT"),
+	databaseUser: Config.get("DB_USER"),
+	databaseMigrationPass: Config.get("DB_MIGRATION_PASS"),
+};
+
+const DatabaseLocalStack = ({ stack }: StackContext): IDatabaseStack => {
+	const { databaseName, databasePort, databaseUser, databaseMigrationPass }: IDbCommonConfig = databaseCommonConfig;
+	const databaseHost: string = Config.get("DB_HOST");
+	const databasePass: string = Config.get("DB_PASS");
+
+	stack.addOutputs({
+		databaseName,
+		databaseHost,
+		databasePort,
+		databaseUser,
+		databasePass,
+	});
+
+	return {
+		databaseName,
+		databaseHost,
+		databasePort,
+		databaseUser,
+		databasePass,
+		databaseMigrationPass,
+	};
+};
+
+const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
+	const { databaseName, databasePort, databaseUser, databaseMigrationPass }: IDbCommonConfig = databaseCommonConfig;
+
 	const { vpc }: IVpcStack = use(VpcStack);
 
-	const username: string = Config.get("DB_USER");
-	const databaseName: string = Config.get("DB_NAME");
-	const databasePort: string = Config.get("DB_PORT");
-
-	const dbSecurityGroup: SecurityGroup = new SecurityGroup(stack, DatabaseConst.DbSecurityGroup(app.stage), {
+	const dbSecurityGroupProps: SecurityGroupProps = {
 		vpc: vpc,
 		allowAllOutbound: true,
-	});
+	};
+	const dbSecurityGroup: SecurityGroup = new SecurityGroup(stack, DatabaseConst.DbSecurityGroup(app.stage), dbSecurityGroupProps);
 	dbSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432), DatabaseConst.DbSecurityGroupDescription());
 
-	const databaseSecret: Secret = new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), {
+	const databaseSecretProps: SecretProps = {
 		secretName: DatabaseConst.DatabaseCredentialsSecret(app.stage),
 		generateSecretString: {
-			secretStringTemplate: JSON.stringify({ username }),
+			secretStringTemplate: JSON.stringify({
+				username: databaseUser,
+			}),
 			generateStringKey: "password",
 			excludeCharacters: '/@" ',
 		},
-	});
+	};
+	const databaseSecret: Secret = new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), databaseSecretProps);
 
-	const database: DatabaseCluster = new DatabaseCluster(stack, DatabaseConst.DatabaseId(app.stage), {
+	const databaseProps: DatabaseClusterProps = {
 		engine: DatabaseClusterEngine.auroraPostgres({
 			version: AuroraPostgresEngineVersion.VER_15_2,
 		}),
@@ -58,7 +97,8 @@ export const DatabaseStack = ({ app, stack }: StackContext): IDatabaseStack => {
 			publiclyAccessible: true,
 			securityGroups: [dbSecurityGroup],
 		},
-	});
+	};
+	const database: DatabaseCluster = new DatabaseCluster(stack, DatabaseConst.DatabaseId(app.stage), databaseProps);
 
 	Aspects.of(database).add({
 		visit(node: IConstruct): void {
@@ -71,11 +111,14 @@ export const DatabaseStack = ({ app, stack }: StackContext): IDatabaseStack => {
 		},
 	});
 
+	const databaseHost: string = database.clusterEndpoint.hostname;
+	const databasePass: string = databaseSecret.secretValueFromJson("password").toString();
+
 	stack.addOutputs({
 		databaseName,
-		databaseHost: database.clusterEndpoint.hostname,
-		databasePort: database.clusterEndpoint.port.toString(),
-		databaseUser: username,
+		databaseHost,
+		databasePort,
+		databaseUser,
 		databaseClusterIdentifier: database.clusterIdentifier,
 		databaseSecretArn: databaseSecret.secretFullArn,
 		databaseSecurityGroupId: dbSecurityGroup.securityGroupId,
@@ -83,9 +126,19 @@ export const DatabaseStack = ({ app, stack }: StackContext): IDatabaseStack => {
 	});
 
 	return {
-		database,
 		databaseName,
-		databaseUserName: username,
-		databaseSecret,
+		databaseHost,
+		databasePort,
+		databaseUser,
+		databasePass,
+		databaseMigrationPass,
 	};
+};
+
+export const DatabaseStack = (stackContext: StackContext): IDatabaseStack => {
+	if (Config.isLocal(stackContext.app.stage)) {
+		return DatabaseLocalStack(stackContext);
+	}
+
+	return DatabaseCloudStack(stackContext);
 };

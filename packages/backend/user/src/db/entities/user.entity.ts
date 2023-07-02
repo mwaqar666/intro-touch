@@ -1,9 +1,12 @@
+import { HashService } from "@/backend-core/authentication/services";
+import { AppContainer } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, AutoIncrement, Column, DataType, HasMany, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
+import { PasswordMissingException } from "@/backend/user/exceptions";
 
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => UserEntity),
@@ -61,4 +64,22 @@ export class UserEntity extends BaseEntity<UserEntity> {
 		foreignKey: "userProfileUserId",
 	})
 	public userUserProfiles: Array<UserProfileEntity>;
+
+	@BeforeUpdate
+	@BeforeCreate
+	public static async hashPassword(instance: UserEntity): Promise<UserEntity> {
+		if (!instance.changed("userPassword") || !instance.userPassword) return instance;
+
+		const hashService: HashService = AppContainer.resolve(HashService);
+		instance.userPassword = await hashService.hash(instance.userPassword);
+
+		return instance;
+	}
+
+	public async comparePassword(plainPassword: string): Promise<boolean> {
+		if (!this.userPassword) throw new PasswordMissingException();
+
+		const hashService: HashService = AppContainer.resolve(HashService);
+		return await hashService.compare(plainPassword, this.userPassword);
+	}
 }

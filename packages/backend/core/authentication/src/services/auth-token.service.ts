@@ -21,7 +21,7 @@ export class AuthTokenService {
 			userLastName: user.userLastName,
 		};
 
-		return await new SignJWT(<JWTPayload>(<unknown>userPayload)).setProtectedHeader({ alg: "HS512" }).setIssuedAt().setExpirationTime("2h").sign(this.getEncodedSecretKey());
+		return await new SignJWT(<JWTPayload>(<unknown>userPayload)).setIssuedAt().setExpirationTime("2h").sign(this.getEncodedSecretKey());
 	}
 
 	private getEncodedSecretKey(): Uint8Array {

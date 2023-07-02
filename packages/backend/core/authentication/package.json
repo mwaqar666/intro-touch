@@ -2,9 +2,11 @@
   "name": "@intro-touch/backend-core-authentication",
   "version": "0.0.0",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "openid-client": "^5.4.2"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "class-validator": "^0.14.0",
     "iocc": "^2.1.5",
     "jose": "^4.14.4"

@@ -22,7 +22,10 @@ export default {
 		};
 	},
 	async stacks(app: App): Promise<void> {
-		app.stack(VpcStack);
+		if (!Config.isLocal(app.stage)) {
+			app.stack(VpcStack);
+		}
+
 		app.stack(DatabaseStack);
 		app.stack(AuthStack);
 		await app.stack(ApiStack);
