@@ -19,7 +19,7 @@ export class UserRouter implements IRouter {
 					{
 						path: "/",
 						method: RouteMethod.GET,
-						handler: this.userController.getUserList as any,
+						handler: this.userController.getUserList,
 					},
 					{
 						path: "/{userId}",

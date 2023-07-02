@@ -1,8 +1,7 @@
 import type { IGuard } from "@/backend-core/authentication/interface";
 import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
-import type { IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import type { Constructable, Delegate, ExclusiveUnion, Optional } from "@/stacks/types";
-import type { Context } from "aws-lambda/handler";
 import type { RouteMethod } from "@/backend-core/router/enum";
 
 export interface IGroupedRoute {
@@ -32,7 +31,7 @@ export interface IGroupedRoute {
 	responseInterceptors?: Array<Constructable<IResponseInterceptor, Array<any>>>;
 }
 
-export interface ISimpleRoute<T extends IControllerRequest = IControllerRequest> {
+export interface ISimpleRoute {
 	/**
 	 * Route path
 	 */
@@ -46,7 +45,7 @@ export interface ISimpleRoute<T extends IControllerRequest = IControllerRequest>
 	/**
 	 * Route handler that will be called when this route is invoked
 	 */
-	handler: Delegate<[T, Context], Promise<ISuccessfulResponse<unknown>>>;
+	handler: Delegate<Array<any>, Promise<ISuccessfulResponse<unknown>>>;
 
 	/**
 	 * Guards to apply to this route
