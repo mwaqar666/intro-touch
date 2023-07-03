@@ -18,6 +18,8 @@ export type Constructable<T, TArgs extends Array<unknown> = Array<void>> = new (
 
 export type PartialOnly<T, K extends Key<T>> = Partial<Pick<T, K>> & Omit<T, K>;
 
+export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+
 export type PositiveFilterCondition<T, P extends Key<T>, C> = T[P] extends C ? P : never;
 
 export type InverseFilterCondition<T, P extends Key<T>, C> = T[P] extends C ? never : P;

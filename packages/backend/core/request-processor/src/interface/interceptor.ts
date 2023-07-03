@@ -1,11 +1,11 @@
 import type { PossiblePromise } from "@/stacks/types";
 import type { Context } from "aws-lambda";
-import type { IControllerRequest, IControllerResponse } from "@/backend-core/request-processor/types";
+import type { IControllerRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
-export interface IRequestInterceptor<T extends IControllerRequest = IControllerRequest, R extends IControllerRequest = T> {
-	intercept(request: T, context: Context): PossiblePromise<R>;
+export interface IRequestInterceptor<TRequest = object, TInterceptedRequest = TRequest> {
+	intercept(request: IControllerRequest<TRequest>, context: Context): PossiblePromise<IControllerRequest<TInterceptedRequest>>;
 }
 
-export interface IResponseInterceptor<T extends IControllerResponse = IControllerResponse, R extends IControllerResponse = T> {
-	intercept(response: T, context: Context): PossiblePromise<R>;
+export interface IResponseInterceptor<TRequest = object, TResponse = unknown, TInterceptedResponse = TResponse> {
+	intercept(request: IControllerRequest<TRequest>, response: ISuccessfulResponse<TResponse>, context: Context): PossiblePromise<ISuccessfulResponse<TInterceptedResponse>>;
 }

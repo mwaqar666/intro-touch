@@ -1,6 +1,5 @@
 import type { IGuard } from "@/backend-core/authentication/interface";
 import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
-import type { ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import type { Constructable, Delegate, ExclusiveUnion, Optional } from "@/stacks/types";
 import type { RouteMethod } from "@/backend-core/router/enum";
 
@@ -45,7 +44,7 @@ export interface ISimpleRoute {
 	/**
 	 * Route handler that will be called when this route is invoked
 	 */
-	handler: Delegate<Array<any>, Promise<ISuccessfulResponse<unknown>>>;
+	handler: Delegate<Array<any>, Promise<any>>;
 
 	/**
 	 * Guards to apply to this route

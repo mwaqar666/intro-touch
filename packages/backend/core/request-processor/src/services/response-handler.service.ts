@@ -6,7 +6,7 @@ export class ResponseHandlerService implements IResponseHandler {
 	public handleException(exception: unknown): IFailedResponse<IError> {
 		if (exception instanceof Exception) {
 			const { message, code, context }: IAppException = exception.toError();
-			return this.sendFailedResponse(
+			return this.createFailedResponse(
 				{
 					message,
 					context,
@@ -15,7 +15,7 @@ export class ResponseHandlerService implements IResponseHandler {
 			);
 		}
 
-		return this.sendFailedResponse(
+		return this.createFailedResponse(
 			{
 				message: (<Error>exception).message,
 				context: null,
@@ -24,9 +24,9 @@ export class ResponseHandlerService implements IResponseHandler {
 		);
 	}
 
-	public sendResponse<T>(data: T): ISuccessfulResponse<T>;
-	public sendResponse<T>(data: T, code: number): ISuccessfulResponse<T>;
-	public sendResponse<T>(data: T, code = 200): ISuccessfulResponse<T> {
+	public createSuccessfulResponse<T>(data: T): ISuccessfulResponse<T>;
+	public createSuccessfulResponse<T>(data: T, code: number): ISuccessfulResponse<T>;
+	public createSuccessfulResponse<T>(data: T, code = 200): ISuccessfulResponse<T> {
 		return {
 			body: {
 				data: data,
@@ -36,9 +36,9 @@ export class ResponseHandlerService implements IResponseHandler {
 		};
 	}
 
-	public sendFailedResponse<T extends IError>(data: T): IFailedResponse<T>;
-	public sendFailedResponse<T extends IError>(data: T, code: number): IFailedResponse<T>;
-	public sendFailedResponse<T extends IError>(data: T, code = 500): IFailedResponse<T> {
+	public createFailedResponse<T extends IError>(data: T): IFailedResponse<T>;
+	public createFailedResponse<T extends IError>(data: T, code: number): IFailedResponse<T>;
+	public createFailedResponse<T extends IError>(data: T, code = 500): IFailedResponse<T> {
 		return {
 			body: {
 				data: null,

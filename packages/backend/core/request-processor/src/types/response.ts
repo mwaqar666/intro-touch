@@ -1,10 +1,11 @@
 import type { ApiResponse, Nullable } from "@/stacks/types";
 
 export interface IResponseBody<T> {
-	body: Nullable<T>;
+	body: T;
+	statusCode: number;
 }
 
-export type IAppResponse<T = unknown> = Omit<ApiResponse, "body"> & IResponseBody<T>;
+export type IAppResponse<T = unknown> = Omit<ApiResponse, "body" | "statusCode"> & IResponseBody<T>;
 
 export interface ISuccess<T> {
 	data: T;
