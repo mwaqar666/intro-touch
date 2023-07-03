@@ -18,6 +18,8 @@ export type EntityNonTableColumnProperties = EntityRelationshipPropertyTypes | (
 
 export type EntityTableColumnProperties<TEntity extends BaseEntity<TEntity>> = FilterWhereNot<EntityProperties<TEntity>, EntityNonTableColumnProperties>;
 
+export type EntityTableColumnPropertiesExcept<TEntity extends BaseEntity<TEntity>, TProps extends Key<TEntity> = Key<TEntity>> = Omit<EntityTableColumnProperties<TEntity>, TProps>;
+
 export interface IRelationship<TEntity extends BaseEntity<TEntity>> {
 	propertyKey: string;
 	entityOrEntities: BaseEntity<TEntity> | Array<BaseEntity<TEntity>>;

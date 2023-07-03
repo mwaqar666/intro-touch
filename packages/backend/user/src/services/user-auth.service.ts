@@ -1,4 +1,3 @@
-import type { IAuthEntityLookUpRequest, IAuthEntityLookUpResponse } from "@/backend-core/authentication/types";
 import { DbTokenConst, EntityScopeConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ITransactionStore } from "@/backend-core/database/types";
@@ -6,6 +5,7 @@ import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
+import type { ICreateUserWithProfile } from "@/backend/user/types";
 
 export class UserAuthService {
 	public constructor(
@@ -16,12 +16,13 @@ export class UserAuthService {
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
-	public async authenticateUser(lookUpRequest: IAuthEntityLookUpRequest): Promise<IAuthEntityLookUpResponse> {
-		let user: Nullable<UserEntity> = await this.findActiveUserByEmail(lookUpRequest.userEmail);
-		if (user) return { entity: user, created: false };
-
-		user = await this.createNewUserWithProfile(lookUpRequest);
-		return { entity: user, created: true };
+	public findActiveUserByEmail(userEmail: string): Promise<Nullable<UserEntity>> {
+		return this.userRepository.findOne({
+			findOptions: {
+				where: { userEmail },
+			},
+			scopes: [EntityScopeConst.isActive],
+		});
 	}
 
 	public findActiveUserByUuid(userUuid: string): Promise<Nullable<UserEntity>> {
@@ -33,24 +34,16 @@ export class UserAuthService {
 		});
 	}
 
-	private findActiveUserByEmail(userEmail: string): Promise<Nullable<UserEntity>> {
-		return this.userRepository.findOne({
-			findOptions: {
-				where: { userEmail },
-			},
-			scopes: [EntityScopeConst.isActive],
-		});
-	}
-
-	private createNewUserWithProfile(lookUpRequest: IAuthEntityLookUpRequest): Promise<UserEntity> {
+	public createNewUserWithProfile(userProperties: ICreateUserWithProfile): Promise<UserEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async (runningTransaction: ITransactionStore): Promise<UserEntity> => {
 				const user: UserEntity = await this.userRepository.createOne({
 					valuesToCreate: {
-						userEmail: lookUpRequest.userEmail,
-						userPicture: "",
-						userFirstName: lookUpRequest.userFirstName ?? "",
-						userLastName: lookUpRequest.userLastName ?? "",
+						userEmail: userProperties.userEmail,
+						userPicture: userProperties.userPicture,
+						userFirstName: userProperties.userFirstName,
+						userLastName: userProperties.userLastName,
+						userPassword: userProperties.userPassword,
 					},
 					transaction: runningTransaction.transaction,
 				});
@@ -58,10 +51,10 @@ export class UserAuthService {
 				await this.userProfileRepository.createOne({
 					valuesToCreate: {
 						userProfileUserId: user.userId,
-						userProfileEmail: lookUpRequest.userEmail,
-						userProfilePicture: "",
-						userProfileFirstName: lookUpRequest.userFirstName ?? "",
-						userProfileLastName: lookUpRequest.userLastName ?? "",
+						userProfileEmail: userProperties.userEmail,
+						userProfilePicture: userProperties.userPicture,
+						userProfileFirstName: userProperties.userFirstName,
+						userProfileLastName: userProperties.userLastName,
 						userProfileIsLive: true,
 					},
 					transaction: runningTransaction.transaction,

@@ -2,12 +2,12 @@ import type { UserEntity } from "@/backend/user/db/entities";
 import { UserAuthService } from "@/backend/user/services";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";
-import type { ApiResponse } from "@/stacks/types";
+import type { ApiResponse, Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { IdTokenClaims, TokenSet } from "openid-client";
 import { GoogleAdapter, Session } from "sst/node/auth";
 import type { IAuthAdapter } from "@/backend-core/authentication/interface";
-import type { IAuthAdapterRecord, IAuthEntityLookUpRequest, IAuthEntityLookUpResponse, IGoogleAdapter } from "@/backend-core/authentication/types";
+import type { IAuthAdapterRecord, IGoogleAdapter } from "@/backend-core/authentication/types";
 
 export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 	public constructor(
@@ -48,15 +48,24 @@ export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 		const claims: IdTokenClaims = tokenSet.claims();
 		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
 
-		const lookUpRequest: IAuthEntityLookUpRequest = {
-			userEmail: claims.email as string,
-			userFirstName: claims.given_name ?? null,
-			userLastName: claims.family_name ?? null,
-		};
+		let created = "true";
+		let entity: Nullable<UserEntity>;
 
-		const { entity, created }: IAuthEntityLookUpResponse = await this.userAuthService.authenticateUser(lookUpRequest);
+		entity = await this.userAuthService.findActiveUserByEmail(claims.email as string);
+
+		if (entity) created = "false";
+		else {
+			entity = await this.userAuthService.createNewUserWithProfile({
+				userEmail: claims.email as string,
+				userFirstName: claims.given_name ?? "",
+				userLastName: claims.family_name ?? "",
+				userPassword: null,
+				userPicture: claims.picture ?? "",
+			});
+		}
+
 		const redirectUrl: URL = new URL(authConfig.googleRedirectUrl);
-		redirectUrl.searchParams.set("created", created.toString());
+		redirectUrl.searchParams.set("created", created);
 
 		return [entity, redirectUrl.toString()];
 	}

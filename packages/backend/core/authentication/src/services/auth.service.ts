@@ -1,33 +1,38 @@
 import type { UserEntity } from "@/backend/user/db/entities";
-import { UserRepository } from "@/backend/user/db/repositories";
-import { EntityScopeConst } from "@/backend-core/database/const";
-import { UnauthorizedException } from "@/backend-core/request-processor/exceptions";
+import { UserAuthService } from "@/backend/user/services";
 import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { LoginRequestDto, LoginResponseDto } from "@/backend-core/authentication/dto/login";
-import { AuthTokenService } from "@/backend-core/authentication/services/auth-token.service";
+import type { RegisterRequestDto, RegisterResponseDto } from "@/backend-core/authentication/dto/register";
+import { InvalidCredentialsException } from "@/backend-core/authentication/exceptions";
+import { AuthTokenService } from "@/backend-core/authentication/services/token";
 
 export class AuthService {
 	public constructor(
 		// Dependencies
 
-		@Inject(UserRepository) private readonly userRepository: UserRepository,
+		@Inject(UserAuthService) private readonly userAuthService: UserAuthService,
 		@Inject(AuthTokenService) private readonly authTokenService: AuthTokenService,
 	) {}
 
 	public async login(loginRequest: LoginRequestDto): Promise<LoginResponseDto> {
 		const { userEmail, userPassword }: LoginRequestDto = loginRequest;
 
-		const user: Nullable<UserEntity> = await this.userRepository.findOne({
-			findOptions: { where: { userEmail } },
-			scopes: [EntityScopeConst.isActive],
-		});
+		const user: Nullable<UserEntity> = await this.userAuthService.findActiveUserByEmail(userEmail);
 
-		if (!user) throw new UnauthorizedException("Invalid Credentials");
+		if (!user) throw new InvalidCredentialsException();
 
-		const passwordMatched: boolean = await user.comparePassword(userPassword);
+		const passwordVerified: boolean = await user.verifyPassword(userPassword);
 
-		if (!passwordMatched) throw new UnauthorizedException("Invalid Credentials");
+		if (!passwordVerified) throw new InvalidCredentialsException();
+
+		return {
+			token: await this.authTokenService.createAuthenticationToken(user),
+		};
+	}
+
+	public async register(registerRequestDto: RegisterRequestDto): Promise<RegisterResponseDto> {
+		const user: UserEntity = await this.userAuthService.createNewUserWithProfile(registerRequestDto);
 
 		return {
 			token: await this.authTokenService.createAuthenticationToken(user),

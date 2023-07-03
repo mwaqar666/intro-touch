@@ -1,3 +1,4 @@
+import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import { HashService } from "@/backend-core/authentication/services";
 import { AppContainer } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
@@ -6,7 +7,6 @@ import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
 import { AllowNull, AutoIncrement, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
-import { PasswordMissingException } from "@/backend/user/exceptions";
 
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => UserEntity),
@@ -76,7 +76,7 @@ export class UserEntity extends BaseEntity<UserEntity> {
 		return instance;
 	}
 
-	public async comparePassword(plainPassword: string): Promise<boolean> {
+	public async verifyPassword(plainPassword: string): Promise<boolean> {
 		if (!this.userPassword) throw new PasswordMissingException();
 
 		const hashService: HashService = AppContainer.resolve(HashService);

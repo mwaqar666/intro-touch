@@ -6,7 +6,9 @@ import { AuthTokenConst } from "@/backend-core/authentication/const";
 import { AuthenticationController } from "@/backend-core/authentication/controller";
 import type { IAuthAdapter, IAuthAdapterResolver } from "@/backend-core/authentication/interface";
 import { AuthRouter } from "@/backend-core/authentication/router";
-import { AuthAdapterResolverService, AuthService, AuthTokenService, GuardResolverService, HashService } from "@/backend-core/authentication/services";
+import { AuthService, HashService } from "@/backend-core/authentication/services";
+import { AuthAdapterResolverService, GuardResolverService } from "@/backend-core/authentication/services/resolver";
+import { AuthTokenService } from "@/backend-core/authentication/services/token";
 import type { IGoogleAdapter } from "@/backend-core/authentication/types";
 
 export class AuthenticationModule extends AbstractModule {
