@@ -37,8 +37,7 @@ export class DbConnectorService implements IDbConnector<Sequelize> {
 		this.dbConnection.connectionManager.initPools();
 
 		// restore `getConnection()` if it has been overwritten by `close()`
-		const hasGetConnectionProp: boolean = Object.prototype.hasOwnProperty.call(this.dbConnection, "getConnection");
-		if (hasGetConnectionProp) {
+		if (Object.prototype.hasOwnProperty.call(this.dbConnection.connectionManager, "getConnection")) {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			delete this.dbConnection.connectionManager.getConnection;

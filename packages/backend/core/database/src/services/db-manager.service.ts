@@ -28,7 +28,7 @@ export class DbManagerService implements IDbManager {
 		this._migrationRegister.push(...migrationClasses);
 
 		migrationClasses.forEach((migrationClass: Constructable<IMigration>): void => {
-			AppContainer.registerSingleton(migrationClass, { onDuplicate: "ignore" });
+			AppContainer.registerSingleton(migrationClass);
 		});
 	}
 }
