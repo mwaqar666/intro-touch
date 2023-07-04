@@ -4,7 +4,6 @@ import type { IDbManager } from "@/backend-core/database/interface";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IRouteRegister } from "@/backend-core/router/interface";
 import { UserController } from "@/backend/user/controller";
-import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
 import { UserDbRegister } from "@/backend/user/db/user-db.register";
 import { UserRouter } from "@/backend/user/router";
 import { UserAuthService, UserService } from "@/backend/user/services";
@@ -16,10 +15,6 @@ export class UserModule extends AbstractModule {
 		// Services
 		this.container.registerSingleton(UserService);
 		this.container.registerSingleton(UserAuthService);
-
-		// Repositories
-		this.container.registerSingleton(UserRepository);
-		this.container.registerSingleton(UserProfileRepository);
 
 		// Router and Db Register stuff
 		this.container.registerSingleton(UserRouter);

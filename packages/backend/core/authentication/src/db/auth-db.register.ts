@@ -3,20 +3,18 @@ import type { IDbRegister, IMigration } from "@/backend-core/database/interface"
 import type { BaseRepository } from "@/backend-core/database/repository";
 import type { EntityType } from "@/backend-core/database/types";
 import type { Constructable } from "@/stacks/types";
-import { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
-import { CreateUserProfilesTable, CreateUsersTable } from "@/backend/user/db/migrations";
-import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
+import { CreateVerificationTokensTable } from "@/backend-core/authentication/db/migrations";
 
-export class UserDbRegister implements IDbRegister {
+export class AuthDbRegister implements IDbRegister {
 	public registerEntities(): Array<EntityType<any>> {
-		return [UserEntity, UserProfileEntity];
+		return [];
 	}
 
 	public registerMigrations(): Array<Constructable<IMigration>> {
-		return [CreateUsersTable, CreateUserProfilesTable];
+		return [CreateVerificationTokensTable];
 	}
 
 	public registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
-		return [UserRepository, UserProfileRepository];
+		return [];
 	}
 }

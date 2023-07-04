@@ -1,22 +1,13 @@
-import type { IMigration } from "@/backend-core/database/interface";
-import type { QueryInterface } from "sequelize";
+import { AbstractMigration } from "@/backend-core/database/abstract";
 import { DataType } from "sequelize-typescript";
 
-export class CreateUsersTable implements IMigration {
-	public timestamp = 1687790919506;
+export class CreateUsersTable extends AbstractMigration {
+	public override timestamp = 1687790919506;
 
-	public async up(queryInterface: QueryInterface): Promise<void> {
-		await queryInterface.createTable("users", {
-			userId: {
-				primaryKey: true,
-				autoIncrement: true,
-				type: DataType.INTEGER,
-			},
-			userUuid: {
-				unique: true,
-				allowNull: false,
-				type: DataType.STRING(50),
-			},
+	public override async up(): Promise<void> {
+		await this.queryInterface.createTable("users", {
+			userId: this.createForeignKeyProps(),
+			userUuid: this.createUuidKeyProps(),
 			userFirstName: {
 				allowNull: false,
 				type: DataType.STRING(50),
@@ -38,27 +29,14 @@ export class CreateUsersTable implements IMigration {
 				allowNull: true,
 				type: DataType.STRING(255),
 			},
-			userIsActive: {
-				defaultValue: true,
-				allowNull: false,
-				type: DataType.BOOLEAN,
-			},
-			userCreatedAt: {
-				allowNull: false,
-				type: DataType.DATE,
-			},
-			userUpdatedAt: {
-				allowNull: false,
-				type: DataType.DATE,
-			},
-			userDeletedAt: {
-				allowNull: true,
-				type: DataType.DATE,
-			},
+			userIsActive: this.createIsActiveKeyProps(),
+			userCreatedAt: this.createCreatedAtKeyProps(),
+			userUpdatedAt: this.createUpdatedAtKeyProps(),
+			userDeletedAt: this.createDeletedAtKeyProps(),
 		});
 	}
 
-	public async down(queryInterface: QueryInterface): Promise<void> {
-		await queryInterface.dropTable("users");
+	public override async down(): Promise<void> {
+		await this.queryInterface.dropTable("users");
 	}
 }

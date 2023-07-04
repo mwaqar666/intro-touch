@@ -15,8 +15,8 @@ export class FacebookAuthAdapter implements IAuthAdapter<IFacebookAdapter> {
 
 	public configureAuthAdapter(): IAuthAdapterRecord<IFacebookAdapter> {
 		const facebookAdapter = FacebookAdapter({
-			clientID: "6359123637470816",
-			clientSecret: "b7cec95d98b95e63951bac871284cace",
+			clientID: "827602072357909",
+			clientSecret: "55f9cddf66fc4db92bf9e2687403b5f8",
 			scope: "openid email",
 			onSuccess: async (tokenSet: TokenSet): Promise<ApiResponse> => {
 				const claims: IdTokenClaims = tokenSet.claims();

@@ -1,17 +1,16 @@
 ---
 to: packages/<%= migrationPath %>/<%= name.replace(/\s/g, "-") %>.migration.ts
 ---
-import type { IMigration } from "@/backend-core/database/interface";
-import type { QueryInterface } from "sequelize";
+import { AbstractMigration } from "@/backend-core/database/abstract";
 
-export class <%= h.changeCase.pascal(name) %> implements IMigration {
-	public timestamp = <%= Date.now() %>;
+export class <%= h.changeCase.pascal(name) %> extends AbstractMigration {
+	public override timestamp = <%= Date.now() %>;
 
-	public async up(queryInterface: QueryInterface): Promise<void> {
+	public override async up(): Promise<void> {
 		//
 	}
 
-	public async down(queryInterface: QueryInterface): Promise<void> {
+	public override async down(): Promise<void> {
 		//
 	}
 }

@@ -3,7 +3,9 @@ import type { QueryInterface } from "sequelize";
 export interface IMigration {
 	timestamp: number;
 
-	up(queryInterface: QueryInterface): Promise<void>;
+	setQueryInterface(queryInterface: QueryInterface): void;
 
-	down(queryInterface: QueryInterface): Promise<void>;
+	up(): Promise<void>;
+
+	down(): Promise<void>;
 }

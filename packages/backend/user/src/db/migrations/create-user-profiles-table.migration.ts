@@ -1,26 +1,14 @@
-import type { IMigration } from "@/backend-core/database/interface";
-import type { QueryInterface } from "sequelize";
+import { AbstractMigration } from "@/backend-core/database/abstract";
 import { DataType } from "sequelize-typescript";
 
-export class CreateUserProfilesTable implements IMigration {
+export class CreateUserProfilesTable extends AbstractMigration {
 	public timestamp = 1687791044253;
 
-	public async up(queryInterface: QueryInterface): Promise<void> {
-		await queryInterface.createTable("user_profiles", {
-			userProfileId: {
-				primaryKey: true,
-				autoIncrement: true,
-				type: DataType.INTEGER,
-			},
-			userProfileUuid: {
-				unique: true,
-				allowNull: false,
-				type: DataType.STRING(50),
-			},
-			userProfileUserId: {
-				allowNull: false,
-				type: DataType.INTEGER,
-			},
+	public async up(): Promise<void> {
+		await this.queryInterface.createTable("user_profiles", {
+			userProfileId: this.createPrimaryKeyProps(),
+			userProfileUuid: this.createUuidKeyProps(),
+			userProfileUserId: this.createForeignKeyProps(),
 			userProfileFirstName: {
 				allowNull: false,
 				type: DataType.STRING(50),
@@ -71,41 +59,18 @@ export class CreateUserProfilesTable implements IMigration {
 				allowNull: false,
 				type: DataType.BOOLEAN,
 			},
-			userProfileIsActive: {
-				defaultValue: true,
-				allowNull: false,
-				type: DataType.BOOLEAN,
-			},
-			userProfileCreatedAt: {
-				allowNull: false,
-				type: DataType.DATE,
-			},
-			userProfileUpdatedAt: {
-				allowNull: false,
-				type: DataType.DATE,
-			},
-			userProfileDeletedAt: {
-				allowNull: true,
-				type: DataType.DATE,
-			},
+			userProfileIsActive: this.createIsActiveKeyProps(),
+			userProfileCreatedAt: this.createCreatedAtKeyProps(),
+			userProfileUpdatedAt: this.createUpdatedAtKeyProps(),
+			userProfileDeletedAt: this.createDeletedAtKeyProps(),
 		});
 
-		await queryInterface.addConstraint("user_profiles", {
-			type: "foreign key",
-			name: "user_profile_user_id_fkey",
-			fields: ["userProfileUserId"],
-			references: {
-				table: "users",
-				field: "userId",
-			},
-			onDelete: "cascade",
-			onUpdate: "cascade",
-		});
+		await this.createForeignKeyConstraint("user_profiles", "userProfileUserId", "users", "userId");
 	}
 
-	public async down(queryInterface: QueryInterface): Promise<void> {
-		await queryInterface.removeConstraint("user_profiles", "user_profile_user_id_fkey");
+	public async down(): Promise<void> {
+		await this.dropForeignKeyConstraint("user_profiles", "userProfileUserId");
 
-		await queryInterface.dropTable("user_profiles");
+		await this.queryInterface.dropTable("user_profiles");
 	}
 }

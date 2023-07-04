@@ -11,6 +11,8 @@
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.14.0",
     "iocc": "^2.1.5",
-    "ms": "^2.1.3"
+    "ms": "^2.1.3",
+    "sequelize": "^6.32.0",
+    "sequelize-typescript": "^2.1.5"
   }
 }
