@@ -1,4 +1,4 @@
-import { Controller } from "@/backend-core/request-processor/decorators";
+import { Controller, Request } from "@/backend-core/request-processor/decorators";
 import type { IControllerAuthRequest, IControllerRequest } from "@/backend-core/request-processor/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
@@ -11,6 +11,10 @@ export class UserController {
 		// Dependencies
 		@Inject(UserService) private readonly userService: UserService,
 	) {}
+
+	public async me(@Request request: IControllerAuthRequest<UserEntity>): Promise<{ user: UserEntity }> {
+		return { user: request.auth };
+	}
 
 	public async getUserList(request: IControllerAuthRequest<UserEntity>, context: Context): Promise<{ users: Array<UserEntity> }> {
 		return { users: await this.userService.getUserList(request, context) };

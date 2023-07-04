@@ -12,5 +12,6 @@ export class ConfigConst {
 	public static readonly DB_MIGRATION_PASS = "DB_MIGRATION_PASS";
 
 	public static readonly GOOGLE_CLIENT_ID = "GOOGLE_CLIENT_ID";
-	public static readonly GOOGLE_REDIRECT_URL = "GOOGLE_REDIRECT_URL";
+	public static readonly REDIRECT_URL = "REDIRECT_URL";
+	public static readonly TOKEN_EXPIRY = "TOKEN_EXPIRY";
 }

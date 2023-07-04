@@ -1,6 +1,7 @@
 export interface IAuthConfig {
 	readonly googleClientId: string;
-	readonly googleRedirectUrl: string;
+	readonly redirectUrl: string;
+	readonly tokenExpiry: string;
 }
 
 export interface IAppConfig {

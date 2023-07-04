@@ -7,6 +7,7 @@ export const routeRegisterHandler = async (): Promise<Array<IStackRoute>> => {
 
 	const { IntroTouch } = await import("../main/intro-touch");
 	const { RouterTokenConst } = await import("@/backend-core/router/const");
+
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 
 	return await introTouch.coldExecuteWithinApplicationContext(async (container: IContainer): Promise<Array<IStackRoute>> => {

@@ -20,7 +20,8 @@ export interface IConfig {
 
 	// Auth
 	GOOGLE_CLIENT_ID: "GOOGLE_CLIENT_ID";
-	GOOGLE_REDIRECT_URL: "GOOGLE_REDIRECT_URL";
+	REDIRECT_URL: "REDIRECT_URL";
+	TOKEN_EXPIRY: "TOKEN_EXPIRY";
 }
 
 export class Config {

@@ -1,18 +1,18 @@
 import type { UserEntity } from "@/backend/user/db/entities";
-import { UserAuthService } from "@/backend/user/services";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";
-import type { ApiResponse, Nullable } from "@/stacks/types";
+import type { ApiResponse } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { IdTokenClaims, TokenSet } from "openid-client";
 import { GoogleAdapter, Session } from "sst/node/auth";
 import type { IAuthAdapter } from "@/backend-core/authentication/interface";
+import { AdapterService } from "@/backend-core/authentication/services/adapter";
 import type { IAuthAdapterRecord, IGoogleAdapter } from "@/backend-core/authentication/types";
 
 export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 	public constructor(
 		// Dependencies
-		@Inject(UserAuthService) private readonly userAuthService: UserAuthService,
+		@Inject(AdapterService) private readonly adapterService: AdapterService,
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
@@ -23,17 +23,21 @@ export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 			mode: "oidc",
 			clientID: authConfig.googleClientId,
 			onSuccess: async (tokenSet: TokenSet): Promise<ApiResponse> => {
-				const [userEntity, redirectUrl]: [UserEntity, string] = await this.lookUpUser(tokenSet);
+				const claims: IdTokenClaims = tokenSet.claims();
+
+				const [userEntity, created]: [UserEntity, boolean] = await this.adapterService.findOrCreateUserInDatabase({
+					userEmail: claims.email ?? "",
+					userFirstName: claims.given_name ?? "",
+					userLastName: claims.family_name ?? "",
+					userPicture: claims.picture ?? "",
+					userPassword: null,
+				});
 
 				return Session.parameter({
-					redirect: redirectUrl.toString(),
+					redirect: this.adapterService.prepareAuthRedirectionUrl(created).toString(),
 					type: "user",
-					properties: {
-						userUuid: userEntity.userUuid,
-						userFirstName: userEntity.userFirstName,
-						userLastName: userEntity.userLastName,
-						userEmail: userEntity.userEmail,
-					},
+					properties: this.adapterService.createAuthPayload(userEntity),
+					options: this.adapterService.createTokenProps(userEntity),
 				});
 			},
 		});
@@ -42,31 +46,5 @@ export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 			identifier: "google",
 			adapter: googleAdapter,
 		};
-	}
-
-	private async lookUpUser(tokenSet: TokenSet): Promise<[UserEntity, string]> {
-		const claims: IdTokenClaims = tokenSet.claims();
-		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
-
-		let created = "true";
-		let entity: Nullable<UserEntity>;
-
-		entity = await this.userAuthService.findActiveUserByEmail(claims.email as string);
-
-		if (entity) created = "false";
-		else {
-			entity = await this.userAuthService.createNewUserWithProfile({
-				userEmail: claims.email as string,
-				userFirstName: claims.given_name ?? "",
-				userLastName: claims.family_name ?? "",
-				userPassword: null,
-				userPicture: claims.picture ?? "",
-			});
-		}
-
-		const redirectUrl: URL = new URL(authConfig.googleRedirectUrl);
-		redirectUrl.searchParams.set("created", created);
-
-		return [entity, redirectUrl.toString()];
 	}
 }

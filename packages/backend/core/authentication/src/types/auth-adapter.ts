@@ -3,11 +3,11 @@ import type { Adapter, GoogleAdapter } from "sst/node/auth";
 declare module "sst/node/auth" {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	export interface SessionTypes {
-		user: IUserPayload;
+		user: IAuthPayload;
 	}
 }
 
-export interface IUserPayload {
+export interface IAuthPayload {
 	userUuid: string;
 	userFirstName: string;
 	userLastName: string;

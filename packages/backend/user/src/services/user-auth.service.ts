@@ -5,7 +5,7 @@ import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
-import type { ICreateUserWithProfile } from "@/backend/user/types";
+import type { IFindOrCreateUserProps } from "@/backend/user/types";
 
 export class UserAuthService {
 	public constructor(
@@ -34,17 +34,11 @@ export class UserAuthService {
 		});
 	}
 
-	public createNewUserWithProfile(userProperties: ICreateUserWithProfile): Promise<UserEntity> {
+	public createNewUserWithProfile(userProperties: IFindOrCreateUserProps): Promise<UserEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async (runningTransaction: ITransactionStore): Promise<UserEntity> => {
 				const user: UserEntity = await this.userRepository.createOne({
-					valuesToCreate: {
-						userEmail: userProperties.userEmail,
-						userPicture: userProperties.userPicture,
-						userFirstName: userProperties.userFirstName,
-						userLastName: userProperties.userLastName,
-						userPassword: userProperties.userPassword,
-					},
+					valuesToCreate: userProperties,
 					transaction: runningTransaction.transaction,
 				});
 

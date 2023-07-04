@@ -6,7 +6,7 @@ import { validate } from "class-validator";
 import type { IValidator } from "@/backend-core/validation/interface";
 
 export class ValidatorService implements IValidator {
-	public async validate<Schema extends object, Data extends Schema = Schema>(schema: Constructable<Schema>, data: Data): Promise<Schema> {
+	public async validate<Schema extends object, Data extends object = Schema>(schema: Constructable<Schema>, data: Data): Promise<Schema> {
 		const transformedObject: Schema = plainToInstance(schema, data);
 
 		const errors: Array<ValidationError> = await validate(transformedObject, {
