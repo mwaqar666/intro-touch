@@ -18,8 +18,6 @@ export class AuthRequestGuard implements IGuard<IControllerAuthRequest> {
 	public async guard(request: IControllerAuthRequest): Promise<void> {
 		const session: SessionValue = useSession();
 
-		console.log(session);
-
 		if (session.type !== "user") throw new UnauthorizedException();
 
 		const user: Nullable<UserEntity> = await this.userAuthService.findActiveUserByUuid(session.properties.userUuid);

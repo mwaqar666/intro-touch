@@ -46,6 +46,8 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 		switch (handlerMeta.type) {
 			case "body":
 				return await this.validator.validate(handlerMeta.schema, request.body);
+			case "auth":
+				return "auth" in request ? request.auth : null;
 			case "path":
 				return await this.validator.validate(handlerMeta.schema, request.pathParams);
 			case "query":

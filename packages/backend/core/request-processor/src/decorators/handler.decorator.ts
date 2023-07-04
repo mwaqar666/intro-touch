@@ -1,6 +1,6 @@
 import type { Constructable, Optional } from "@/stacks/types";
 import { HandlerMetaConst } from "@/backend-core/request-processor/const";
-import type { IHandlerBodyMeta, IHandlerContextMeta, IHandlerMeta, IHandlerMetaMap, IHandlerMetaType, IHandlerPathMeta, IHandlerQueryMeta, IHandlerRequestMeta } from "@/backend-core/request-processor/types";
+import type { IHandlerAuthMeta, IHandlerBodyMeta, IHandlerContextMeta, IHandlerMeta, IHandlerMetaMap, IHandlerMetaType, IHandlerPathMeta, IHandlerQueryMeta, IHandlerRequestMeta } from "@/backend-core/request-processor/types";
 
 const getHandlerMetaMap = <T>(target: T): IHandlerMetaMap => {
 	const handlerMetaMap: Optional<IHandlerMetaMap> = Reflect.getMetadata(HandlerMetaConst.HandlerMetaMapKey, <object>target);
@@ -29,6 +29,16 @@ export const Body = <T>(schema: Constructable<object>): ParameterDecorator => {
 		setHandlerMetaMap(target, handlerMetaMap);
 	});
 };
+
+export const Auth: ParameterDecorator = <ParameterDecorator>(<T>(target: T, propertyKey: string, parameterIndex: number): void => {
+	let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
+
+	const handlerAuthMeta: IHandlerAuthMeta = { type: "auth", parameterIndex };
+
+	handlerMetaMap = addHandlerMeta(propertyKey, handlerMetaMap, handlerAuthMeta);
+
+	setHandlerMetaMap(target, handlerMetaMap);
+});
 
 export const Query = <T>(schema: Constructable<object>): ParameterDecorator => {
 	return <ParameterDecorator>((target: T, propertyKey: string, parameterIndex: number): void => {

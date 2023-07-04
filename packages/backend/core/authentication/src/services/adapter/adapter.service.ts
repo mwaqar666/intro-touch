@@ -3,10 +3,11 @@ import { UserAuthService } from "@/backend/user/services";
 import type { IFindOrCreateUserProps } from "@/backend/user/types";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";
-import type { Nullable } from "@/stacks/types";
+import type { ApiResponse, Nullable } from "@/stacks/types";
 import type { SignerOptions } from "fast-jwt";
 import { Inject } from "iocc";
 import ms from "ms";
+import { Session } from "sst/node/auth";
 import type { IAuthPayload } from "@/backend-core/authentication/types";
 
 export class AdapterService {
@@ -37,13 +38,13 @@ export class AdapterService {
 		return this.userAuthService.createNewUserWithProfile(createUserProps);
 	}
 
-	public prepareAuthRedirectionUrl(created: boolean): URL {
-		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
-
-		const redirectUrl: URL = new URL(authConfig.redirectUrl);
-		redirectUrl.searchParams.set("created", created.toString());
-
-		return redirectUrl;
+	public prepareRedirectionResponse(authEntity: UserEntity, created: boolean): ApiResponse {
+		return Session.parameter({
+			redirect: this.prepareAuthRedirectionUrl(created).toString(),
+			type: "user",
+			properties: this.createAuthPayload(authEntity),
+			options: this.createTokenProps(authEntity),
+		});
 	}
 
 	public createAuthPayload(authEntity: UserEntity): IAuthPayload {
@@ -62,5 +63,14 @@ export class AdapterService {
 			sub: authEntity.userUuid,
 			expiresIn: ms(authConfig.tokenExpiry),
 		};
+	}
+
+	private prepareAuthRedirectionUrl(created: boolean): URL {
+		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
+
+		const redirectUrl: URL = new URL(authConfig.redirectUrl);
+		redirectUrl.searchParams.set("created", created.toString());
+
+		return redirectUrl;
 	}
 }

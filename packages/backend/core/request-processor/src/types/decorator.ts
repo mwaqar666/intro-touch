@@ -9,6 +9,9 @@ export type IHandlerMetaType<T = object, P = object, Q = object> =
 	// Inject AWS request context
 	| IHandlerContextMeta
 
+	// Inject authenticated entity
+	| IHandlerAuthMeta
+
 	// Inject validated body
 	| IHandlerBodyMeta<T>
 
@@ -34,6 +37,11 @@ export interface IHandlerBodyMeta<T = object> {
 	type: "body";
 	parameterIndex: number;
 	schema: Constructable<T>;
+}
+
+export interface IHandlerAuthMeta {
+	type: "auth";
+	parameterIndex: number;
 }
 
 export interface IHandlerPathMeta<P = object> {

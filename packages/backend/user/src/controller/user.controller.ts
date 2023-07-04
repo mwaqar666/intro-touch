@@ -1,6 +1,4 @@
-import { Controller, Request } from "@/backend-core/request-processor/decorators";
-import type { IControllerAuthRequest, IControllerRequest } from "@/backend-core/request-processor/types";
-import type { Context } from "aws-lambda";
+import { Auth, Controller } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserService } from "@/backend/user/services";
@@ -12,34 +10,34 @@ export class UserController {
 		@Inject(UserService) private readonly userService: UserService,
 	) {}
 
-	public async me(@Request request: IControllerAuthRequest<UserEntity>): Promise<{ user: UserEntity }> {
-		return { user: request.auth };
+	public async me(@Auth user: UserEntity): Promise<{ user: UserEntity }> {
+		return { user };
 	}
 
-	public async getUserList(request: IControllerAuthRequest<UserEntity>, context: Context): Promise<{ users: Array<UserEntity> }> {
-		return { users: await this.userService.getUserList(request, context) };
+	public async getUserList(@Auth user: UserEntity): Promise<{ users: Array<UserEntity> }> {
+		return { users: await this.userService.getUserList(user) };
 	}
 
-	public async getUser(request: IControllerRequest, context: Context): Promise<string> {
-		await this.userService.getUser(request, context);
+	public async getUser(@Auth user: UserEntity): Promise<string> {
+		await this.userService.getUser(user);
 
 		return "None";
 	}
 
-	public async createUser(request: IControllerRequest, context: Context): Promise<string> {
-		await this.userService.createUser(request, context);
+	public async createUser(@Auth user: UserEntity): Promise<string> {
+		await this.userService.createUser(user);
 
 		return "None";
 	}
 
-	public async updateUser(request: IControllerRequest, context: Context): Promise<string> {
-		await this.userService.updateUser(request, context);
+	public async updateUser(@Auth user: UserEntity): Promise<string> {
+		await this.userService.updateUser(user);
 
 		return "None";
 	}
 
-	public async deleteUser(request: IControllerRequest, context: Context): Promise<string> {
-		await this.userService.deleteUser(request, context);
+	public async deleteUser(@Auth user: UserEntity): Promise<string> {
+		await this.userService.deleteUser(user);
 
 		return "None";
 	}

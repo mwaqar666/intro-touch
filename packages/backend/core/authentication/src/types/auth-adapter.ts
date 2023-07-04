@@ -1,4 +1,4 @@
-import type { Adapter, GoogleAdapter } from "sst/node/auth";
+import type { Adapter, FacebookAdapter, GoogleAdapter } from "sst/node/auth";
 
 declare module "sst/node/auth" {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -20,3 +20,4 @@ export interface IAuthAdapterRecord<T extends Adapter = Adapter> {
 }
 
 export type IGoogleAdapter = ReturnType<typeof GoogleAdapter>;
+export type IFacebookAdapter = ReturnType<typeof FacebookAdapter>;

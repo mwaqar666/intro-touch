@@ -1,27 +1,23 @@
 import type { UserEntity } from "@/backend/user/db/entities";
-import { ConfigTokenConst } from "@/backend-core/config/const";
-import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";
 import type { ApiResponse } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { IdTokenClaims, TokenSet } from "openid-client";
-import { GoogleAdapter } from "sst/node/auth";
+import { FacebookAdapter } from "sst/node/auth";
 import type { IAuthAdapter } from "@/backend-core/authentication/interface";
 import { AdapterService } from "@/backend-core/authentication/services/adapter";
-import type { IAuthAdapterRecord, IGoogleAdapter } from "@/backend-core/authentication/types";
+import type { IAuthAdapterRecord, IFacebookAdapter } from "@/backend-core/authentication/types";
 
-export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
+export class FacebookAuthAdapter implements IAuthAdapter<IFacebookAdapter> {
 	public constructor(
 		// Dependencies
 		@Inject(AdapterService) private readonly adapterService: AdapterService,
-		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
-	public configureAuthAdapter(): IAuthAdapterRecord<IGoogleAdapter> {
-		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
-
-		const googleAdapter = GoogleAdapter({
-			mode: "oidc",
-			clientID: authConfig.googleClientId,
+	public configureAuthAdapter(): IAuthAdapterRecord<IFacebookAdapter> {
+		const facebookAdapter = FacebookAdapter({
+			clientID: "6359123637470816",
+			clientSecret: "b7cec95d98b95e63951bac871284cace",
+			scope: "openid email",
 			onSuccess: async (tokenSet: TokenSet): Promise<ApiResponse> => {
 				const claims: IdTokenClaims = tokenSet.claims();
 
@@ -38,8 +34,8 @@ export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 		});
 
 		return {
-			identifier: "google",
-			adapter: googleAdapter,
+			adapter: facebookAdapter,
+			identifier: "facebook",
 		};
 	}
 }
