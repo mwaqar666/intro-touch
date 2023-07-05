@@ -14,14 +14,12 @@ export class UserModule extends AbstractModule {
 		this.container.registerSingleton(UserService);
 		this.container.registerSingleton(UserAuthService);
 
-		// Router and Db Register stuff
-		this.container.registerSingleton(UserRouter);
-		this.container.registerSingleton(UserDbRegister);
+		// Database
+		DbExtension.registerDb(UserDbRegister);
 	}
 
 	public override async boot(): Promise<void> {
-		DbExtension.registerDb(UserDbRegister);
-
-		RouterExtension.registerRouter(UserRouter);
+		// Routing
+		RouterExtension.addRouter(UserRouter);
 	}
 }

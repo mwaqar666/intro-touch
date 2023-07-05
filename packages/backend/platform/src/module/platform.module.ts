@@ -6,13 +6,12 @@ import { PlatformRouter } from "@/backend/platform/router";
 
 export class PlatformModule extends AbstractModule {
 	public override async register(): Promise<void> {
-		this.container.registerSingleton(PlatformRouter);
-		this.container.registerSingleton(PlatformDbRegister);
+		// Database
+		DbExtension.registerDb(PlatformDbRegister);
 	}
 
 	public override async boot(): Promise<void> {
-		DbExtension.registerDb(PlatformDbRegister);
-
-		RouterExtension.registerRouter(PlatformRouter);
+		// Routing
+		RouterExtension.addRouter(PlatformRouter);
 	}
 }

@@ -7,7 +7,7 @@ export class RouteRegisterService implements IRouteRegister {
 	private moduleRoutes: Array<IRoute> = [];
 	private builtRoutes: Array<IBuiltRoute> = [];
 
-	public registerRouter(router: IRouter): void {
+	public addRouter(router: IRouter): void {
 		this.moduleRoutes.push(...router.registerRoutes());
 	}
 

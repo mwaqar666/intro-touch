@@ -27,7 +27,6 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 				const routeHandler: ApiFunctionRouteProps = {
 					function: {
 						...defaultFunctionProps,
-						bind: [auth],
 						environment: lambdaEnvironment,
 						handler: "packages/backend/core/ignition/src/handlers/route-invoker-handler.routeInvokerHandler",
 					},

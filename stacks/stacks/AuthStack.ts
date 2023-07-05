@@ -35,14 +35,12 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 		GOOGLE_CLIENT_ID: googleClientId,
 		REDIRECT_URL: authRedirectUrl,
 		TOKEN_EXPIRY: tokenExpiry,
-		SST_Auth_privateKey_auth: "__FETCH_FROM_SSM__",
 	};
 
 	const defaultFunctionProps: FunctionProps = {
 		timeout: "30 seconds",
 		runtime: "nodejs18.x",
 		architecture: "arm_64",
-		permissions: ["ssm"],
 		nodejs: {
 			install: ["pg", "pg-hstore"],
 			esbuild: {

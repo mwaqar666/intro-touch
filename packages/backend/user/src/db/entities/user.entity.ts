@@ -1,4 +1,4 @@
-import { VerificationTokenEntity } from "@/backend-core/authentication/db/entity/verification-token.entity";
+import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import { HashService } from "@/backend-core/authentication/services";
 import { AppContainer } from "@/backend-core/core/extensions";

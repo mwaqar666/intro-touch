@@ -9,7 +9,6 @@ import { DbConnectorService, DbManagerService, MigrationRunnerService, Transacti
 
 export class DatabaseModule extends AbstractModule {
 	public override async register(): Promise<void> {
-		this.container.registerSingleton(DbRouter);
 		this.container.registerSingleton(MigrationController);
 
 		this.container.registerSingleton(DbTokenConst.DbConnectorToken, DbConnectorService);
@@ -19,7 +18,8 @@ export class DatabaseModule extends AbstractModule {
 	}
 
 	public override async boot(): Promise<void> {
-		RouterExtension.registerRouter(DbRouter);
+		// Routing
+		RouterExtension.addRouter(DbRouter);
 	}
 
 	public override async preRun(): Promise<void> {
