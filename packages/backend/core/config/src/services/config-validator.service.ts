@@ -33,6 +33,8 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.GOOGLE_CLIENT_ID]: joi.string().required(),
 				[ConfigConst.REDIRECT_URL]: joi.string().required(),
 				[ConfigConst.TOKEN_EXPIRY]: joi.string().required(),
+
+				[ConfigConst.EMAIL_FROM]: joi.string().required(),
 			})
 			.unknown(true);
 	}

@@ -5,6 +5,8 @@ import { AuthConst } from "@/stacks/const";
 import { esBuildDecoratorPlugin } from "@/stacks/plugins";
 import type { IDatabaseStack } from "@/stacks/stacks/DatabaseStack";
 import { DatabaseStack } from "@/stacks/stacks/DatabaseStack";
+import type { IEmailStack } from "@/stacks/stacks/EmailStack";
+import { EmailStack } from "@/stacks/stacks/EmailStack";
 
 export interface IAuthStack {
 	auth: Auth;
@@ -13,6 +15,7 @@ export interface IAuthStack {
 }
 
 export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
+	const { emailFrom, emailPolicy }: IEmailStack = use(EmailStack);
 	const { databaseName, databaseHost, databasePort, databaseUser, databasePass, databaseMigrationPass }: IDatabaseStack = use(DatabaseStack);
 
 	const appVersion: string = Config.get("APP_VERSION");
@@ -35,12 +38,14 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 		GOOGLE_CLIENT_ID: googleClientId,
 		REDIRECT_URL: authRedirectUrl,
 		TOKEN_EXPIRY: tokenExpiry,
+		EMAIL_FROM: emailFrom,
 	};
 
 	const defaultFunctionProps: FunctionProps = {
 		timeout: "30 seconds",
 		runtime: "nodejs18.x",
 		architecture: "arm_64",
+		permissions: [emailPolicy],
 		nodejs: {
 			install: ["pg", "pg-hstore"],
 			esbuild: {

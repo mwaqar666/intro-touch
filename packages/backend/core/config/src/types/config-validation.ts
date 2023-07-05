@@ -17,4 +17,6 @@ export interface IConfigValidation {
 	[ConfigConst.GOOGLE_CLIENT_ID]: StringSchema;
 	[ConfigConst.REDIRECT_URL]: StringSchema;
 	[ConfigConst.TOKEN_EXPIRY]: StringSchema;
+
+	[ConfigConst.EMAIL_FROM]: StringSchema;
 }

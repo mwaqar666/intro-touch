@@ -27,8 +27,8 @@ export default {
 		}
 
 		app.stack(DatabaseStack);
+		await app.stack(EmailStack);
 		app.stack(AuthStack);
 		await app.stack(ApiStack);
-		await app.stack(EmailStack);
 	},
 } satisfies SSTConfig;

@@ -11,6 +11,10 @@ export interface IAppConfig {
 	readonly key: string;
 }
 
+export interface IEmailConfig {
+	readonly emailFrom: string;
+}
+
 export interface IDatabaseConfig {
 	readonly databaseName: string;
 	readonly databaseHost: string;
@@ -23,5 +27,6 @@ export interface IDatabaseConfig {
 export interface IConfig {
 	readonly app: IAppConfig;
 	readonly auth: IAuthConfig;
+	readonly email: IEmailConfig;
 	readonly database: IDatabaseConfig;
 }

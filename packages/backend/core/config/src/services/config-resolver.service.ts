@@ -20,6 +20,9 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				redirectUrl: EnvExtractor.env(schema, ConfigConst.REDIRECT_URL),
 				tokenExpiry: EnvExtractor.env(schema, ConfigConst.TOKEN_EXPIRY),
 			},
+			email: {
+				emailFrom: EnvExtractor.env(schema, ConfigConst.EMAIL_FROM),
+			},
 			database: {
 				databaseName: EnvExtractor.env(schema, ConfigConst.DB_NAME),
 				databaseHost: EnvExtractor.env(schema, ConfigConst.DB_HOST),

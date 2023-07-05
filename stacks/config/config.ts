@@ -24,6 +24,9 @@ export interface IConfig {
 	FACEBOOK_CLIENT_SECRET: "FACEBOOK_CLIENT_SECRET";
 	REDIRECT_URL: "REDIRECT_URL";
 	TOKEN_EXPIRY: "TOKEN_EXPIRY";
+
+	// Email
+	EMAIL_FROM: "EMAIL_FROM";
 }
 
 export class Config {

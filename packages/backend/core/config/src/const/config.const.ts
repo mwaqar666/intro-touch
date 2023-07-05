@@ -14,4 +14,6 @@ export class ConfigConst {
 	public static readonly GOOGLE_CLIENT_ID = "GOOGLE_CLIENT_ID";
 	public static readonly REDIRECT_URL = "REDIRECT_URL";
 	public static readonly TOKEN_EXPIRY = "TOKEN_EXPIRY";
+
+	public static readonly EMAIL_FROM = "EMAIL_FROM";
 }
