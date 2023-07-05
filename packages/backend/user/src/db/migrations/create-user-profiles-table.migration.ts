@@ -5,7 +5,7 @@ export class CreateUserProfilesTable extends AbstractMigration {
 	public timestamp = 1687791044253;
 
 	public async up(): Promise<void> {
-		await this.queryInterface.createTable("user_profiles", {
+		await this.queryInterface.createTable("userProfiles", {
 			userProfileId: this.createPrimaryKeyProps(),
 			userProfileUuid: this.createUuidKeyProps(),
 			userProfileUserId: this.createForeignKeyProps(),
@@ -65,12 +65,12 @@ export class CreateUserProfilesTable extends AbstractMigration {
 			userProfileDeletedAt: this.createDeletedAtKeyProps(),
 		});
 
-		await this.createForeignKeyConstraint("user_profiles", "userProfileUserId", "users", "userId");
+		await this.createForeignKeyConstraint("userProfiles", "userProfileUserId", "users", "userId");
 	}
 
 	public async down(): Promise<void> {
-		await this.dropForeignKeyConstraint("user_profiles", "userProfileUserId");
+		await this.dropForeignKeyConstraint("userProfiles", "userProfileUserId");
 
-		await this.queryInterface.dropTable("user_profiles");
+		await this.queryInterface.dropTable("userProfiles");
 	}
 }

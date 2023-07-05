@@ -57,10 +57,14 @@ export class MigrationRunnerService implements IMigrationRunner {
 			return {
 				name: `${migration.timestamp}-${migration.constructor.name}`,
 				up: async ({ context }: MigrationParams<QueryInterface>): Promise<void> => {
-					await migration.up(context);
+					migration.setQueryInterface(context);
+
+					await migration.up();
 				},
 				down: async ({ context }: MigrationParams<QueryInterface>): Promise<void> => {
-					await migration.down(context);
+					migration.setQueryInterface(context);
+
+					await migration.down();
 				},
 			};
 		});

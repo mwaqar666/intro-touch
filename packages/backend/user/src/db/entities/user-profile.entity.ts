@@ -9,7 +9,7 @@ import { UserEntity } from "@/backend/user/db/entities/user.entity";
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => UserProfileEntity),
 }))
-@Table({ tableName: "user_profiles" })
+@Table({ tableName: "userProfiles" })
 export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 	@PrimaryKey
 	@AutoIncrement

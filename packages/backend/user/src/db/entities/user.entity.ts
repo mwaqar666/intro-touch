@@ -1,3 +1,4 @@
+import { VerificationTokenEntity } from "@/backend-core/authentication/db/entity/verification-token.entity";
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import { HashService } from "@/backend-core/authentication/services";
 import { AppContainer } from "@/backend-core/core/extensions";
@@ -5,7 +6,7 @@ import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, Uuid
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, AutoIncrement, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
 @Scopes(() => ({
@@ -64,6 +65,13 @@ export class UserEntity extends BaseEntity<UserEntity> {
 		foreignKey: "userProfileUserId",
 	})
 	public userUserProfiles: Array<UserProfileEntity>;
+
+	@HasOne(() => VerificationTokenEntity, {
+		as: "userToken",
+		foreignKey: "tokenUserId",
+		sourceKey: "userId",
+	})
+	public userToken: Nullable<VerificationTokenEntity>;
 
 	@BeforeUpdate
 	@BeforeCreate

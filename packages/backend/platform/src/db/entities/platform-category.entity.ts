@@ -8,7 +8,7 @@ import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => PlatformCategoryEntity),
 }))
-@Table({ tableName: "platform_categories" })
+@Table({ tableName: "platformCategories" })
 export class PlatformCategoryEntity extends BaseEntity<PlatformCategoryEntity> {
 	@PrimaryKey
 	@AutoIncrement

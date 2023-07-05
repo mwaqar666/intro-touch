@@ -5,7 +5,7 @@ export class CreateVerificationTokensTable extends AbstractMigration {
 	public override timestamp = 1688500107595;
 
 	public override async up(): Promise<void> {
-		await this.queryInterface.createTable("verification_tokens", {
+		await this.queryInterface.createTable("verificationTokens", {
 			tokenId: this.createPrimaryKeyProps(),
 			tokenUuid: this.createUuidKeyProps(),
 			tokenUserId: this.createForeignKeyProps(),
@@ -15,12 +15,12 @@ export class CreateVerificationTokensTable extends AbstractMigration {
 			},
 		});
 
-		await this.createForeignKeyConstraint("verification_tokens", "tokenUserId", "users", "userId");
+		await this.createForeignKeyConstraint("verificationTokens", "tokenUserId", "users", "userId");
 	}
 
 	public override async down(): Promise<void> {
-		await this.dropForeignKeyConstraint("verification_tokens", "tokenUserId");
+		await this.dropForeignKeyConstraint("verificationTokens", "tokenUserId");
 
-		await this.queryInterface.dropTable("verification_tokens");
+		await this.queryInterface.dropTable("verificationTokens");
 	}
 }

@@ -1,6 +1,5 @@
 import { AbstractModule } from "@/backend-core/core/concrete/module";
-import { RouterTokenConst } from "@/backend-core/router/const";
-import type { IRouteRegister } from "@/backend-core/router/interface";
+import { RouterExtension } from "@/backend-core/router/extensions";
 import type { Sequelize } from "sequelize-typescript";
 import { DbTokenConst } from "@/backend-core/database/const";
 import { MigrationController } from "@/backend-core/database/controllers";
@@ -20,9 +19,7 @@ export class DatabaseModule extends AbstractModule {
 	}
 
 	public override async boot(): Promise<void> {
-		const dbRouter: DbRouter = this.container.resolve(DbRouter);
-		const routeRegister: IRouteRegister = this.container.resolve(RouterTokenConst.RouteRegisterToken);
-		routeRegister.registerRouter(dbRouter);
+		RouterExtension.registerRouter(DbRouter);
 	}
 
 	public override async preRun(): Promise<void> {

@@ -1,8 +1,6 @@
 import { AbstractModule } from "@/backend-core/core/concrete/module";
-import { DbTokenConst } from "@/backend-core/database/const";
-import type { IDbManager } from "@/backend-core/database/interface";
-import { RouterTokenConst } from "@/backend-core/router/const";
-import type { IRouteRegister } from "@/backend-core/router/interface";
+import { DbExtension } from "@/backend-core/database/extensions";
+import { RouterExtension } from "@/backend-core/router/extensions";
 import { UserController } from "@/backend/user/controller";
 import { UserDbRegister } from "@/backend/user/db/user-db.register";
 import { UserRouter } from "@/backend/user/router";
@@ -22,12 +20,8 @@ export class UserModule extends AbstractModule {
 	}
 
 	public override async boot(): Promise<void> {
-		const userRouter: UserRouter = this.container.resolve(UserRouter);
-		const routeRegister: IRouteRegister = this.container.resolve(RouterTokenConst.RouteRegisterToken);
-		routeRegister.registerRouter(userRouter);
+		DbExtension.registerDb(UserDbRegister);
 
-		const userDbRegister: UserDbRegister = this.container.resolve(UserDbRegister);
-		const dbManager: IDbManager = this.container.resolve(DbTokenConst.DbManagerToken);
-		dbManager.registerModuleDb(userDbRegister);
+		RouterExtension.registerRouter(UserRouter);
 	}
 }
