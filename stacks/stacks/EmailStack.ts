@@ -17,9 +17,9 @@ export const EmailStack = async ({ app, stack }: StackContext): Promise<IEmailSt
 	const emailTemplates: Array<IEmailTemplates> = await EmailTemplateFinderPlugin.findEmailTemplates();
 
 	const emailTemplateNames: Array<string> = emailTemplates.map((emailTemplate: IEmailTemplates): string => {
-		new CfnTemplate(stack, EmailConst.EmailId(emailTemplate.emailTemplateName, app.stage), {
+		new CfnTemplate(stack, EmailConst.EmailId(app.stage, emailTemplate.emailTemplateName), {
 			template: {
-				templateName: emailTemplate.emailTemplateName,
+				templateName: EmailConst.EmailName(app.stage, emailTemplate.emailTemplateName),
 				subjectPart: emailTemplate.emailTemplateSubject,
 				htmlPart: emailTemplate.emailTemplateHtml,
 			},
