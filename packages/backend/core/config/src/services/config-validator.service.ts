@@ -21,6 +21,7 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.NODE_ENV]: joi.string().default("dev"),
 				[ConfigConst.APP_NAME]: joi.string().required(),
 				[ConfigConst.APP_VERSION]: joi.string().required(),
+				[ConfigConst.APP_REGION]: joi.string().required(),
 				[ConfigConst.APP_KEY]: joi.string().required(),
 
 				[ConfigConst.DB_NAME]: joi.string().required(),

@@ -13,6 +13,7 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				env: EnvExtractor.env(schema, ConfigConst.NODE_ENV),
 				name: EnvExtractor.env(schema, ConfigConst.APP_NAME),
 				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
+				region: EnvExtractor.env(schema, ConfigConst.APP_REGION),
 				key: EnvExtractor.env(schema, ConfigConst.APP_KEY),
 			},
 			auth: {

@@ -5,6 +5,7 @@ export interface IConfigValidation {
 	[ConfigConst.NODE_ENV]: StringSchema;
 	[ConfigConst.APP_NAME]: StringSchema;
 	[ConfigConst.APP_VERSION]: StringSchema;
+	[ConfigConst.APP_REGION]: StringSchema;
 	[ConfigConst.APP_KEY]: StringSchema;
 
 	[ConfigConst.DB_NAME]: StringSchema;

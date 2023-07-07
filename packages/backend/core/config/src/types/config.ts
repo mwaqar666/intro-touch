@@ -8,6 +8,7 @@ export interface IAppConfig {
 	readonly env: string;
 	readonly name: string;
 	readonly version: string;
+	readonly region: string;
 	readonly key: string;
 }
 

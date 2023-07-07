@@ -43,6 +43,9 @@
       "@/backend-core/ignition/*": [
         "packages/backend/core/ignition/src/*"
       ],
+      "@/backend-core/mailer/*": [
+        "packages/backend/core/mailer/src/*"
+      ],
       "@/backend-core/request-processor/*": [
         "packages/backend/core/request-processor/src/*"
       ],

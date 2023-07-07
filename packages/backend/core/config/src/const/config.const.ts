@@ -2,6 +2,7 @@ export class ConfigConst {
 	public static readonly NODE_ENV = "NODE_ENV";
 	public static readonly APP_NAME = "APP_NAME";
 	public static readonly APP_VERSION = "APP_VERSION";
+	public static readonly APP_REGION = "APP_REGION";
 	public static readonly APP_KEY = "APP_KEY";
 
 	public static readonly DB_NAME = "DB_NAME";

@@ -20,6 +20,7 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 
 	const appVersion: string = Config.get("APP_VERSION");
 	const appKey: string = Config.get("APP_KEY");
+	const appRegion: string = Config.get("AWS_REGION");
 	const googleClientId: string = Config.get("GOOGLE_CLIENT_ID");
 	const authRedirectUrl: string = Config.get("REDIRECT_URL");
 	const tokenExpiry: string = Config.get("TOKEN_EXPIRY");
@@ -28,6 +29,7 @@ export const AuthStack = ({ app, stack }: StackContext): IAuthStack => {
 		NODE_ENV: app.stage,
 		APP_NAME: app.name,
 		APP_VERSION: appVersion,
+		APP_REGION: appRegion,
 		APP_KEY: appKey,
 		DB_NAME: databaseName,
 		DB_HOST: databaseHost,

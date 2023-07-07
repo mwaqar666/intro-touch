@@ -1,0 +1,10 @@
+{
+  "name": "@intro-touch/backend-mailer",
+  "version": "0.0.0",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.363.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "iocc": "^2.1.5"
+  }
+}
