@@ -8,7 +8,7 @@ export class CreatePlatformsTable extends AbstractMigration {
 		await this.queryInterface.createTable("platforms", {
 			platformId: this.createPrimaryKeyProps(),
 			platformUuid: this.createUuidKeyProps(),
-			platformPlatformCategoryId: this.createPrimaryKeyProps(),
+			platformPlatformCategoryId: this.createForeignKeyProps(),
 			platformName: {
 				allowNull: false,
 				type: DataType.STRING(100),

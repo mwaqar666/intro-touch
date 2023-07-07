@@ -6,7 +6,7 @@ export class CreateUsersTable extends AbstractMigration {
 
 	public override async up(): Promise<void> {
 		await this.queryInterface.createTable("users", {
-			userId: this.createForeignKeyProps(),
+			userId: this.createPrimaryKeyProps(),
 			userUuid: this.createUuidKeyProps(),
 			userFirstName: {
 				allowNull: false,
