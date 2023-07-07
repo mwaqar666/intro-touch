@@ -4,6 +4,7 @@
   "dependencies": {
     "class-validator": "^0.14.0",
     "iocc": "^2.1.5",
+    "lodash.omit": "^4.5.0",
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.0",
@@ -12,6 +13,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/lodash.omit": "^4.5.7",
     "@types/pg": "^8.10.2",
     "@types/uuid": "^9.0.2"
   }

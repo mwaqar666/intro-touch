@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -123,6 +123,9 @@ importers:
       iocc:
         specifier: ^2.1.5
         version: 2.1.5(reflect-metadata@0.1.13)
+      lodash.omit:
+        specifier: ^4.5.0
+        version: 4.5.0
       pg:
         specifier: ^8.11.0
         version: 8.11.0
@@ -142,6 +145,9 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0
     devDependencies:
+      '@types/lodash.omit':
+        specifier: ^4.5.7
+        version: 4.5.7
       '@types/pg':
         specifier: ^8.10.2
         version: 8.10.2
@@ -206,6 +212,9 @@ importers:
       iocc:
         specifier: ^2.1.5
         version: 2.1.5(reflect-metadata@0.1.13)
+      lodash.omit:
+        specifier: ^4.5.0
+        version: 4.5.0
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.13
@@ -215,6 +224,10 @@ importers:
       sequelize-typescript:
         specifier: ^2.1.5
         version: 2.1.5(@types/node@20.3.3)(@types/validator@13.7.17)(reflect-metadata@0.1.13)(sequelize@6.32.0)
+    devDependencies:
+      '@types/lodash.omit':
+        specifier: ^4.5.7
+        version: 4.5.7
 
 packages:
 
@@ -2687,6 +2700,16 @@ packages:
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/lodash.omit@4.5.7:
+    resolution: {integrity: sha512-6q6cNg0tQ6oTWjSM+BcYMBhan54P/gLqBldG4AuXd3nKr0oeVekWNS4VrNEu3BhCSDXtGapi7zjhnna0s03KpA==}
+    dependencies:
+      '@types/lodash': 4.14.195
+    dev: true
+
+  /@types/lodash@4.14.195:
+    resolution: {integrity: sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==}
     dev: true
 
   /@types/ms@0.7.31:
@@ -5735,6 +5758,10 @@ packages:
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
+
+  /lodash.omit@4.5.0:
+    resolution: {integrity: sha512-XeqSp49hNGmlkj2EJlfrQFIzQ6lXdNro9sddtQzcJY8QaoC2GO0DT7xaIokHeyM+mIT0mPMlPvkYzg2xCuHdZg==}
+    dev: false
 
   /lodash.pad@4.5.1:
     resolution: {integrity: sha512-mvUHifnLqM+03YNzeTBS1/Gr6JRFjd3rRx88FHWUvamVaT9k2O/kXha3yBSOwB9/DTQrSTLJNHvLBBt2FdX7Mg==}

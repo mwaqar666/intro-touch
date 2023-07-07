@@ -1,8 +1,9 @@
 import type { Key } from "@/stacks/types";
-import type { ModelStatic } from "sequelize";
-import { BeforeCreate, Model } from "sequelize-typescript";
+import omit from "lodash.omit";
+import type { Association, ModelStatic } from "sequelize";
+import { Association as AssociationType, BeforeCreate, Model } from "sequelize-typescript";
 import { v4 as uuid } from "uuid";
-import type { EntityScope } from "@/backend-core/database/types";
+import type { EntityScope, EntityType } from "@/backend-core/database/types";
 
 export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Model<TEntity> {
 	// Table & Column Name Information
@@ -40,5 +41,22 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 		this.changed(key, true);
 
 		delete this.dataValues[key];
+	}
+
+	public override toJSON(): object {
+		const keysToExclude: Array<string> = [];
+		const entityStatic: EntityType<TEntity> = this.constructor as EntityType<TEntity>;
+
+		if (!BaseEntity.exposePrimaryKey) keysToExclude.push(entityStatic.primaryKeyAttribute);
+
+		Object.values(entityStatic.associations).forEach(({ associationType, foreignKey }: Association) => {
+			if (associationType.toUpperCase() === AssociationType.BelongsTo.toUpperCase()) {
+				if (BaseEntity.exposeForeignKeys.includes(foreignKey)) return;
+
+				keysToExclude.push(foreignKey);
+			}
+		});
+
+		return omit(this.dataValues, keysToExclude);
 	}
 }

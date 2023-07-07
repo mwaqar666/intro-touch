@@ -6,6 +6,7 @@ import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, Uuid
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
+import omit from "lodash.omit";
 import { AllowNull, AutoIncrement, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
@@ -82,6 +83,12 @@ export class UserEntity extends BaseEntity<UserEntity> {
 		instance.userPassword = await hashService.hash(instance.userPassword);
 
 		return instance;
+	}
+
+	public override toJSON(): object {
+		const plainModel: object = super.toJSON();
+
+		return omit(plainModel, ["userPassword"]);
 	}
 
 	public async verifyPassword(plainPassword: string): Promise<boolean> {
