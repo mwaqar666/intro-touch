@@ -13,6 +13,14 @@ export class CreateVerificationTokensTable extends AbstractMigration {
 				allowNull: false,
 				type: DataType.STRING(50),
 			},
+			tokenExpiry: {
+				allowNull: false,
+				type: DataType.DATE,
+			},
+			tokenType: {
+				allowNull: false,
+				type: DataType.INTEGER,
+			},
 		});
 
 		await this.createForeignKeyConstraint("verificationTokens", "tokenUserId", "users", "userId");

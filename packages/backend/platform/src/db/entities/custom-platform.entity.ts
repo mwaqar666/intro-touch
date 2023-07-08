@@ -1,3 +1,4 @@
+import { UserProfileEntity } from "@/backend/user/db/entities";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
@@ -25,6 +26,11 @@ export class CustomPlatformEntity extends BaseEntity<CustomPlatformEntity> {
 	@AllowNull(false)
 	@Column({ type: DataType.INTEGER })
 	public customPlatformPlatformCategoryId: number;
+
+	@ForeignKey(() => UserProfileEntity)
+	@AllowNull(false)
+	@Column({ type: DataType.INTEGER })
+	public customPlatformUserProfileId: number;
 
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(100) })
@@ -61,4 +67,11 @@ export class CustomPlatformEntity extends BaseEntity<CustomPlatformEntity> {
 		foreignKey: "platformProfileCustomPlatformId",
 	})
 	public customPlatformPlatformProfiles: Array<PlatformProfileEntity>;
+
+	@BelongsTo(() => UserProfileEntity, {
+		as: "customPlatformUserProfile",
+		targetKey: "userProfileId",
+		foreignKey: "customPlatformUserProfileId",
+	})
+	public customPlatformUserProfile: UserProfileEntity;
 }

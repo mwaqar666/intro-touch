@@ -1,4 +1,4 @@
-import { PlatformProfileEntity } from "@/backend/platform/db/entities";
+import { CustomPlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
@@ -103,4 +103,11 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 		foreignKey: "platformProfileProfileId",
 	})
 	public userProfilePlatformProfiles: Array<PlatformProfileEntity>;
+
+	@HasMany(() => CustomPlatformEntity, {
+		as: "userProfileCustomPlatforms",
+		sourceKey: "userProfileId",
+		foreignKey: "customPlatformUserProfileId",
+	})
+	public userProfileCustomPlatforms: Array<CustomPlatformEntity>;
 }

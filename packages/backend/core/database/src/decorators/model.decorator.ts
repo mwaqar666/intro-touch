@@ -23,6 +23,10 @@ export const UuidColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extend
 	Default(uuid)(target, propertyKey);
 });
 
+export const DefaultUuid: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
+	Default(uuid)(target, propertyKey);
+});
+
 export const IsActiveColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 	const concreteEntity: EntityType<TEntity> = <EntityType<TEntity>>target.constructor;
 	concreteEntity.isActiveColumnName = propertyKey;
