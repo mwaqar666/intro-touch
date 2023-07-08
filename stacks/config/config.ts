@@ -7,9 +7,6 @@ export interface IConfig {
 	APP_DOMAIN: "APP_DOMAIN";
 	APP_KEY: "APP_KEY";
 
-	// Account
-	AWS_REGION: "AWS_REGION";
-
 	// Database
 	DB_NAME: "DB_NAME";
 	DB_HOST: "DB_HOST";
