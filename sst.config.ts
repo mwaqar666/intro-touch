@@ -17,7 +17,7 @@ export default {
 
 		return {
 			name: Config.get("APP_NAME"),
-			region: Config.get("AWS_REGION"),
+			region: "us-east-2",
 			stage: appStage,
 		};
 	},
