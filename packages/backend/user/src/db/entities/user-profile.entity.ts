@@ -1,9 +1,9 @@
 import { CustomPlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Default, HasMany, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserEntity } from "@/backend/user/db/entities/user.entity";
 
 @Scopes(() => ({
@@ -11,19 +11,13 @@ import { UserEntity } from "@/backend/user/db/entities/user.entity";
 }))
 @Table({ tableName: "userProfiles" })
 export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
-	@PrimaryKey
-	@AutoIncrement
-	@Column({ type: DataType.INTEGER })
+	@PrimaryKeyColumn
 	public readonly userProfileId: number;
 
-	@UuidColumn
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@UuidKeyColumn
 	public readonly userProfileUuid: string;
 
-	@ForeignKey(() => UserEntity)
-	@AllowNull(false)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => UserEntity)
 	public readonly userProfileUserId: number;
 
 	@AllowNull(false)
@@ -77,8 +71,6 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 	public userProfileIsLive: boolean;
 
 	@IsActiveColumn
-	@AllowNull(false)
-	@Column({ type: DataType.BOOLEAN })
 	public userProfileIsActive: boolean;
 
 	@CreatedAtColumn

@@ -1,9 +1,9 @@
 import { UserProfileEntity } from "@/backend/user/db/entities";
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, PrimaryKey, Scopes, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
 import { PlatformCategoryEntity } from "@/backend/platform/db/entities/platform-category.entity";
 import { PlatformProfileEntity } from "@/backend/platform/db/entities/platform-profile.entity";
 
@@ -12,24 +12,16 @@ import { PlatformProfileEntity } from "@/backend/platform/db/entities/platform-p
 }))
 @Table({ tableName: "customPlatforms" })
 export class CustomPlatformEntity extends BaseEntity<CustomPlatformEntity> {
-	@PrimaryKey
-	@AutoIncrement
-	@Column({ type: DataType.INTEGER })
+	@PrimaryKeyColumn
 	public readonly customPlatformId: number;
 
-	@UuidColumn
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@UuidKeyColumn
 	public readonly customPlatformUuid: string;
 
-	@ForeignKey(() => PlatformCategoryEntity)
-	@AllowNull(false)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => PlatformCategoryEntity)
 	public customPlatformPlatformCategoryId: number;
 
-	@ForeignKey(() => UserProfileEntity)
-	@AllowNull(false)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => UserProfileEntity)
 	public customPlatformUserProfileId: number;
 
 	@AllowNull(false)
@@ -41,8 +33,6 @@ export class CustomPlatformEntity extends BaseEntity<CustomPlatformEntity> {
 	public customPlatformIcon: string;
 
 	@IsActiveColumn
-	@AllowNull(false)
-	@Column({ type: DataType.BOOLEAN })
 	public customPlatformIsActive: boolean;
 
 	@CreatedAtColumn

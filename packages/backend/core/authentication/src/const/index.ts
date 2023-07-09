@@ -1,1 +1,1 @@
-export * from "./auth-token.const";
+export * from "./authentication-token.const";

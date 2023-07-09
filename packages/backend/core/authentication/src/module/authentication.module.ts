@@ -1,8 +1,8 @@
 import { AbstractModule } from "@/backend-core/core/concrete/module";
 import { DbExtension } from "@/backend-core/database/extensions";
 import { FacebookAuthAdapter, GoogleAuthAdapter, SelfAuthAdapter } from "@/backend-core/authentication/adapters";
-import { AuthTokenConst } from "@/backend-core/authentication/const";
-import { AuthDbRegister } from "@/backend-core/authentication/db/auth-db.register";
+import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
+import { AuthenticationDbRegister } from "@/backend-core/authentication/db/authentication-db.register";
 import type { IAuthAdapter, IAuthAdapterResolver } from "@/backend-core/authentication/interface";
 import { HashService } from "@/backend-core/authentication/services";
 import { AdapterService } from "@/backend-core/authentication/services/adapter";
@@ -16,24 +16,24 @@ export class AuthenticationModule extends AbstractModule {
 		this.container.registerSingleton(AdapterService);
 
 		// Resolver Services
-		this.container.registerSingleton(AuthTokenConst.GuardResolverToken, GuardResolverService);
-		this.container.registerSingleton(AuthTokenConst.AuthAdapterResolverToken, AuthAdapterResolverService);
+		this.container.registerSingleton(AuthenticationTokenConst.GuardResolverToken, GuardResolverService);
+		this.container.registerSingleton(AuthenticationTokenConst.AuthAdapterResolverToken, AuthAdapterResolverService);
 
 		// Authentication adapters
-		this.container.registerSingleton(AuthTokenConst.SelfAdapterToken, SelfAuthAdapter);
-		this.container.registerSingleton(AuthTokenConst.GoogleAdapterToken, GoogleAuthAdapter);
-		this.container.registerSingleton(AuthTokenConst.FacebookAdapterToken, FacebookAuthAdapter);
+		this.container.registerSingleton(AuthenticationTokenConst.SelfAdapterToken, SelfAuthAdapter);
+		this.container.registerSingleton(AuthenticationTokenConst.GoogleAdapterToken, GoogleAuthAdapter);
+		this.container.registerSingleton(AuthenticationTokenConst.FacebookAdapterToken, FacebookAuthAdapter);
 
 		// Database
-		DbExtension.registerDb(AuthDbRegister);
+		DbExtension.registerDb(AuthenticationDbRegister);
 	}
 
 	public override async postBoot(): Promise<void> {
-		const selfAdapter: IAuthAdapter = this.container.resolve(AuthTokenConst.SelfAdapterToken);
-		const googleAdapter: IAuthAdapter<IGoogleAdapter> = this.container.resolve(AuthTokenConst.GoogleAdapterToken);
-		const facebookAdapter: IAuthAdapter<IFacebookAdapter> = this.container.resolve(AuthTokenConst.FacebookAdapterToken);
+		const selfAdapter: IAuthAdapter = this.container.resolve(AuthenticationTokenConst.SelfAdapterToken);
+		const googleAdapter: IAuthAdapter<IGoogleAdapter> = this.container.resolve(AuthenticationTokenConst.GoogleAdapterToken);
+		const facebookAdapter: IAuthAdapter<IFacebookAdapter> = this.container.resolve(AuthenticationTokenConst.FacebookAdapterToken);
 
-		const authAdapterResolver: IAuthAdapterResolver = this.container.resolve(AuthTokenConst.AuthAdapterResolverToken);
+		const authAdapterResolver: IAuthAdapterResolver = this.container.resolve(AuthenticationTokenConst.AuthAdapterResolverToken);
 		authAdapterResolver.addAdapters(selfAdapter, googleAdapter, facebookAdapter);
 	}
 }

@@ -1,6 +1,7 @@
 import { PlatformModule } from "@/backend/platform/module";
 import { UserModule } from "@/backend/user/module";
 import { AuthenticationModule } from "@/backend-core/authentication/module";
+import { AuthorizationModule } from "@/backend-core/authorization/module";
 import { ConfigModule } from "@/backend-core/config/module";
 import type { IModule } from "@/backend-core/core/contracts/module";
 import { DatabaseModule } from "@/backend-core/database/module";
@@ -19,6 +20,7 @@ export class ModuleRegister {
 			RequestProcessorModule,
 			RouterModule,
 			AuthenticationModule,
+			AuthorizationModule,
 			ValidationModule,
 			MailerModule,
 

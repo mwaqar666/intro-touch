@@ -67,6 +67,12 @@ export class SelfAuthAdapter implements IAuthAdapter {
 		return JSON.parse(body);
 	}
 
+	private async runRegisterFlow(registerRequestBody: IAnyObject): Promise<UserEntity> {
+		const registerRequestDto: RegisterRequestDto = await this.validator.validate(RegisterRequestDto, registerRequestBody);
+
+		return await this.adapterService.createUserInDatabase(registerRequestDto);
+	}
+
 	private async runLoginFlow(loginRequestBody: IAnyObject): Promise<UserEntity> {
 		const { userEmail, userPassword }: LoginRequestDto = await this.validator.validate(LoginRequestDto, loginRequestBody);
 
@@ -77,12 +83,6 @@ export class SelfAuthAdapter implements IAuthAdapter {
 		if (!passwordVerified) throw new InvalidCredentialsException();
 
 		return user;
-	}
-
-	private async runRegisterFlow(registerRequestBody: IAnyObject): Promise<UserEntity> {
-		const registerRequestDto: RegisterRequestDto = await this.validator.validate(RegisterRequestDto, registerRequestBody);
-
-		return await this.adapterService.createUserInDatabase(registerRequestDto);
 	}
 
 	private createAuthToken(user: UserEntity): string {

@@ -31,6 +31,9 @@
       "@/backend-core/authentication/*": [
         "packages/backend/core/authentication/src/*"
       ],
+      "@/backend-core/authorization/*": [
+        "packages/backend/core/authorization/src/*"
+      ],
       "@/backend-core/config/*": [
         "packages/backend/core/config/src/*"
       ],

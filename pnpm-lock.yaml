@@ -100,6 +100,21 @@ importers:
         specifier: ^5.4.2
         version: 5.4.2
 
+  packages/backend/core/authorization:
+    dependencies:
+      class-validator:
+        specifier: ^0.14.0
+        version: 0.14.0
+      iocc:
+        specifier: ^2.1.5
+        version: 2.1.5(reflect-metadata@0.1.13)
+      sequelize:
+        specifier: ^6.32.0
+        version: 6.32.0(pg-hstore@2.3.4)(pg@8.11.0)
+      sequelize-typescript:
+        specifier: ^2.1.5
+        version: 2.1.5(@types/node@20.3.3)(@types/validator@13.7.17)(reflect-metadata@0.1.13)(sequelize@6.32.0)
+
   packages/backend/core/config:
     dependencies:
       iocc:

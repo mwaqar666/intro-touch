@@ -1,13 +1,14 @@
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import { HashService } from "@/backend-core/authentication/services";
+import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { AppContainer } from "@/backend-core/core/extensions";
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
 import omit from "lodash.omit";
-import { AllowNull, AutoIncrement, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, PrimaryKey, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
 @Scopes(() => ({
@@ -15,14 +16,10 @@ import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entit
 }))
 @Table({ tableName: "users" })
 export class UserEntity extends BaseEntity<UserEntity> {
-	@PrimaryKey
-	@AutoIncrement
-	@Column({ type: DataType.INTEGER })
+	@PrimaryKeyColumn
 	public readonly userId: number;
 
-	@UuidColumn
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@UuidKeyColumn
 	public readonly userUuid: string;
 
 	@AllowNull(false)
@@ -47,8 +44,6 @@ export class UserEntity extends BaseEntity<UserEntity> {
 	public userPassword: Nullable<string>;
 
 	@IsActiveColumn
-	@AllowNull(false)
-	@Column({ type: DataType.BOOLEAN })
 	public userIsActive: boolean;
 
 	@CreatedAtColumn
@@ -73,6 +68,13 @@ export class UserEntity extends BaseEntity<UserEntity> {
 		sourceKey: "userId",
 	})
 	public userToken: Nullable<VerificationTokenEntity>;
+
+	@HasMany(() => UserRoleEntity, {
+		as: "userUserRoles",
+		foreignKey: "userRoleUserId",
+		sourceKey: "userId",
+	})
+	public userUserRoles: Array<UserRoleEntity>;
 
 	@BeforeUpdate
 	@BeforeCreate

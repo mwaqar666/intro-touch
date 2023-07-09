@@ -1,7 +1,7 @@
 import type { Key } from "@/stacks/types";
 import omit from "lodash.omit";
-import type { Association, ModelStatic } from "sequelize";
-import { Association as AssociationType, BeforeCreate, Model } from "sequelize-typescript";
+import type { ModelStatic } from "sequelize";
+import { BeforeCreate, Model } from "sequelize-typescript";
 import { v4 as uuid } from "uuid";
 import type { EntityScope, EntityType } from "@/backend-core/database/types";
 
@@ -9,6 +9,7 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 	// Table & Column Name Information
 	public static uuidColumnName: string;
 	public static isActiveColumnName: string;
+	public static foreignKeyNames: Array<string> = [];
 
 	// Column Exposure Information
 	public static readonly exposePrimaryKey = false;
@@ -49,13 +50,11 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 
 		if (!BaseEntity.exposePrimaryKey) keysToExclude.push(entityStatic.primaryKeyAttribute);
 
-		Object.values(entityStatic.associations).forEach(({ associationType, foreignKey }: Association) => {
-			if (associationType.toUpperCase() === AssociationType.BelongsTo.toUpperCase()) {
-				if (BaseEntity.exposeForeignKeys.includes(foreignKey)) return;
+		for (const foreignKey of BaseEntity.foreignKeyNames) {
+			if (BaseEntity.exposeForeignKeys.includes(foreignKey)) continue;
 
-				keysToExclude.push(foreignKey);
-			}
-		});
+			keysToExclude.push(foreignKey);
+		}
 
 		return omit(this.dataValues, keysToExclude);
 	}

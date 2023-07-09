@@ -9,12 +9,12 @@ export const authInvokerHandler = async (request: ApiRequest, context: Context):
 
 	const { AuthHandler } = await import("sst/node/auth");
 	const { IntroTouch } = await import("../main/intro-touch");
-	const { AuthTokenConst } = await import("@/backend-core/authentication/const");
+	const { AuthenticationTokenConst } = await import("@/backend-core/authentication/const");
 
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 
 	return introTouch.hotExecuteWithinApplicationContext(async (container: IContainer): Promise<ApiResponse> => {
-		const authAdapterResolver: IAuthAdapterResolver = container.resolve(AuthTokenConst.AuthAdapterResolverToken);
+		const authAdapterResolver: IAuthAdapterResolver = container.resolve(AuthenticationTokenConst.AuthAdapterResolverToken);
 
 		const authHandler = AuthHandler({
 			providers: authAdapterResolver.resolveAdapters(),

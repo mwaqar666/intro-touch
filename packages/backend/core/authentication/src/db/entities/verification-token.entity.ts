@@ -1,8 +1,8 @@
 import { UserEntity } from "@/backend/user/db/entities";
-import { DefaultUuid, UuidColumn } from "@/backend-core/database/decorators";
+import { DefaultUuid, ForeignKeyColumn, PrimaryKeyColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, PrimaryKey, Scopes, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
 import type { TokenTypeEnum } from "@/backend-core/authentication/db/enums";
 
 @Scopes(() => ({
@@ -10,19 +10,13 @@ import type { TokenTypeEnum } from "@/backend-core/authentication/db/enums";
 }))
 @Table({ tableName: "verificationTokens" })
 export class VerificationTokenEntity extends BaseEntity<VerificationTokenEntity> {
-	@PrimaryKey
-	@AutoIncrement
-	@Column({ type: DataType.INTEGER })
+	@PrimaryKeyColumn
 	public tokenId: number;
 
-	@UuidColumn
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@UuidKeyColumn
 	public tokenUuid: string;
 
-	@ForeignKey(() => UserEntity)
-	@AllowNull(false)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => UserEntity)
 	public tokenUserId: number;
 
 	@DefaultUuid

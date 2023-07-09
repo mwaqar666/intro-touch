@@ -1,8 +1,8 @@
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, PrimaryKey, Scopes, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
 import { PlatformCategoryEntity } from "@/backend/platform/db/entities/platform-category.entity";
 import { PlatformProfileEntity } from "@/backend/platform/db/entities/platform-profile.entity";
 
@@ -11,19 +11,13 @@ import { PlatformProfileEntity } from "@/backend/platform/db/entities/platform-p
 }))
 @Table({ tableName: "platforms" })
 export class PlatformEntity extends BaseEntity<PlatformEntity> {
-	@PrimaryKey
-	@AutoIncrement
-	@Column({ type: DataType.INTEGER })
+	@PrimaryKeyColumn
 	public readonly platformId: number;
 
-	@UuidColumn
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@UuidKeyColumn
 	public readonly platformUuid: string;
 
-	@ForeignKey(() => PlatformCategoryEntity)
-	@AllowNull(false)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => PlatformCategoryEntity)
 	public platformPlatformCategoryId: number;
 
 	@AllowNull(false)
@@ -35,8 +29,6 @@ export class PlatformEntity extends BaseEntity<PlatformEntity> {
 	public platformIcon: string;
 
 	@IsActiveColumn
-	@AllowNull(false)
-	@Column({ type: DataType.BOOLEAN })
 	public platformIsActive: boolean;
 
 	@CreatedAtColumn

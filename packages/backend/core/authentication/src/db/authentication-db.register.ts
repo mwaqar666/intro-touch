@@ -7,7 +7,7 @@ import { VerificationTokenEntity } from "@/backend-core/authentication/db/entiti
 import { CreateVerificationTokensTable } from "@/backend-core/authentication/db/migrations";
 import { VerificationTokenRepository } from "@/backend-core/authentication/db/repositories";
 
-export class AuthDbRegister implements IDbRegister {
+export class AuthenticationDbRegister implements IDbRegister {
 	public registerEntities(): Array<EntityType<any>> {
 		return [VerificationTokenEntity];
 	}

@@ -1,4 +1,4 @@
-import { AuthTokenConst } from "@/backend-core/authentication/const";
+import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import type { IGuardResolver } from "@/backend-core/authentication/interface";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/interface";
@@ -14,7 +14,7 @@ export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
 		// Dependencies
 		@Inject(RouterTokenConst.RouteRegisterToken) private readonly routeRegister: IRouteRegister,
-		@Inject(AuthTokenConst.GuardResolverToken) private readonly guardResolver: IGuardResolver,
+		@Inject(AuthenticationTokenConst.GuardResolverToken) private readonly guardResolver: IGuardResolver,
 		@Inject(RequestProcessorTokenConst.ResponseHandlerToken) private readonly responseHandler: IResponseHandler,
 		@Inject(RequestProcessorTokenConst.InterceptorResolverToken) private readonly interceptorResolver: IInterceptorResolver,
 		@Inject(RequestProcessorTokenConst.HandlerMetaResolverToken) private readonly handlerMetaResolver: IHandlerMetaResolver,

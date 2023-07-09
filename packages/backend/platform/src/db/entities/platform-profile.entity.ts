@@ -1,9 +1,9 @@
 import { UserProfileEntity } from "@/backend/user/db/entities";
-import { CreatedAtColumn, UpdatedAtColumn, UuidColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, ForeignKeyColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, PrimaryKey, Scopes, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
 import { CustomPlatformEntity } from "@/backend/platform/db/entities/custom-platform.entity";
 import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 
@@ -12,29 +12,19 @@ import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 }))
 @Table({ tableName: "platformProfiles" })
 export class PlatformProfileEntity extends BaseEntity<PlatformProfileEntity> {
-	@PrimaryKey
-	@AutoIncrement
-	@Column({ type: DataType.INTEGER })
+	@PrimaryKeyColumn
 	public readonly platformProfileId: number;
 
-	@UuidColumn
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@UuidKeyColumn
 	public readonly platformProfileUuid: string;
 
-	@ForeignKey(() => UserProfileEntity)
-	@AllowNull(false)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => UserProfileEntity)
 	public platformProfileProfileId: number;
 
-	@ForeignKey(() => PlatformEntity)
-	@AllowNull(true)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => PlatformEntity, true)
 	public platformProfilePlatformId: Nullable<number>;
 
-	@ForeignKey(() => CustomPlatformEntity)
-	@AllowNull(true)
-	@Column({ type: DataType.INTEGER })
+	@ForeignKeyColumn(() => CustomPlatformEntity, true)
 	public platformProfileCustomPlatformId: Nullable<number>;
 
 	@AllowNull(false)
