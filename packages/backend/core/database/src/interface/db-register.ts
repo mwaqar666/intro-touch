@@ -2,10 +2,10 @@ import type { Constructable } from "@/stacks/types";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { BaseRepository } from "@/backend-core/database/repository";
-import type { EntityType } from "@/backend-core/database/types";
+import type { IEntityType } from "@/backend-core/database/types";
 
 export interface IDbRegister {
-	registerEntities(): Array<EntityType<any>>;
+	registerEntities(): Array<IEntityType<any>>;
 
 	registerMigrations(): Array<Constructable<IMigration>>;
 

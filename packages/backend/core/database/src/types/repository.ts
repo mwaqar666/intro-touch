@@ -1,49 +1,51 @@
 import type { FindOptions, Transaction } from "sequelize";
 import type { BaseEntity } from "@/backend-core/database/entity";
-import type { EntityScope, EntityTableColumnProperties } from "@/backend-core/database/types/entity";
+import type { IEntityScope, IEntityTableColumnProperties } from "@/backend-core/database/types/entity";
 
-export type EntityResolution<TEntity extends BaseEntity<TEntity>> = TEntity | string | number;
+export type IEntityResolution<TEntity extends BaseEntity<TEntity>> = TEntity | string | number;
 
 export interface ITransactional {
 	transaction: Transaction;
 }
 
 export interface IScoped {
-	scopes: EntityScope;
+	scopes: IEntityScope;
 }
 
 export interface IFinderOptions<TEntity extends BaseEntity<TEntity>> {
 	findOptions: FindOptions<TEntity>;
 }
 
-export type ScopedFinderOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & IFinderOptions<TEntity>;
+export type IScopedFinderOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & IFinderOptions<TEntity>;
 
 export interface IResolverOptions<TEntity extends BaseEntity<TEntity>> {
-	entity: EntityResolution<TEntity>;
+	entity: IEntityResolution<TEntity>;
 }
 
-export type ScopedFinderOrResolverOption<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & (IFinderOptions<TEntity> | IResolverOptions<TEntity>);
+export type IScopedFinderOrResolverOption<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & (IFinderOptions<TEntity> | IResolverOptions<TEntity>);
 
 export interface ICreateOneOptions<TEntity extends BaseEntity<TEntity>> extends ITransactional {
-	valuesToCreate: Partial<EntityTableColumnProperties<TEntity>>;
+	valuesToCreate: Partial<IEntityTableColumnProperties<TEntity>>;
 }
 
 export interface ICreateManyOptions<TEntity extends BaseEntity<TEntity>> extends ITransactional {
-	valuesToCreate: Array<Partial<EntityTableColumnProperties<TEntity>>>;
+	valuesToCreate: Array<Partial<IEntityTableColumnProperties<TEntity>>>;
 }
 
 export interface IUpdateBaseOptions<TEntity extends BaseEntity<TEntity>> extends ITransactional {
-	valuesToUpdate: Partial<EntityTableColumnProperties<TEntity>>;
+	valuesToUpdate: Partial<IEntityTableColumnProperties<TEntity>>;
 }
 
 export interface IDeleteBaseOptions extends ITransactional {
 	force?: boolean;
 }
 
-export type FindOrCreateOptions<TEntity extends BaseEntity<TEntity>> = Partial<ScopedFinderOrResolverOption<TEntity>> & ICreateOneOptions<TEntity>;
+export type IFindOrCreateOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScopedFinderOrResolverOption<TEntity>> & ICreateOneOptions<TEntity>;
 
-export type CreateOrUpdateOptions<TEntity extends BaseEntity<TEntity>> = Partial<ScopedFinderOrResolverOption<TEntity>> & IUpdateBaseOptions<TEntity> & ICreateOneOptions<TEntity>;
+export type ICreateOrUpdateOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScopedFinderOrResolverOption<TEntity>> & IUpdateBaseOptions<TEntity> & ICreateOneOptions<TEntity>;
 
-export type UpdateOptions<TEntity extends BaseEntity<TEntity>> = ScopedFinderOrResolverOption<TEntity> & IUpdateBaseOptions<TEntity>;
+export type IUpdateOptions<TEntity extends BaseEntity<TEntity>> = IScopedFinderOrResolverOption<TEntity> & IUpdateBaseOptions<TEntity>;
 
-export type DeleteOptions<TEntity extends BaseEntity<TEntity>> = ScopedFinderOrResolverOption<TEntity> & IDeleteBaseOptions;
+export type IDeleteOptions<TEntity extends BaseEntity<TEntity>> = IScopedFinderOrResolverOption<TEntity> & IDeleteBaseOptions;
+
+export type IDeleteManyOptions<TEntity extends BaseEntity<TEntity>> = IScopedFinderOptions<TEntity> & IDeleteBaseOptions;

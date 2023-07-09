@@ -3,18 +3,31 @@ import type { Nullable } from "@/stacks/types";
 import type { CreationAttributes, WhereOptions } from "sequelize";
 import { RepositoryConst } from "@/backend-core/database/const";
 import type { BaseEntity } from "@/backend-core/database/entity";
-import type { CreateOrUpdateOptions, DeleteOptions, EntityKeyValues, EntityResolution, EntityScope, EntityType, FindOrCreateOptions, ICreateManyOptions, ICreateOneOptions, ScopedFinderOptions, UpdateOptions } from "@/backend-core/database/types";
+import type {
+	ICreateManyOptions,
+	ICreateOneOptions,
+	ICreateOrUpdateOptions,
+	IDeleteManyOptions,
+	IDeleteOptions,
+	IEntityKeyValues,
+	IEntityResolution,
+	IEntityScope,
+	IEntityType,
+	IFindOrCreateOptions,
+	IScopedFinderOptions,
+	IUpdateOptions,
+} from "@/backend-core/database/types";
 
 export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
-	protected constructor(protected readonly concreteEntity: EntityType<TEntity>) {}
+	protected constructor(protected readonly concreteEntity: IEntityType<TEntity>) {}
 
-	public async findOne(findOptions: ScopedFinderOptions<TEntity>): Promise<Nullable<TEntity>> {
+	public async findOne(findOptions: IScopedFinderOptions<TEntity>): Promise<Nullable<TEntity>> {
 		findOptions = this.providedOrDefaultScopedFindOptions(findOptions);
 
 		return await this.concreteEntity.applyScopes<TEntity>(findOptions.scopes).findOne<TEntity>(findOptions.findOptions);
 	}
 
-	public async findOneOrFail(findOptions: ScopedFinderOptions<TEntity>): Promise<TEntity> {
+	public async findOneOrFail(findOptions: IScopedFinderOptions<TEntity>): Promise<TEntity> {
 		findOptions = this.providedOrDefaultScopedFindOptions(findOptions);
 
 		const foundEntity: Nullable<TEntity> = await this.findOne(findOptions);
@@ -24,16 +37,16 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		throw new NotFoundException(`${this.concreteEntity.name} with key value pairs ${JSON.stringify(findOptions.findOptions)} not found!`);
 	}
 
-	public async findAll(findOptions: ScopedFinderOptions<TEntity>): Promise<Array<TEntity>> {
+	public async findAll(findOptions: IScopedFinderOptions<TEntity>): Promise<Array<TEntity>> {
 		findOptions = this.providedOrDefaultScopedFindOptions(findOptions);
 
 		return await this.concreteEntity.applyScopes<TEntity>(findOptions.scopes).findAll<TEntity>(findOptions.findOptions);
 	}
 
-	public async resolveOne(entity: EntityResolution<TEntity>, scopes?: EntityScope): Promise<Nullable<TEntity>> {
+	public async resolveOne(entity: IEntityResolution<TEntity>, scopes?: IEntityScope): Promise<Nullable<TEntity>> {
 		if (typeof entity !== "string" && typeof entity !== "number") return entity;
 
-		const scopedFindOptions: ScopedFinderOptions<TEntity> = this.providedOrDefaultScopedFindOptions({ scopes });
+		const scopedFindOptions: IScopedFinderOptions<TEntity> = this.providedOrDefaultScopedFindOptions({ scopes });
 
 		if (typeof entity === "string") {
 			if (!this.concreteEntity.uuidColumnName) throw new InternalServerException(`Uuid column name not defined on ${this.concreteEntity.name}`);
@@ -46,7 +59,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		return await this.findOne(scopedFindOptions);
 	}
 
-	public async resolveOneOrFail(entity: EntityResolution<TEntity>, scopes?: EntityScope): Promise<TEntity> {
+	public async resolveOneOrFail(entity: IEntityResolution<TEntity>, scopes?: IEntityScope): Promise<TEntity> {
 		const foundEntity: Nullable<TEntity> = await this.resolveOne(entity, scopes);
 
 		if (foundEntity) return foundEntity;
@@ -66,8 +79,8 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		return await this.concreteEntity.bulkCreate<TEntity>(valuesToCreate as Array<CreationAttributes<TEntity>>, { transaction });
 	}
 
-	public async update(updateOptions: UpdateOptions<TEntity>): Promise<TEntity> {
-		const { scopes, transaction }: UpdateOptions<TEntity> = updateOptions;
+	public async update(updateOptions: IUpdateOptions<TEntity>): Promise<TEntity> {
+		const { scopes, transaction }: IUpdateOptions<TEntity> = updateOptions;
 
 		const foundEntity: TEntity =
 			"findOptions" in updateOptions
@@ -77,10 +90,10 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 				  })
 				: await this.resolveOneOrFail(updateOptions.entity, scopes);
 
-		return foundEntity.update(updateOptions.valuesToUpdate as EntityKeyValues<TEntity>, { transaction });
+		return foundEntity.update(updateOptions.valuesToUpdate as IEntityKeyValues<TEntity>, { transaction });
 	}
 
-	public async findOrCreate(findOrCreateOptions: FindOrCreateOptions<TEntity>): Promise<TEntity> {
+	public async findOrCreate(findOrCreateOptions: IFindOrCreateOptions<TEntity>): Promise<TEntity> {
 		if ("entity" in findOrCreateOptions && findOrCreateOptions.entity) {
 			const foundEntity: Nullable<TEntity> = await this.resolveOne(findOrCreateOptions.entity, findOrCreateOptions.scopes);
 
@@ -102,11 +115,11 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		});
 	}
 
-	public async updateOrCreate(createOrUpdateOptions: CreateOrUpdateOptions<TEntity>): Promise<TEntity> {
+	public async updateOrCreate(createOrUpdateOptions: ICreateOrUpdateOptions<TEntity>): Promise<TEntity> {
 		if ("entity" in createOrUpdateOptions && createOrUpdateOptions.entity) {
 			const foundEntity: Nullable<TEntity> = await this.resolveOne(createOrUpdateOptions.entity, createOrUpdateOptions.scopes);
 
-			if (foundEntity) return await foundEntity.update(createOrUpdateOptions.valuesToUpdate as EntityKeyValues<TEntity>, { transaction: createOrUpdateOptions.transaction });
+			if (foundEntity) return await foundEntity.update(createOrUpdateOptions.valuesToUpdate as IEntityKeyValues<TEntity>, { transaction: createOrUpdateOptions.transaction });
 		}
 
 		if ("findOptions" in createOrUpdateOptions && createOrUpdateOptions.findOptions) {
@@ -115,7 +128,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 				scopes: createOrUpdateOptions.scopes,
 			});
 
-			if (foundEntity) return await foundEntity.update(createOrUpdateOptions.valuesToUpdate as EntityKeyValues<TEntity>, { transaction: createOrUpdateOptions.transaction });
+			if (foundEntity) return await foundEntity.update(createOrUpdateOptions.valuesToUpdate as IEntityKeyValues<TEntity>, { transaction: createOrUpdateOptions.transaction });
 		}
 
 		return await this.createOne({
@@ -124,7 +137,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		});
 	}
 
-	public async delete(deleteOptions: DeleteOptions<TEntity>): Promise<boolean> {
+	public async delete(deleteOptions: IDeleteOptions<TEntity>): Promise<boolean> {
 		if ("findOptions" in deleteOptions) {
 			const foundEntity: Nullable<TEntity> = await this.findOne({
 				findOptions: deleteOptions.findOptions,
@@ -149,12 +162,22 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		return true;
 	}
 
-	private providedOrDefaultScopedFindOptions(findOptions?: Partial<ScopedFinderOptions<TEntity>>): ScopedFinderOptions<TEntity> {
-		const scopedEntityFindOptions: Partial<ScopedFinderOptions<TEntity>> = findOptions ?? RepositoryConst.DefaultScopedFindOptions;
+	public async deleteMany(deleteOptions: IDeleteManyOptions<TEntity>): Promise<boolean> {
+		const deletedEntityCount: number = await this.concreteEntity.destroy({
+			where: deleteOptions.findOptions.where,
+			transaction: deleteOptions.transaction,
+			force: deleteOptions.force ?? false,
+		});
+
+		return deletedEntityCount > 0;
+	}
+
+	private providedOrDefaultScopedFindOptions(findOptions?: Partial<IScopedFinderOptions<TEntity>>): IScopedFinderOptions<TEntity> {
+		const scopedEntityFindOptions: Partial<IScopedFinderOptions<TEntity>> = findOptions ?? RepositoryConst.DefaultScopedFindOptions;
 
 		scopedEntityFindOptions.scopes = scopedEntityFindOptions.scopes ?? RepositoryConst.DefaultScopedFindOptions.scopes;
 		scopedEntityFindOptions.findOptions = scopedEntityFindOptions.findOptions ?? RepositoryConst.DefaultScopedFindOptions.findOptions;
 
-		return findOptions as ScopedFinderOptions<TEntity>;
+		return findOptions as IScopedFinderOptions<TEntity>;
 	}
 }

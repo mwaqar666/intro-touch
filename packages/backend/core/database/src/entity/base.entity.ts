@@ -3,7 +3,7 @@ import omit from "lodash.omit";
 import type { ModelStatic } from "sequelize";
 import { BeforeCreate, Model } from "sequelize-typescript";
 import { v4 as uuid } from "uuid";
-import type { EntityScope, EntityType } from "@/backend-core/database/types";
+import type { IEntityScope, IEntityType } from "@/backend-core/database/types";
 
 export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Model<TEntity> {
 	// Table & Column Name Information
@@ -20,8 +20,8 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 	public static updatedAtColumnName: string;
 	public static deletedAtColumnName: string;
 
-	public static applyScopes<TEntityStatic extends BaseEntity<TEntityStatic>>(this: ModelStatic<TEntityStatic>, providedScopes?: EntityScope): ModelStatic<TEntityStatic> {
-		let scopesToApply: EntityScope = ["defaultScope"];
+	public static applyScopes<TEntityStatic extends BaseEntity<TEntityStatic>>(this: ModelStatic<TEntityStatic>, providedScopes?: IEntityScope): ModelStatic<TEntityStatic> {
+		let scopesToApply: IEntityScope = ["defaultScope"];
 
 		if (providedScopes) scopesToApply = scopesToApply.concat(providedScopes);
 
@@ -46,7 +46,7 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 
 	public override toJSON(): object {
 		const keysToExclude: Array<string> = [];
-		const entityStatic: EntityType<TEntity> = this.constructor as EntityType<TEntity>;
+		const entityStatic: IEntityType<TEntity> = this.constructor as IEntityType<TEntity>;
 
 		if (!BaseEntity.exposePrimaryKey) keysToExclude.push(entityStatic.primaryKeyAttribute);
 

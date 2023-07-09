@@ -3,10 +3,10 @@ import type { Constructable } from "@/stacks/types";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IDbManager, IDbRegister, IMigration } from "@/backend-core/database/interface";
 import type { BaseRepository } from "@/backend-core/database/repository";
-import type { EntityType } from "@/backend-core/database/types";
+import type { IEntityType } from "@/backend-core/database/types";
 
 export class DbManagerService implements IDbManager {
-	private readonly _entityRegister: Array<EntityType<any>> = [];
+	private readonly _entityRegister: Array<IEntityType<any>> = [];
 	private readonly _migrationRegister: Array<Constructable<IMigration>> = [];
 	private readonly _repositoryRegister: Array<Constructable<BaseRepository<BaseEntity<any>>>> = [];
 
@@ -18,7 +18,7 @@ export class DbManagerService implements IDbManager {
 		this.registerRepositories(dbRegister);
 	}
 
-	public resolveEntities(): Array<EntityType<any>> {
+	public resolveEntities(): Array<IEntityType<any>> {
 		return this._entityRegister;
 	}
 

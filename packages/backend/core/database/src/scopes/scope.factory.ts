@@ -1,11 +1,12 @@
+import type { Delegate } from "@/stacks/types";
 import type { BaseEntity } from "@/backend-core/database/entity";
-import type { AvailableScopes, EntityType } from "@/backend-core/database/types";
+import type { IAvailableScopes, IEntityType } from "@/backend-core/database/types";
 
 export class ScopeFactory<TEntity extends BaseEntity<TEntity>> {
-	private constructor(private model: EntityType<TEntity>, private scopes: Partial<AvailableScopes> = {}) {}
+	private constructor(private model: IEntityType<TEntity>, private scopes: Partial<IAvailableScopes> = {}) {}
 
-	public static commonScopes<TEntityStatic extends BaseEntity<TEntityStatic>>(modelCallback: () => typeof BaseEntity<TEntityStatic>): Partial<AvailableScopes> {
-		const modelGetterCallback = modelCallback as () => EntityType<TEntityStatic>;
+	public static commonScopes<TEntityStatic extends BaseEntity<TEntityStatic>>(modelCallback: () => typeof BaseEntity<TEntityStatic>): Partial<IAvailableScopes> {
+		const modelGetterCallback: Delegate<[], IEntityType<TEntityStatic>> = modelCallback as Delegate<[], IEntityType<TEntityStatic>>;
 		const scopesInstance: ScopeFactory<TEntityStatic> = new ScopeFactory(modelGetterCallback());
 
 		scopesInstance

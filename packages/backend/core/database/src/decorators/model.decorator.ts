@@ -3,7 +3,7 @@ import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, Default, Deleted
 import type { ModelClassGetter } from "sequelize-typescript/dist/model/shared/model-class-getter";
 import { v4 as uuid } from "uuid";
 import type { BaseEntity } from "@/backend-core/database/entity";
-import type { EntityType } from "@/backend-core/database/types";
+import type { IEntityType } from "@/backend-core/database/types";
 
 export const PrimaryKeyColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 	Column({ type: DataType.INTEGER })(target, propertyKey);
@@ -12,7 +12,7 @@ export const PrimaryKeyColumn: PropertyDecorator = <PropertyDecorator>(<TEntity 
 });
 
 export const UuidKeyColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
-	const concreteEntity: EntityType<TEntity> = <EntityType<TEntity>>target.constructor;
+	const concreteEntity: IEntityType<TEntity> = <IEntityType<TEntity>>target.constructor;
 	concreteEntity.uuidColumnName = propertyKey;
 
 	Column({ type: DataType.STRING(50) })(target, propertyKey);
@@ -23,7 +23,7 @@ export const UuidKeyColumn: PropertyDecorator = <PropertyDecorator>(<TEntity ext
 
 export const ForeignKeyColumn: Delegate<[ModelClassGetter<any, any>, boolean?], PropertyDecorator> = (entityGetter: ModelClassGetter<any, any>, nullable = false) => {
 	return <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
-		const concreteEntity: EntityType<TEntity> = <EntityType<TEntity>>target.constructor;
+		const concreteEntity: IEntityType<TEntity> = <IEntityType<TEntity>>target.constructor;
 		concreteEntity.foreignKeyNames.push(propertyKey);
 
 		Column({ type: DataType.INTEGER })(target, propertyKey);
@@ -49,7 +49,7 @@ export const DefaultUuid: PropertyDecorator = <PropertyDecorator>(<TEntity exten
 });
 
 export const IsActiveColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
-	const concreteEntity: EntityType<TEntity> = <EntityType<TEntity>>target.constructor;
+	const concreteEntity: IEntityType<TEntity> = <IEntityType<TEntity>>target.constructor;
 	concreteEntity.isActiveColumnName = propertyKey;
 
 	Column({ type: DataType.BOOLEAN })(target, propertyKey);
@@ -63,7 +63,7 @@ const ApplyTimestampDecorator = <TEntity extends BaseEntity<TEntity>, TimestampK
 	timestampDecorator: PropertyDecorator,
 	timestampKey: TimestampKey,
 ): void => {
-	const concreteEntity: EntityType<TEntity> = <EntityType<TEntity>>target.constructor;
+	const concreteEntity: IEntityType<TEntity> = <IEntityType<TEntity>>target.constructor;
 	concreteEntity[timestampKey] = propertyKey;
 
 	timestampDecorator(target, propertyKey);

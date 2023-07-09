@@ -1,7 +1,7 @@
-import type { ScopedFinderOptions } from "@/backend-core/database/types";
+import type { IScopedFinderOptions } from "@/backend-core/database/types";
 
 export class RepositoryConst {
-	public static readonly DefaultScopedFindOptions: ScopedFinderOptions<any> = {
+	public static readonly DefaultScopedFindOptions: IScopedFinderOptions<any> = {
 		findOptions: {},
 		scopes: [],
 	};

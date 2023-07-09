@@ -24,7 +24,7 @@ export class VerificationTokenRepository extends BaseRepository<VerificationToke
 	}
 
 	public async purgeExistingVerificationTokens(userEntity: UserEntity, tokenType: TokenTypeEnum, transaction: Transaction): Promise<void> {
-		await this.delete({
+		await this.deleteMany({
 			findOptions: {
 				where: {
 					tokenUserId: userEntity.userId,
