@@ -4,7 +4,7 @@ import { FacebookAuthAdapter, GoogleAuthAdapter, SelfAuthAdapter } from "@/backe
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import { AuthenticationDbRegister } from "@/backend-core/authentication/db/authentication-db.register";
 import type { IAuthAdapter, IAuthAdapterResolver } from "@/backend-core/authentication/interface";
-import { HashService } from "@/backend-core/authentication/services";
+import { HashService, VerificationTokenService } from "@/backend-core/authentication/services";
 import { AdapterService } from "@/backend-core/authentication/services/adapter";
 import { AuthAdapterResolverService, GuardResolverService } from "@/backend-core/authentication/services/resolver";
 import type { IFacebookAdapter, IGoogleAdapter } from "@/backend-core/authentication/types";
@@ -14,6 +14,7 @@ export class AuthenticationModule extends AbstractModule {
 		// Auth services
 		this.container.registerSingleton(HashService);
 		this.container.registerSingleton(AdapterService);
+		this.container.registerSingleton(VerificationTokenService);
 
 		// Resolver Services
 		this.container.registerSingleton(AuthenticationTokenConst.GuardResolverToken, GuardResolverService);

@@ -17,4 +17,6 @@ export class ConfigConst {
 	public static readonly TOKEN_EXPIRY = "TOKEN_EXPIRY";
 
 	public static readonly EMAIL_FROM = "EMAIL_FROM";
+
+	public static readonly FRONTEND_URL = "FRONTEND_URL";
 }

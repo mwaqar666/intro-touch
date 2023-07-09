@@ -22,6 +22,9 @@ export interface IConfig {
 	REDIRECT_URL: "REDIRECT_URL";
 	TOKEN_EXPIRY: "TOKEN_EXPIRY";
 
+	// Frontend
+	FRONTEND_URL: "FRONTEND_URL";
+
 	// Email
 	EMAIL_FROM: "EMAIL_FROM";
 }

@@ -1,5 +1,5 @@
 import { UserEntity } from "@/backend/user/db/entities";
-import { DefaultUuid, ForeignKeyColumn, PrimaryKeyColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DefaultUuid, ForeignKeyColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
@@ -31,6 +31,12 @@ export class VerificationTokenEntity extends BaseEntity<VerificationTokenEntity>
 	@AllowNull(false)
 	@Column({ type: DataType.INTEGER })
 	public tokenType: TokenTypeEnum;
+
+	@CreatedAtColumn
+	public tokenCreatedAt: Date;
+
+	@UpdatedAtColumn
+	public tokenUpdatedAt: Date;
 
 	@BelongsTo(() => UserEntity, {
 		as: "tokenUser",

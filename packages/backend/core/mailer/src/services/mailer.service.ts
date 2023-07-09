@@ -38,7 +38,7 @@ export class MailerService implements IMailer {
 		return this;
 	}
 
-	public async send<T>(emailTemplate: string, data: T): Promise<void> {
+	public async send<T extends object>(emailTemplate: string, data: T): Promise<void> {
 		this.sendEmailParams.Template = this.prepareEmailTemplateName(emailTemplate);
 		this.sendEmailParams.TemplateData = JSON.stringify(data);
 

@@ -5,12 +5,14 @@ import type { IResponseHandler } from "@/backend-core/request-processor/interfac
 import type { IControllerResponse } from "@/backend-core/request-processor/types";
 import { ValidationTokenConst } from "@/backend-core/validation/const";
 import type { IValidator } from "@/backend-core/validation/interface";
-import type { IAnyObject, Nullable, Optional } from "@/stacks/types";
+import type { ApiResponse, IAnyObject, Nullable, Optional } from "@/stacks/types";
 import { Inject } from "iocc";
 import { useBody, usePath } from "sst/node/api";
 import { createAdapter, Session } from "sst/node/auth";
 import { LoginRequestDto } from "@/backend-core/authentication/dto/login";
 import { RegisterRequestDto } from "@/backend-core/authentication/dto/register";
+import { ResendRequestDto } from "@/backend-core/authentication/dto/resend";
+import { VerifyRequestDto } from "@/backend-core/authentication/dto/verify";
 import { InvalidCredentialsException } from "@/backend-core/authentication/exceptions";
 import type { IAuthAdapter } from "@/backend-core/authentication/interface";
 import { AdapterService } from "@/backend-core/authentication/services/adapter";
@@ -26,21 +28,23 @@ export class SelfAuthAdapter implements IAuthAdapter {
 
 	public configureAuthAdapter(): IAuthAdapterRecord {
 		const selfAuthAdapter = createAdapter(() => {
-			return async () => {
-				let response: IControllerResponse<{ token: string }>;
+			return async (): Promise<ApiResponse> => {
+				let response: IControllerResponse<{ token: Nullable<string> }>;
 
 				try {
 					const form: IAnyObject = this.retrieveRequestData();
 					const [step]: Array<string> = usePath().slice(-1);
 
-					let user: UserEntity;
+					let user: Nullable<UserEntity> = null;
 
-					if (step === "register") user = await this.runRegisterFlow(form);
+					if (step === "register") await this.runRegisterFlow(form);
 					else if (step === "login") user = await this.runLoginFlow(form);
+					else if (step === "verify") user = await this.runVerificationFlow(form);
+					else if (step === "resend") await this.runResendVerificationFlow(form);
 					else throw new InternalServerException("Invalid auth route");
 
 					response = this.responseHandler.createSuccessfulResponse({
-						token: this.createAuthToken(user),
+						token: user ? this.createAuthToken(user) : null,
 					});
 				} catch (exception) {
 					response = this.responseHandler.handleException(exception);
@@ -67,10 +71,12 @@ export class SelfAuthAdapter implements IAuthAdapter {
 		return JSON.parse(body);
 	}
 
-	private async runRegisterFlow(registerRequestBody: IAnyObject): Promise<UserEntity> {
+	private async runRegisterFlow(registerRequestBody: IAnyObject): Promise<void> {
 		const registerRequestDto: RegisterRequestDto = await this.validator.validate(RegisterRequestDto, registerRequestBody);
 
-		return await this.adapterService.createUserInDatabase(registerRequestDto);
+		const user: UserEntity = await this.adapterService.createUserInDatabase(registerRequestDto);
+
+		await this.adapterService.sendEmailVerificationEmailToUser(user);
 	}
 
 	private async runLoginFlow(loginRequestBody: IAnyObject): Promise<UserEntity> {
@@ -82,7 +88,31 @@ export class SelfAuthAdapter implements IAuthAdapter {
 		const passwordVerified: boolean = await user.verifyPassword(userPassword);
 		if (!passwordVerified) throw new InvalidCredentialsException();
 
+		const userIsVerified: boolean = await this.adapterService.verifyUserEmailIsVerified(user);
+		if (!userIsVerified) throw new InvalidCredentialsException();
+
 		return user;
+	}
+
+	private async runVerificationFlow(verificationRequestBody: IAnyObject): Promise<UserEntity> {
+		const { userEmail, tokenIdentifier }: VerifyRequestDto = await this.validator.validate(VerifyRequestDto, verificationRequestBody);
+
+		const user: Nullable<UserEntity> = await this.adapterService.findUserInDatabaseByEmail(userEmail);
+		if (!user) throw new InvalidCredentialsException();
+
+		const userVerified: boolean = await this.adapterService.verifyUserEmailVerificationToken(user, tokenIdentifier);
+		if (!userVerified) throw new InvalidCredentialsException();
+
+		return user;
+	}
+
+	private async runResendVerificationFlow(verificationRequestBody: IAnyObject): Promise<void> {
+		const { userEmail }: ResendRequestDto = await this.validator.validate(ResendRequestDto, verificationRequestBody);
+
+		const user: Nullable<UserEntity> = await this.adapterService.findUserInDatabaseByEmail(userEmail);
+		if (!user) throw new InvalidCredentialsException();
+
+		await this.adapterService.sendEmailVerificationEmailToUser(user);
 	}
 
 	private createAuthToken(user: UserEntity): string {

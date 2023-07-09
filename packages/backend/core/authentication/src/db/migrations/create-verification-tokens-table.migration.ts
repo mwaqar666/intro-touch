@@ -21,6 +21,8 @@ export class CreateVerificationTokensTable extends AbstractMigration {
 				allowNull: false,
 				type: DataType.INTEGER,
 			},
+			tokenCreatedAt: this.createCreatedAtKeyProps(),
+			tokenUpdatedAt: this.createUpdatedAtKeyProps(),
 		});
 
 		await this.createForeignKeyConstraint("verificationTokens", "tokenUserId", "users", "userId");

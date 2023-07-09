@@ -24,6 +24,9 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 			email: {
 				emailFrom: EnvExtractor.env(schema, ConfigConst.EMAIL_FROM),
 			},
+			frontend: {
+				url: EnvExtractor.env(schema, ConfigConst.FRONTEND_URL),
+			},
 			database: {
 				databaseName: EnvExtractor.env(schema, ConfigConst.DB_NAME),
 				databaseHost: EnvExtractor.env(schema, ConfigConst.DB_HOST),

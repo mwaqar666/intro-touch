@@ -5,6 +5,10 @@
 		<title>Verify your OTP</title>
 	</head>
 	<body>
-		<!-- Email Body Here -->
+		<p>Hello {{ name }}. Please click
+			<!--suppress HtmlUnknownTarget -->
+			<a href="{{ verificationUrl }}">here</a>
+			to verify your email.
+		</p>
 	</body>
 </html>

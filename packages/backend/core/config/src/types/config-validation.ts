@@ -20,4 +20,6 @@ export interface IConfigValidation {
 	[ConfigConst.TOKEN_EXPIRY]: StringSchema;
 
 	[ConfigConst.EMAIL_FROM]: StringSchema;
+
+	[ConfigConst.FRONTEND_URL]: StringSchema;
 }

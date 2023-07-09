@@ -36,6 +36,8 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.TOKEN_EXPIRY]: joi.string().required(),
 
 				[ConfigConst.EMAIL_FROM]: joi.string().required(),
+
+				[ConfigConst.FRONTEND_URL]: joi.string().required(),
 			})
 			.unknown(true);
 	}

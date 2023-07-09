@@ -1,4 +1,3 @@
-import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { CfnTemplate } from "aws-cdk-lib/aws-ses";
 import type { StackContext } from "sst/constructs";
 import { Config } from "@/stacks/config";
@@ -8,7 +7,6 @@ import type { IEmailTemplates } from "@/stacks/types";
 
 export interface IEmailStack {
 	emailFrom: string;
-	emailPolicy: PolicyStatement;
 }
 
 export const EmailStack = async ({ app, stack }: StackContext): Promise<IEmailStack> => {
@@ -28,23 +26,11 @@ export const EmailStack = async ({ app, stack }: StackContext): Promise<IEmailSt
 		return emailTemplate.emailTemplateName;
 	});
 
-	const emailPolicy: PolicyStatement = new PolicyStatement({
-		effect: Effect.ALLOW,
-		actions: ["ses:SendEmail", "ses:SendRawEmail"],
-		resources: ["*"],
-		conditions: {
-			StringEquals: {
-				"ses:FromAddress": emailFrom,
-			},
-		},
-	});
-
 	stack.addOutputs({
 		emailTemplates: emailTemplateNames.join(", "),
 	});
 
 	return {
 		emailFrom,
-		emailPolicy,
 	};
 };
