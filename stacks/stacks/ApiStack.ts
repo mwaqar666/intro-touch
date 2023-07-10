@@ -18,7 +18,7 @@ export interface IApiStack {
 
 export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack> => {
 	const { emailFrom }: IEmailStack = use(EmailStack);
-	const { databaseName, databaseHost, databasePort, databaseUser, databasePass, databaseMigrationPass }: IDatabaseStack = use(DatabaseStack);
+	const { databaseName, databaseHost, databasePort, databaseUser, databasePass, databaseToken }: IDatabaseStack = use(DatabaseStack);
 
 	const domainName: string = Config.get("APP_DOMAIN");
 	const appVersion: string = Config.get("APP_VERSION");
@@ -43,7 +43,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 			DB_PORT: databasePort,
 			DB_USER: databaseUser,
 			DB_PASS: databasePass,
-			DB_MIGRATION_PASS: databaseMigrationPass,
+			DB_TOKEN: databaseToken,
 			FRONTEND_URL: frontEndUrl,
 			GOOGLE_CLIENT_ID: googleClientId,
 			REDIRECT_URL: authRedirectUrl,

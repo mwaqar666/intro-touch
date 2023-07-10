@@ -19,7 +19,7 @@ export interface IDatabaseStack {
 	databasePort: string;
 	databaseUser: string;
 	databasePass: string;
-	databaseMigrationPass: string;
+	databaseToken: string;
 }
 
 export type IDbCommonConfig = Omit<IDatabaseStack, "databaseHost" | "databasePass">;
@@ -28,11 +28,11 @@ const databaseCommonConfig: IDbCommonConfig = {
 	databaseName: Config.get("DB_NAME"),
 	databasePort: Config.get("DB_PORT"),
 	databaseUser: Config.get("DB_USER"),
-	databaseMigrationPass: Config.get("DB_MIGRATION_PASS"),
+	databaseToken: Config.get("DB_TOKEN"),
 };
 
 const DatabaseLocalStack = ({ stack }: StackContext): IDatabaseStack => {
-	const { databaseName, databasePort, databaseUser, databaseMigrationPass }: IDbCommonConfig = databaseCommonConfig;
+	const { databaseName, databasePort, databaseUser, databaseToken }: IDbCommonConfig = databaseCommonConfig;
 	const databaseHost: string = Config.get("DB_HOST");
 	const databasePass: string = Config.get("DB_PASS");
 
@@ -50,12 +50,12 @@ const DatabaseLocalStack = ({ stack }: StackContext): IDatabaseStack => {
 		databasePort,
 		databaseUser,
 		databasePass,
-		databaseMigrationPass,
+		databaseToken,
 	};
 };
 
 const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
-	const { databaseName, databasePort, databaseUser, databaseMigrationPass }: IDbCommonConfig = databaseCommonConfig;
+	const { databaseName, databasePort, databaseUser, databaseToken }: IDbCommonConfig = databaseCommonConfig;
 
 	const { vpc }: IVpcStack = use(VpcStack);
 
@@ -131,7 +131,7 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 		databasePort,
 		databaseUser,
 		databasePass,
-		databaseMigrationPass,
+		databaseToken,
 	};
 };
 

@@ -1,5 +1,6 @@
+import { AbstractDbRegister } from "@/backend-core/database/abstract";
 import type { BaseEntity } from "@/backend-core/database/entity";
-import type { IDbRegister, IMigration } from "@/backend-core/database/interface";
+import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityType } from "@/backend-core/database/types";
 import type { Constructable } from "@/stacks/types";
@@ -7,16 +8,16 @@ import { CustomPlatformEntity, PlatformCategoryEntity, PlatformEntity, PlatformP
 import { CreateCustomPlatformsTable, CreatePlatformCategoriesTable, CreatePlatformProfilesTable, CreatePlatformsTable } from "@/backend/platform/db/migrations";
 import { CustomPlatformRepository, PlatformCategoryRepository, PlatformProfileRepository, PlatformRepository } from "@/backend/platform/db/repositories";
 
-export class PlatformDbRegister implements IDbRegister {
-	public registerEntities(): Array<IEntityType<any>> {
+export class PlatformDbRegister extends AbstractDbRegister {
+	public override registerEntities(): Array<IEntityType<any>> {
 		return [PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity, CustomPlatformEntity];
 	}
 
-	public registerMigrations(): Array<Constructable<IMigration>> {
+	public override registerMigrations(): Array<Constructable<IMigration>> {
 		return [CreatePlatformsTable, CreatePlatformCategoriesTable, CreatePlatformProfilesTable, CreateCustomPlatformsTable];
 	}
 
-	public registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
 		return [PlatformCategoryRepository, PlatformRepository, PlatformProfileRepository, CustomPlatformRepository];
 	}
 }

@@ -4,7 +4,7 @@ import { Inject } from "iocc";
 import type { Transaction } from "sequelize";
 import type { Sequelize } from "sequelize-typescript";
 import { DbTokenConst } from "@/backend-core/database/const";
-import type { IDbConnector } from "@/backend-core/database/interface";
+import type { IDbConnector } from "@/backend-core/database/interface/db";
 import type { ITransactionManager } from "@/backend-core/database/interface/transaction-manager";
 import type { IRunningTransaction, ITransactionalOperation } from "@/backend-core/database/types";
 
