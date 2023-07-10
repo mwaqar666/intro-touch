@@ -18,7 +18,7 @@ const addHandlerMeta = (handler: string, handlerMetaMap: IHandlerMetaMap, handle
 	return handlerMetaMap.set(handler, handlerMetaArray ? [...handlerMetaArray, handlerMetaType] : [handlerMetaType]);
 };
 
-export const Body = <T>(schema: Constructable<object>): ParameterDecorator => {
+export function Body<T>(schema: Constructable<object>): ParameterDecorator {
 	return <ParameterDecorator>((target: T, propertyKey: string, parameterIndex: number): void => {
 		let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
@@ -28,9 +28,9 @@ export const Body = <T>(schema: Constructable<object>): ParameterDecorator => {
 
 		setHandlerMetaMap(target, handlerMetaMap);
 	});
-};
+}
 
-export const Auth: ParameterDecorator = <ParameterDecorator>(<T>(target: T, propertyKey: string, parameterIndex: number): void => {
+export function Auth<T>(target: T, propertyKey: string, parameterIndex: number): void {
 	let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
 	const handlerAuthMeta: IHandlerAuthMeta = { type: "auth", parameterIndex };
@@ -38,9 +38,11 @@ export const Auth: ParameterDecorator = <ParameterDecorator>(<T>(target: T, prop
 	handlerMetaMap = addHandlerMeta(propertyKey, handlerMetaMap, handlerAuthMeta);
 
 	setHandlerMetaMap(target, handlerMetaMap);
-});
+}
 
-export const Query = <T>(schema: Constructable<object>): ParameterDecorator => {
+export function Query(schema: string): ParameterDecorator;
+export function Query(schema: Constructable<object>): ParameterDecorator;
+export function Query<T>(schema: Constructable<object> | string): ParameterDecorator {
 	return <ParameterDecorator>((target: T, propertyKey: string, parameterIndex: number): void => {
 		let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
@@ -50,9 +52,11 @@ export const Query = <T>(schema: Constructable<object>): ParameterDecorator => {
 
 		setHandlerMetaMap(target, handlerMetaMap);
 	});
-};
+}
 
-export const Path = <T>(schema: Constructable<object>): ParameterDecorator => {
+export function Path(schema: string): ParameterDecorator;
+export function Path(schema: Constructable<object>): ParameterDecorator;
+export function Path<T>(schema: Constructable<object> | string): ParameterDecorator {
 	return <ParameterDecorator>((target: T, propertyKey: string, parameterIndex: number): void => {
 		let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
@@ -62,9 +66,9 @@ export const Path = <T>(schema: Constructable<object>): ParameterDecorator => {
 
 		setHandlerMetaMap(target, handlerMetaMap);
 	});
-};
+}
 
-export const Request: ParameterDecorator = <ParameterDecorator>(<T>(target: T, propertyKey: string, parameterIndex: number): void => {
+export function Request<T>(target: T, propertyKey: string, parameterIndex: number): void {
 	let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
 	const handlerRequestMeta: IHandlerRequestMeta = { type: "request", parameterIndex };
@@ -72,9 +76,9 @@ export const Request: ParameterDecorator = <ParameterDecorator>(<T>(target: T, p
 	handlerMetaMap = addHandlerMeta(propertyKey, handlerMetaMap, handlerRequestMeta);
 
 	setHandlerMetaMap(target, handlerMetaMap);
-});
+}
 
-export const Context: ParameterDecorator = <ParameterDecorator>(<T>(target: T, propertyKey: string, parameterIndex: number): void => {
+export function Context<T>(target: T, propertyKey: string, parameterIndex: number): void {
 	let handlerMetaMap: IHandlerMetaMap = getHandlerMetaMap(target);
 
 	const handlerContextMeta: IHandlerContextMeta = { type: "context", parameterIndex };
@@ -82,4 +86,4 @@ export const Context: ParameterDecorator = <ParameterDecorator>(<T>(target: T, p
 	handlerMetaMap = addHandlerMeta(propertyKey, handlerMetaMap, handlerContextMeta);
 
 	setHandlerMetaMap(target, handlerMetaMap);
-});
+}

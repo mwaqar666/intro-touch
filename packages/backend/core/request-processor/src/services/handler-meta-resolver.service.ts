@@ -1,12 +1,12 @@
 import type { IResolvedRoute } from "@/backend-core/router/interface";
 import { ValidationTokenConst } from "@/backend-core/validation/const";
 import type { IValidator } from "@/backend-core/validation/interface";
-import type { Optional } from "@/stacks/types";
+import type { Nullable, Optional } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { HandlerMetaConst } from "@/backend-core/request-processor/const";
 import type { IHandlerMetaResolver } from "@/backend-core/request-processor/interface";
-import type { IControllerRequest, IHandlerMetaMap, IHandlerMetaType } from "@/backend-core/request-processor/types";
+import type { IControllerRequest, IHandlerMetaMap, IHandlerMetaType, IHandlerPathMeta, IHandlerQueryMeta } from "@/backend-core/request-processor/types";
 
 export class HandlerMetaResolverService implements IHandlerMetaResolver {
 	public constructor(
@@ -16,46 +16,83 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 	) {}
 
 	public async resolveHandlerMeta(request: IControllerRequest, context: Context, resolvedRoute: IResolvedRoute): Promise<Array<any>> {
+		const controllerMetaMap: Nullable<IHandlerMetaMap> = this.extractHandlerClassMetaMap(resolvedRoute);
+		if (!controllerMetaMap) return [];
+
+		const handlerMetaArray: Array<IHandlerMetaType> = this.extractHandlerMeta(controllerMetaMap, resolvedRoute);
+
+		const handlerResolvedMetaParams: Array<unknown> = [];
+
+		for (const handlerMetaType of handlerMetaArray) {
+			const resolvedHandlerParam: unknown = await this.resolveMetaData(request, context, handlerMetaType);
+			handlerResolvedMetaParams.push(resolvedHandlerParam);
+		}
+
+		return handlerResolvedMetaParams;
+	}
+
+	private extractHandlerClassMetaMap(resolvedRoute: IResolvedRoute): Nullable<IHandlerMetaMap> {
 		const controllerInstance: object = Reflect.getMetadata(HandlerMetaConst.HandlerControllerKey, resolvedRoute.handler);
 
 		const controllerMetaMap: Optional<IHandlerMetaMap> = Reflect.getMetadata(HandlerMetaConst.HandlerMetaMapKey, controllerInstance);
-		if (!controllerMetaMap) return [];
 
-		const boundMethodIdentifier = "bound ";
-		let methodName: string = resolvedRoute.handler.name;
-		if (methodName.startsWith(boundMethodIdentifier)) methodName = methodName.slice(boundMethodIdentifier.length);
-
-		let handlerMetaArray: Optional<Array<IHandlerMetaType>> = controllerMetaMap.get(methodName);
-		if (!handlerMetaArray) return [];
-
-		handlerMetaArray = handlerMetaArray.sort((firstHandlerMeta: IHandlerMetaType, secondHandlerMeta: IHandlerMetaType): number => {
-			return firstHandlerMeta.parameterIndex - secondHandlerMeta.parameterIndex;
-		});
-
-		const handlerParams: Array<unknown> = [];
-
-		for (const handlerMetaType of handlerMetaArray) {
-			const resolvedHandlerParam: unknown = await this.resolveControllerMeta(request, context, handlerMetaType);
-			handlerParams.push(resolvedHandlerParam);
-		}
-
-		return handlerParams;
+		return controllerMetaMap ?? null;
 	}
 
-	private async resolveControllerMeta(request: IControllerRequest, context: Context, handlerMeta: IHandlerMetaType): Promise<unknown> {
+	private extractHandlerMeta(controllerMetaMap: IHandlerMetaMap, resolvedRoute: IResolvedRoute): Array<IHandlerMetaType> {
+		const methodName: string = this.guessHandlerName(resolvedRoute.handler.name);
+
+		const handlerMetaArray: Optional<Array<IHandlerMetaType>> = controllerMetaMap.get(methodName);
+
+		if (!handlerMetaArray) return [];
+
+		return handlerMetaArray.sort((firstHandlerMeta: IHandlerMetaType, secondHandlerMeta: IHandlerMetaType): number => {
+			return firstHandlerMeta.parameterIndex - secondHandlerMeta.parameterIndex;
+		});
+	}
+
+	private guessHandlerName(methodName: string): string {
+		const boundMethodIdentifier = "bound ";
+
+		return methodName.startsWith(boundMethodIdentifier) ? methodName.slice(boundMethodIdentifier.length) : methodName;
+	}
+
+	private async resolveMetaData(request: IControllerRequest, context: Context, handlerMeta: IHandlerMetaType): Promise<unknown> {
 		switch (handlerMeta.type) {
 			case "body":
 				return await this.validator.validate(handlerMeta.schema, request.body);
 			case "auth":
-				return "auth" in request ? request.auth : null;
+				return this.resolveAuthMetaData(request);
 			case "path":
-				return await this.validator.validate(handlerMeta.schema, request.pathParams);
+				return this.resolvePathMetaData(request, handlerMeta);
 			case "query":
-				return await this.validator.validate(handlerMeta.schema, request.queryParams);
+				return this.resolveQueryMetaData(request, handlerMeta);
 			case "request":
 				return request;
 			case "context":
 				return context;
 		}
+	}
+
+	private async resolveAuthMetaData(request: IControllerRequest): Promise<unknown> {
+		if ("auth" in request) return request.auth;
+
+		return null;
+	}
+
+	private async resolvePathMetaData(request: IControllerRequest, handlerMeta: IHandlerPathMeta): Promise<unknown> {
+		if (typeof handlerMeta.schema === "string") {
+			return request.pathParams[handlerMeta.schema];
+		}
+
+		return this.validator.validate(handlerMeta.schema, request.pathParams);
+	}
+
+	private async resolveQueryMetaData(request: IControllerRequest, handlerMeta: IHandlerQueryMeta): Promise<unknown> {
+		if (typeof handlerMeta.schema === "string") {
+			return request.queryParams[handlerMeta.schema];
+		}
+
+		return this.validator.validate(handlerMeta.schema, request.queryParams);
 	}
 }
