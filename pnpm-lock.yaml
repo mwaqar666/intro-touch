@@ -239,6 +239,9 @@ importers:
 
   packages/backend/user:
     dependencies:
+      class-validator:
+        specifier: ^0.14.0
+        version: 0.14.0
       iocc:
         specifier: ^2.1.5
         version: 2.1.5(reflect-metadata@0.1.13)

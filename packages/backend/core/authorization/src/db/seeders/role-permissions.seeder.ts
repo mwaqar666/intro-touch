@@ -6,7 +6,7 @@ import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { PermissionEntity, RoleEntity, RolePermissionEntity } from "@/backend-core/authorization/db/entities";
 import { PermissionRepository, RolePermissionRepository, RoleRepository } from "@/backend-core/authorization/db/repositories";
-import { PermissionsEnum } from "@/backend-core/authorization/enums";
+import { PermissionsEnum, RolesEnum } from "@/backend-core/authorization/enums";
 
 export class RolePermissionsSeeder implements ISeeder {
 	public timestamp = 1688974088333;
@@ -24,14 +24,14 @@ export class RolePermissionsSeeder implements ISeeder {
 		await this.transactionManager.executeTransaction({
 			operation: async (): Promise<void> => {
 				const admin: Nullable<RoleEntity> = await this.roleRepository.findOne({
-					findOptions: { where: { roleName: "Admin" } },
+					findOptions: { where: { roleName: RolesEnum.ADMIN } },
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});
 
 				if (admin) await this.seedAdminPermissions(admin);
 
 				const customer: Nullable<RoleEntity> = await this.roleRepository.findOne({
-					findOptions: { where: { roleName: "Customer" } },
+					findOptions: { where: { roleName: RolesEnum.CUSTOMER } },
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});
 

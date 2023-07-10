@@ -2,6 +2,7 @@
   "name": "@intro-touch/backend-user",
   "version": "0.0.0",
   "dependencies": {
+    "class-validator": "^0.14.0",
     "iocc": "^2.1.5",
     "lodash.omit": "^4.5.0",
     "reflect-metadata": "^0.1.13",

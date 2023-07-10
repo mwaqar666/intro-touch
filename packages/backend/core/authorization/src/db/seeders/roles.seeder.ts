@@ -4,6 +4,7 @@ import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { ITransactionStore } from "@/backend-core/database/types";
 import { Inject } from "iocc";
 import { RoleRepository } from "@/backend-core/authorization/db/repositories";
+import { RolesEnum } from "@/backend-core/authorization/enums";
 
 export class RolesSeeder implements ISeeder {
 	public timestamp = 1688973343020;
@@ -21,10 +22,10 @@ export class RolesSeeder implements ISeeder {
 				await this.roleRepository.createMany({
 					valuesToCreate: [
 						{
-							roleName: "Admin",
+							roleName: RolesEnum.ADMIN,
 						},
 						{
-							roleName: "Customer",
+							roleName: RolesEnum.CUSTOMER,
 						},
 					],
 					transaction,
