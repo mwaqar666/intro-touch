@@ -1,7 +1,7 @@
 import type { QueryInterface } from "sequelize";
 import type { ModelAttributeColumnOptions } from "sequelize/types/model";
 import { DataType } from "sequelize-typescript";
-import type { IMigration } from "@/backend-core/database/interface";
+import type { IMigration } from "@/backend-core/database/interface/migration";
 
 export abstract class AbstractMigration implements IMigration {
 	public abstract timestamp: number;

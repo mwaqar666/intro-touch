@@ -1,1 +1,1 @@
-export * from "./migration-runner.guard";
+export * from "./db-runner.guard";
