@@ -8,6 +8,7 @@ import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { RoleEntity, UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { RoleRepository, UserRoleRepository } from "@/backend-core/authorization/db/repositories";
+import { RolesEnum } from "@/backend-core/authorization/enums";
 
 export class UserRolesSeeder implements ISeeder {
 	public timestamp = 1688976110323;
@@ -31,7 +32,7 @@ export class UserRolesSeeder implements ISeeder {
 
 				const adminRole: Nullable<RoleEntity> = await this.roleRepository.findOne({
 					findOptions: {
-						where: { roleName: "Admin" },
+						where: { roleName: RolesEnum.ADMIN },
 					},
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});
@@ -41,7 +42,7 @@ export class UserRolesSeeder implements ISeeder {
 				const userRoleEntries: Array<Partial<IEntityTableColumnProperties<UserRoleEntity>>> = users.map((user: UserEntity): Partial<IEntityTableColumnProperties<UserRoleEntity>> => {
 					return {
 						userRoleUserId: user.userId,
-						userRoleId: adminRole.roleId,
+						userRoleRoleId: adminRole.roleId,
 					};
 				});
 
