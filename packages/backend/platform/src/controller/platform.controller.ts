@@ -4,6 +4,8 @@ import { PermissionsEnum } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Controller } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
+import type { PlatformCategoryEntity, PlatformEntity } from "@/backend/platform/db/entities";
+import type { PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { PlatformService } from "@/backend/platform/services";
 
 @Controller
@@ -14,7 +16,21 @@ export class PlatformController {
 		@Inject(AuthorizationTokenConst.Authorization) private readonly authorization: IAuthorization,
 	) {}
 
-	public async getPlatforms(@Auth authEntity: UserEntity) {
+	public async getPlatformCategories(@Auth authEntity: UserEntity): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
+		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM_CATEGORY]);
+
+		return { platformCategories: await this.platformService.listPlatformCategories() };
+	}
+
+	public async getPlatforms(@Auth authEntity: UserEntity): Promise<{ platforms: Array<PlatformEntity> }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
+
+		return { platforms: await this.platformService.listPlatforms() };
+	}
+
+	public async getPlatformProfiles(@Auth authEntity: UserEntity): Promise<{ platformProfiles: Array<PlatformProfileEntity> }> {
+		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
+
+		return { platformProfiles: await this.platformService.listPlatformProfiles() };
 	}
 }

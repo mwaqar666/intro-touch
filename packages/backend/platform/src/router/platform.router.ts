@@ -19,6 +19,17 @@ export class PlatformRouter implements IRouter {
 					{
 						path: "/",
 						method: RouteMethod.GET,
+						handler: this.platformController.getPlatforms,
+					},
+					{
+						path: "/categories",
+						method: RouteMethod.GET,
+						handler: this.platformController.getPlatformCategories,
+					},
+					{
+						path: "/profiles",
+						method: RouteMethod.GET,
+						handler: this.platformController.getPlatformProfiles,
 					},
 				],
 			},
