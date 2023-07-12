@@ -1,7 +1,7 @@
 import { AppContainer } from "@/backend-core/core/extensions";
 import type { Constructable } from "@/stacks/types";
 import { DbTokenConst } from "@/backend-core/database/const";
-import type { IDbManager, IDbRegister } from "@/backend-core/database/interface";
+import type { IDbManager, IDbRegister } from "@/backend-core/database/interface/db";
 
 export class DbExtension {
 	public static registerDb(dbRegister: Constructable<IDbRegister>): void {

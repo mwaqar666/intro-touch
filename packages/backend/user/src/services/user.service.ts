@@ -1,35 +1,51 @@
+import { DbTokenConst } from "@/backend-core/database/const";
+import type { ITransactionManager } from "@/backend-core/database/interface";
+import type { ITransactionStore } from "@/backend-core/database/types";
 import { Inject } from "iocc";
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserRepository } from "@/backend/user/db/repositories";
+import type { UpdateUserRequestDto } from "@/backend/user/dto/update-user";
 
 export class UserService {
 	public constructor(
 		// Dependencies
 
 		@Inject(UserRepository) private readonly userRepository: UserRepository,
+		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
-	public async getUserList(user: UserEntity): Promise<Array<UserEntity>> {
-		console.log("UserService => getUserList", "Auth User: ", user);
-
-		return await this.userRepository.findAll({
+	public listUser(): Promise<Array<UserEntity>> {
+		return this.userRepository.findAll({
 			findOptions: {},
 		});
 	}
 
-	public async getUser(user: UserEntity): Promise<void> {
-		console.log("UserService => getUser", "Auth User: ", user);
+	public viewUser(userUuid: string): Promise<UserEntity> {
+		return this.userRepository.findOneOrFail({
+			findOptions: { where: { userUuid } },
+		});
 	}
 
-	public async createUser(user: UserEntity): Promise<void> {
-		console.log("UserService => createUser", "Auth User: ", user);
+	public async updateUser(userUuid: string, updateUserRequestDto: UpdateUserRequestDto): Promise<UserEntity> {
+		return this.transactionManager.executeTransaction({
+			operation: async ({ transaction }: ITransactionStore): Promise<UserEntity> => {
+				return this.userRepository.updateOne({
+					findOptions: { where: { userUuid } },
+					valuesToUpdate: updateUserRequestDto,
+					transaction,
+				});
+			},
+		});
 	}
 
-	public async updateUser(user: UserEntity): Promise<void> {
-		console.log("UserService => updateUser", "Auth User: ", user);
-	}
-
-	public async deleteUser(user: UserEntity): Promise<void> {
-		console.log("UserService => deleteUser", "Auth User: ", user);
+	public async deleteUser(userUuid: string): Promise<boolean> {
+		return this.transactionManager.executeTransaction({
+			operation: async ({ transaction }: ITransactionStore): Promise<boolean> => {
+				return this.userRepository.deleteOne({
+					findOptions: { where: { userUuid } },
+					transaction,
+				});
+			},
+		});
 	}
 }

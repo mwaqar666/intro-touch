@@ -47,11 +47,11 @@ export interface IHandlerAuthMeta {
 export interface IHandlerPathMeta<P = object> {
 	type: "path";
 	parameterIndex: number;
-	schema: Constructable<P>;
+	schema: Constructable<P> | string;
 }
 
 export interface IHandlerQueryMeta<Q = object> {
 	type: "query";
 	parameterIndex: number;
-	schema: Constructable<Q>;
+	schema: Constructable<Q> | string;
 }

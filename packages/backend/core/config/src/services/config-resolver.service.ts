@@ -33,7 +33,7 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				databasePort: parseInt(EnvExtractor.env(schema, ConfigConst.DB_PORT)),
 				databaseUser: EnvExtractor.env(schema, ConfigConst.DB_USER),
 				databasePass: EnvExtractor.env(schema, ConfigConst.DB_PASS),
-				databaseMigrationPass: EnvExtractor.env(schema, ConfigConst.DB_MIGRATION_PASS),
+				databaseToken: EnvExtractor.env(schema, ConfigConst.DB_TOKEN),
 			},
 		};
 	}

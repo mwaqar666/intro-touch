@@ -2,50 +2,56 @@ import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
-import { UserController } from "@/backend/user/controller";
+import { UserAdminController, UserController } from "@/backend/user/controller";
 
 export class UserRouter implements IRouter {
 	public constructor(
 		// Dependencies
 		@Inject(UserController) private readonly userController: UserController,
+		@Inject(UserAdminController) private readonly userAdminController: UserAdminController,
 	) {}
 
 	public registerRoutes(): Array<IRoute> {
 		return [
 			{
-				path: "/me",
-				method: RouteMethod.GET,
-				handler: this.userController.me,
+				prefix: "/admin/user",
 				guards: [AuthRequestGuard],
+				routes: [
+					{
+						path: "/list",
+						method: RouteMethod.GET,
+						handler: this.userAdminController.listUser,
+					},
+					{
+						path: "/view/{userUuid}",
+						method: RouteMethod.GET,
+						handler: this.userAdminController.viewUser,
+					},
+					{
+						path: "/update/{userUuid}",
+						method: RouteMethod.PATCH,
+						handler: this.userAdminController.updateUser,
+					},
+					{
+						path: "/delete/{userUuid}",
+						method: RouteMethod.DELETE,
+						handler: this.userAdminController.deleteUser,
+					},
+				],
 			},
 			{
 				prefix: "/user",
 				guards: [AuthRequestGuard],
 				routes: [
 					{
-						path: "/",
+						path: "/me",
 						method: RouteMethod.GET,
-						handler: this.userController.getUserList,
+						handler: this.userController.me,
 					},
 					{
-						path: "/{userId}",
-						method: RouteMethod.GET,
-						handler: this.userController.getUser,
-					},
-					{
-						path: "/create",
-						method: RouteMethod.POST,
-						handler: this.userController.createUser,
-					},
-					{
-						path: "/update/{userId}",
-						method: RouteMethod.PUT,
-						handler: this.userController.updateUser,
-					},
-					{
-						path: "/delete/{userId}",
+						path: "/delete",
 						method: RouteMethod.DELETE,
-						handler: this.userController.deleteUser,
+						handler: this.userController.deleteAccount,
 					},
 				],
 			},

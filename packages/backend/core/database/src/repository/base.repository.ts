@@ -79,16 +79,15 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		return await this.concreteEntity.bulkCreate<TEntity>(valuesToCreate as Array<CreationAttributes<TEntity>>, { transaction });
 	}
 
-	public async update(updateOptions: IUpdateOptions<TEntity>): Promise<TEntity> {
+	public async updateOne(updateOptions: IUpdateOptions<TEntity>): Promise<TEntity> {
 		const { scopes, transaction }: IUpdateOptions<TEntity> = updateOptions;
 
 		const foundEntity: TEntity =
 			"findOptions" in updateOptions
-				? await this.findOneOrFail({
-						findOptions: updateOptions.findOptions,
-						scopes,
-				  })
-				: await this.resolveOneOrFail(updateOptions.entity, scopes);
+				? // Find by finder options
+				  await this.findOneOrFail({ findOptions: updateOptions.findOptions, scopes })
+				: // Or resolve using primary key or uuid
+				  await this.resolveOneOrFail(updateOptions.entity, scopes);
 
 		return foundEntity.update(updateOptions.valuesToUpdate as IEntityKeyValues<TEntity>, { transaction });
 	}
@@ -137,7 +136,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		});
 	}
 
-	public async delete(deleteOptions: IDeleteOptions<TEntity>): Promise<boolean> {
+	public async deleteOne(deleteOptions: IDeleteOptions<TEntity>): Promise<boolean> {
 		if ("findOptions" in deleteOptions) {
 			const foundEntity: Nullable<TEntity> = await this.findOne({
 				findOptions: deleteOptions.findOptions,

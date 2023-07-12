@@ -1,11 +1,11 @@
 import { Inject } from "iocc";
 import type { QueryInterface } from "sequelize";
 import type { Sequelize } from "sequelize-typescript";
-import type { MigrationParams } from "umzug";
+import type { MigrationMeta, MigrationParams, RunnableMigration } from "umzug";
 import { SequelizeStorage, Umzug } from "umzug";
-import type { RunnableMigration } from "umzug/lib/types";
 import { DbTokenConst } from "@/backend-core/database/const";
-import type { IDbConnector, IDbManager, IMigration, IMigrationRunner } from "@/backend-core/database/interface";
+import type { IDbConnector, IDbManager } from "@/backend-core/database/interface/db";
+import type { IMigration, IMigrationRunner } from "@/backend-core/database/interface/migration";
 import type { IMigrationRevertOptions } from "@/backend-core/database/types";
 
 export class MigrationRunnerService implements IMigrationRunner {
@@ -17,16 +17,20 @@ export class MigrationRunnerService implements IMigrationRunner {
 		@Inject(DbTokenConst.DbConnectorToken) private readonly dbConnector: IDbConnector<Sequelize>,
 	) {}
 
-	public async runMigrations(): Promise<void> {
+	public async runMigrations(): Promise<Array<string>> {
 		this.checkUmzugConnection();
 
-		await this.umzug.up();
+		const migrationsRan: Array<MigrationMeta> = await this.umzug.up();
+
+		return migrationsRan.map(({ name }: MigrationMeta): string => name);
 	}
 
-	public async revertMigrations(revertMigrationOptions: IMigrationRevertOptions): Promise<void> {
+	public async revertMigrations(revertMigrationOptions: IMigrationRevertOptions): Promise<Array<string>> {
 		this.checkUmzugConnection();
 
-		await this.umzug.down({ step: revertMigrationOptions.step });
+		const migrationsReverted: Array<MigrationMeta> = await this.umzug.down({ step: revertMigrationOptions.step });
+
+		return migrationsReverted.map(({ name }: MigrationMeta): string => name);
 	}
 
 	private checkUmzugConnection(): void {

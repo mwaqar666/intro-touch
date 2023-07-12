@@ -11,22 +11,22 @@ export interface IMigrationTokenQueryParams extends IQueryParams {
 	token: Optional<string>;
 }
 
-export type IMigrationRunnerRequest = IControllerRequest<object, IPathParams, IMigrationTokenQueryParams>;
+export type IDbRequest = IControllerRequest<object, IPathParams, IMigrationTokenQueryParams>;
 
-export class MigrationRunnerGuard implements IGuard<IMigrationRunnerRequest> {
+export class DbRunnerGuard implements IGuard<IDbRequest> {
 	public constructor(
 		// Dependencies
 
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
-	public async guard(request: IMigrationRunnerRequest): Promise<void> {
-		const migrationToken: Optional<string> = request.queryParams.token;
+	public async guard(request: IDbRequest): Promise<void> {
+		const databaseToken: Optional<string> = request.queryParams.token;
 
-		if (!migrationToken) throw new UnauthorizedException("Invalid migration token");
+		if (!databaseToken) throw new UnauthorizedException("Invalid database token");
 
 		const databaseConfig: IDatabaseConfig = this.configResolver.resolveConfig("database");
 
-		if (migrationToken !== databaseConfig.databaseMigrationPass) throw new UnauthorizedException("Invalid migration token");
+		if (databaseToken !== databaseConfig.databaseToken) throw new UnauthorizedException("Invalid database token");
 	}
 }
