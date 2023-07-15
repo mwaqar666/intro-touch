@@ -1,7 +1,6 @@
+import { EntityScopeConst } from "@/backend-core/database/const";
 import { Inject } from "iocc";
-import type { PlatformEntity } from "@/backend/platform/db/entities";
-import type { PlatformCategoryEntity } from "@/backend/platform/db/entities";
-import type { PlatformProfileEntity } from "@/backend/platform/db/entities";
+import type { PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { PlatformCategoryRepository, PlatformProfileRepository, PlatformRepository } from "@/backend/platform/db/repositories";
 
 export class PlatformService {
@@ -15,8 +14,10 @@ export class PlatformService {
 	public listPlatformCategories(): Promise<Array<PlatformCategoryEntity>> {
 		return this.platformCategoryRepository.findAll({
 			findOptions: {},
+			scopes: [EntityScopeConst.isActive],
 		});
 	}
+
 	public listPlatforms(): Promise<Array<PlatformEntity>> {
 		return this.platformRepository.findAll({
 			findOptions: {},
