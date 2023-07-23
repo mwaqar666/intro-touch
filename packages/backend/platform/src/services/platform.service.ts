@@ -1,6 +1,6 @@
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { Inject } from "iocc";
-import type { PlatformCategoryEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
+import type { PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { PlatformCategoryRepository, PlatformProfileRepository, PlatformRepository } from "@/backend/platform/db/repositories";
 
 export class PlatformService {
@@ -18,18 +18,8 @@ export class PlatformService {
 		});
 	}
 
-	public async listPlatforms(platformCategoryUuid: string) {
-		const platformCategories = await this.platformCategoryRepository.findOneOrFail({
-			findOptions: { where: { platformCategoryUuid } },
-		});
-		const platformCategoryId = platformCategories.platformCategoryId;
-
-		// console.log(platformCategories.platformCategoryId);
-		return this.platformRepository.findAll({
-			findOptions: {
-				where: { platformPlatformCategoryId: platformCategoryId },
-			},
-		});
+	public listPlatforms(platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
+		return this.platformRepository.getPlatformsByPlatformCategory(platformCategoryUuid);
 	}
 
 	public listPlatformProfiles(): Promise<Array<PlatformProfileEntity>> {
