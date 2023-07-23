@@ -2,10 +2,9 @@ import type { UserEntity } from "@/backend/user/db/entities";
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
 import { PermissionsEnum } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
-import { Auth, Controller } from "@/backend-core/request-processor/decorators";
+import { Auth, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
-import type { PlatformCategoryEntity, PlatformEntity } from "@/backend/platform/db/entities";
-import type { PlatformProfileEntity } from "@/backend/platform/db/entities";
+import type { PlatformCategoryEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { PlatformService } from "@/backend/platform/services";
 
 @Controller
@@ -22,10 +21,10 @@ export class PlatformController {
 		return { platformCategories: await this.platformService.listPlatformCategories() };
 	}
 
-	public async getPlatforms(@Auth authEntity: UserEntity): Promise<{ platforms: Array<PlatformEntity> }> {
+	public async getPlatforms(@Auth authEntity: UserEntity, @Path("platformCategoryUuid") platformCategoryUuid: string) {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
 
-		return { platforms: await this.platformService.listPlatforms() };
+		return { platforms: await this.platformService.listPlatforms(platformCategoryUuid) };
 	}
 
 	public async getPlatformProfiles(@Auth authEntity: UserEntity): Promise<{ platformProfiles: Array<PlatformProfileEntity> }> {

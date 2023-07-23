@@ -31,11 +31,14 @@ export class PlatformCategoryEntity extends BaseEntity<PlatformCategoryEntity> {
 
 	@DeletedAtColumn
 	public platformCategoryDeletedAt: Nullable<Date>;
+	public platformCategoryPlatforms: Array<PlatformEntity>;
 
 	@HasMany(() => PlatformEntity, {
 		as: "platformCategoryPlatforms",
 		sourceKey: "platformCategoryId",
 		foreignKey: "platformPlatformCategoryId",
 	})
-	public platformCategoryPlatforms: Array<PlatformEntity>;
+	public get id(): number {
+		return this.platformCategoryId;
+	}
 }

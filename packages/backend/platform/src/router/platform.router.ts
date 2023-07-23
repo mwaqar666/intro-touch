@@ -17,7 +17,7 @@ export class PlatformRouter implements IRouter {
 				guards: [AuthRequestGuard],
 				routes: [
 					{
-						path: "/",
+						path: "/{platformCategoryUuid}",
 						method: RouteMethod.GET,
 						handler: this.platformController.getPlatforms,
 					},
