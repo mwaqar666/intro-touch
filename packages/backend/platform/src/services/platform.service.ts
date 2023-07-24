@@ -1,30 +1,29 @@
-import { EntityScopeConst } from "@/backend-core/database/const";
 import { Inject } from "iocc";
-import type { PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
-import { PlatformCategoryRepository, PlatformProfileRepository, PlatformRepository } from "@/backend/platform/db/repositories";
+import type { CustomPlatformEntity, PlatformCategoryEntity, PlatformEntity } from "@/backend/platform/db/entities";
+import { CustomPlatformRepository, PlatformCategoryRepository, PlatformRepository } from "@/backend/platform/db/repositories";
 
 export class PlatformService {
 	public constructor(
 		// Dependencies
-		@Inject(PlatformProfileRepository) private readonly platformProfileRepository: PlatformProfileRepository,
-		@Inject(PlatformCategoryRepository) private readonly platformCategoryRepository: PlatformCategoryRepository,
+
 		@Inject(PlatformRepository) private readonly platformRepository: PlatformRepository,
+		@Inject(CustomPlatformRepository) private readonly customPlatformRepository: CustomPlatformRepository,
+		@Inject(PlatformCategoryRepository) private readonly platformCategoryRepository: PlatformCategoryRepository,
 	) {}
 
-	public listPlatformCategories(): Promise<Array<PlatformCategoryEntity>> {
-		return this.platformCategoryRepository.findAll({
-			findOptions: {},
-			scopes: [EntityScopeConst.isActive],
-		});
+	public getPlatformCategories(): Promise<Array<PlatformCategoryEntity>> {
+		return this.platformCategoryRepository.getPlatformCategories();
 	}
 
-	public listPlatforms(platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
+	public getPlatformsByPlatformCategory(platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
 		return this.platformRepository.getPlatformsByPlatformCategory(platformCategoryUuid);
 	}
 
-	public listPlatformProfiles(): Promise<Array<PlatformProfileEntity>> {
-		return this.platformProfileRepository.findAll({
-			findOptions: {},
-		});
+	public getCustomPlatformsByPlatformCategory(platformCategoryUuid: string): Promise<Array<CustomPlatformEntity>> {
+		return this.customPlatformRepository.getCustomPlatformsByPlatformCategory(platformCategoryUuid);
+	}
+
+	public async getUserOwnedPlatforms(userProfileUuid: string): Promise<Array<PlatformCategoryEntity>> {
+		return this.platformCategoryRepository.getUserOwnedPlatforms(userProfileUuid);
 	}
 }

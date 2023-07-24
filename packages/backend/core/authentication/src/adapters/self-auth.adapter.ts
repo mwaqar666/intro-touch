@@ -31,6 +31,8 @@ export class SelfAuthAdapter implements IAuthAdapter {
 			return async (): Promise<ApiResponse> => {
 				let response: IControllerResponse<{ token: Nullable<string> }>;
 
+				console.log(1);
+
 				try {
 					const form: IAnyObject = this.retrieveRequestData();
 					const [step]: Array<string> = usePath().slice(-1);

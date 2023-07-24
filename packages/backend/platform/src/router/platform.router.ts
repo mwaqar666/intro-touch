@@ -1,4 +1,3 @@
-import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
@@ -14,22 +13,26 @@ export class PlatformRouter implements IRouter {
 		return [
 			{
 				prefix: "/platform",
-				guards: [AuthRequestGuard],
 				routes: [
-					{
-						path: "/{platformCategoryUuid}",
-						method: RouteMethod.GET,
-						handler: this.platformController.getPlatforms,
-					},
 					{
 						path: "/categories",
 						method: RouteMethod.GET,
 						handler: this.platformController.getPlatformCategories,
 					},
 					{
-						path: "/profiles",
+						path: "/category/{platformCategoryUuid}/platforms",
 						method: RouteMethod.GET,
-						handler: this.platformController.getPlatformProfiles,
+						handler: this.platformController.getPlatformsByPlatformCategory,
+					},
+					{
+						path: "/category/{platformCategoryUuid}/custom-platforms",
+						method: RouteMethod.GET,
+						handler: this.platformController.getCustomPlatformsByPlatformCategory,
+					},
+					{
+						path: "/profiles/{userProfileUuid}",
+						method: RouteMethod.GET,
+						handler: this.platformController.getUserOwnedPlatforms,
 					},
 				],
 			},

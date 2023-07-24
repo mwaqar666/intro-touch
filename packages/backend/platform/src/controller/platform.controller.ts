@@ -4,7 +4,7 @@ import { PermissionsEnum } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
-import type { PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
+import type { CustomPlatformEntity, PlatformCategoryEntity, PlatformEntity } from "@/backend/platform/db/entities";
 import { PlatformService } from "@/backend/platform/services";
 
 @Controller
@@ -18,18 +18,24 @@ export class PlatformController {
 	public async getPlatformCategories(@Auth authEntity: UserEntity): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM_CATEGORY]);
 
-		return { platformCategories: await this.platformService.listPlatformCategories() };
+		return { platformCategories: await this.platformService.getPlatformCategories() };
 	}
 
-	public async getPlatforms(@Auth authEntity: UserEntity, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<{ platforms: Array<PlatformEntity> }> {
+	public async getPlatformsByPlatformCategory(@Auth authEntity: UserEntity, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<{ platforms: Array<PlatformEntity> }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
 
-		return { platforms: await this.platformService.listPlatforms(platformCategoryUuid) };
+		return { platforms: await this.platformService.getPlatformsByPlatformCategory(platformCategoryUuid) };
 	}
 
-	public async getPlatformProfiles(@Auth authEntity: UserEntity): Promise<{ platformProfiles: Array<PlatformProfileEntity> }> {
+	public async getCustomPlatformsByPlatformCategory(@Auth authEntity: UserEntity, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<{ customPlatforms: Array<CustomPlatformEntity> }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
 
-		return { platformProfiles: await this.platformService.listPlatformProfiles() };
+		return { customPlatforms: await this.platformService.getCustomPlatformsByPlatformCategory(platformCategoryUuid) };
+	}
+
+	public async getUserOwnedPlatforms(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
+		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
+
+		return { platformCategories: await this.platformService.getUserOwnedPlatforms(userProfileUuid) };
 	}
 }
