@@ -1,3 +1,4 @@
+import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
@@ -13,6 +14,7 @@ export class PlatformRouter implements IRouter {
 		return [
 			{
 				prefix: "/platform",
+				guards: [AuthRequestGuard],
 				routes: [
 					{
 						path: "/categories",
