@@ -1,7 +1,7 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IDatabaseConfig } from "@/backend-core/config/types";
 import { Inject } from "iocc";
-import pg from "pg";
+import * as pg from "pg";
 import { Sequelize } from "sequelize-typescript";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { IDbConnector, IDbManager } from "@/backend-core/database/interface/db";

@@ -18,6 +18,7 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 					},
 				],
 			},
+			scopes: [EntityScopeConst.withoutTimestamps],
 		});
 	}
 }

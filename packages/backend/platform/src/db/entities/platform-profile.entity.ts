@@ -2,9 +2,7 @@ import { UserProfileEntity } from "@/backend/user/db/entities";
 import { CreatedAtColumn, ForeignKeyColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
-import type { Nullable } from "@/stacks/types";
 import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
-import { CustomPlatformEntity } from "@/backend/platform/db/entities/custom-platform.entity";
 import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 
 @Scopes(() => ({
@@ -21,11 +19,8 @@ export class PlatformProfileEntity extends BaseEntity<PlatformProfileEntity> {
 	@ForeignKeyColumn(() => UserProfileEntity)
 	public platformProfileProfileId: number;
 
-	@ForeignKeyColumn(() => PlatformEntity, true)
-	public platformProfilePlatformId: Nullable<number>;
-
-	@ForeignKeyColumn(() => CustomPlatformEntity, true)
-	public platformProfileCustomPlatformId: Nullable<number>;
+	@ForeignKeyColumn(() => PlatformEntity)
+	public platformProfilePlatformId: number;
 
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(255) })
@@ -43,13 +38,6 @@ export class PlatformProfileEntity extends BaseEntity<PlatformProfileEntity> {
 		foreignKey: "platformProfilePlatformId",
 	})
 	public platformProfilePlatform: PlatformEntity;
-
-	@BelongsTo(() => CustomPlatformEntity, {
-		as: "platformProfileCustomPlatform",
-		targetKey: "customPlatformId",
-		foreignKey: "platformProfileCustomPlatformId",
-	})
-	public platformProfileCustomPlatform: CustomPlatformEntity;
 
 	@BelongsTo(() => UserProfileEntity, {
 		as: "platformProfileProfile",

@@ -51,7 +51,6 @@ export class PlatformUserProfileSeeder implements ISeeder {
 						return {
 							platformProfileProfileId: nabeelBaigDefaultProfile.userProfileId,
 							platformProfilePlatformId: platform.platformId,
-							platformProfileCustomPlatformId: null,
 							platformProfileIdentity: "XYZ",
 						};
 					});
@@ -62,7 +61,6 @@ export class PlatformUserProfileSeeder implements ISeeder {
 						return {
 							platformProfileProfileId: muhammadWaqarDefaultProfile.userProfileId,
 							platformProfilePlatformId: platform.platformId,
-							platformProfileCustomPlatformId: null,
 							platformProfileIdentity: "XYZ",
 						};
 					});

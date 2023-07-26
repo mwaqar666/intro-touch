@@ -39,6 +39,16 @@ export class PlatformCategoryRepository extends BaseRepository<PlatformCategoryE
 							},
 						],
 					},
+				],
+			},
+			scopes: [EntityScopeConst.withoutTimestamps],
+		});
+	}
+
+	public getUserOwnedCustomPlatforms(userProfileUuid: string): Promise<Array<PlatformCategoryEntity>> {
+		return this.findAll({
+			findOptions: {
+				include: [
 					{
 						required: true,
 						model: CustomPlatformEntity.scope([EntityScopeConst.withoutTimestamps]),
@@ -46,21 +56,15 @@ export class PlatformCategoryRepository extends BaseRepository<PlatformCategoryE
 						include: [
 							{
 								required: true,
-								model: PlatformProfileEntity.scope([EntityScopeConst.withoutTimestamps]),
-								as: "customPlatformPlatformProfiles",
-								include: [
-									{
-										required: true,
-										model: UserProfileEntity.scope([EntityScopeConst.primaryKeyAndUuidOnly]),
-										as: "platformProfileProfile",
-										where: { userProfileUuid },
-									},
-								],
+								model: UserProfileEntity.scope([EntityScopeConst.primaryKeyAndUuidOnly]),
+								as: "customPlatformUserProfile",
+								where: { userProfileUuid },
 							},
 						],
 					},
 				],
 			},
+			scopes: [EntityScopeConst.withoutTimestamps],
 		});
 	}
 }

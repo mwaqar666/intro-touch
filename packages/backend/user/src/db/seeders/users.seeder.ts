@@ -22,20 +22,22 @@ export class UsersSeeder implements ISeeder {
 	public async seed(): Promise<void> {
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
+				const hashedPassword: string = await this.hashService.hash("password");
+
 				const users: Array<UserEntity> = await this.userRepository.createMany({
 					valuesToCreate: [
 						{
 							userFirstName: "Muhammad",
 							userLastName: "Waqar",
 							userEmail: "muhammadwaqar666@gmail.com",
-							userPassword: await this.hashService.hash("password"),
+							userPassword: hashedPassword,
 							userPicture: "",
 						},
 						{
 							userFirstName: "Nabeel",
 							userLastName: "Baig",
 							userEmail: "mathswithnabeel@gmail.com",
-							userPassword: await this.hashService.hash("password"),
+							userPassword: hashedPassword,
 							userPicture: "",
 						},
 					],
