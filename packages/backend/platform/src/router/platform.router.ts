@@ -2,12 +2,14 @@ import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
-import { PlatformController } from "@/backend/platform/controller";
+import { CustomPlatformController, PlatformCategoryController, PlatformController } from "@/backend/platform/controller";
 
 export class PlatformRouter implements IRouter {
 	public constructor(
 		// Dependencies
 		@Inject(PlatformController) private readonly platformController: PlatformController,
+		@Inject(CustomPlatformController) private readonly customPlatformController: CustomPlatformController,
+		@Inject(PlatformCategoryController) private readonly platformCategoryController: PlatformCategoryController,
 	) {}
 
 	public registerRoutes(): Array<IRoute> {
@@ -17,22 +19,22 @@ export class PlatformRouter implements IRouter {
 				guards: [AuthRequestGuard],
 				routes: [
 					{
-						path: "/categories",
+						path: "/category",
 						method: RouteMethod.GET,
-						handler: this.platformController.getPlatformCategories,
+						handler: this.platformCategoryController.getPlatformCategories,
 					},
 					{
-						path: "/category/{platformCategoryUuid}/platforms",
+						path: "/builtin/{platformCategoryUuid}",
 						method: RouteMethod.GET,
 						handler: this.platformController.getPlatformsByPlatformCategory,
 					},
 					{
-						path: "/category/{platformCategoryUuid}/custom-platforms",
+						path: "/custom/{platformCategoryUuid}",
 						method: RouteMethod.GET,
-						handler: this.platformController.getCustomPlatformsByPlatformCategory,
+						handler: this.customPlatformController.getCustomPlatformsByPlatformCategory,
 					},
 					{
-						path: "/profiles/{userProfileUuid}",
+						path: "/owned",
 						method: RouteMethod.GET,
 						handler: this.platformController.getUserOwnedPlatforms,
 					},
