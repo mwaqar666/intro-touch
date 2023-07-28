@@ -34,7 +34,7 @@ export class PlatformRouter implements IRouter {
 						handler: this.customPlatformController.getCustomPlatformsByPlatformCategory,
 					},
 					{
-						path: "/owned",
+						path: "/owned/{userProfileUuid}/{platformCategoryUuid}",
 						method: RouteMethod.GET,
 						handler: this.platformController.getUserOwnedPlatforms,
 					},

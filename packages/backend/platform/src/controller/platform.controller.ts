@@ -4,7 +4,7 @@ import { PermissionsEnum } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
-import type { PlatformCategoryEntity, PlatformEntity } from "@/backend/platform/db/entities";
+import type { CustomPlatformEntity, PlatformEntity } from "@/backend/platform/db/entities";
 import { PlatformService } from "@/backend/platform/services";
 
 @Controller
@@ -21,9 +21,13 @@ export class PlatformController {
 		return { platforms: await this.platformService.getPlatformsByPlatformCategory(platformCategoryUuid) };
 	}
 
-	public async getUserOwnedPlatforms(@Auth authEntity: UserEntity): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
+	public async getUserOwnedPlatforms(
+		@Auth authEntity: UserEntity,
+		@Path("userProfileUuid") userProfileUuid: string,
+		@Path("platformCategoryUuid") platformCategoryUuid: string,
+	): Promise<{ platforms: PlatformEntity; customPlatforms: CustomPlatformEntity }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
 
-		return { platformCategories: await this.platformService.getUserOwnedPlatforms(authEntity.userUuid) };
+		return await this.platformService.getUserOwnedPlatforms(userProfileUuid, platformCategoryUuid);
 	}
 }

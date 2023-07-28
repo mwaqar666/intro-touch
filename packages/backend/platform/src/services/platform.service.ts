@@ -1,7 +1,6 @@
-import type { Optional } from "@/stacks/types";
 import { Inject } from "iocc";
-import type { PlatformCategoryEntity, PlatformEntity } from "@/backend/platform/db/entities";
-import { PlatformCategoryRepository, PlatformRepository } from "@/backend/platform/db/repositories";
+import type { CustomPlatformEntity, PlatformEntity } from "@/backend/platform/db/entities";
+import { CustomPlatformRepository, PlatformCategoryRepository, PlatformRepository } from "@/backend/platform/db/repositories";
 
 export class PlatformService {
 	public constructor(
@@ -9,28 +8,34 @@ export class PlatformService {
 
 		@Inject(PlatformRepository) private readonly platformRepository: PlatformRepository,
 		@Inject(PlatformCategoryRepository) private readonly platformCategoryRepository: PlatformCategoryRepository,
+		@Inject(CustomPlatformRepository) private readonly customPlatformRepository: CustomPlatformRepository,
 	) {}
 
 	public getPlatformsByPlatformCategory(platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
 		return this.platformRepository.getPlatformsByPlatformCategory(platformCategoryUuid);
 	}
 
-	public async getUserOwnedPlatforms(userProfileUuid: string): Promise<Array<PlatformCategoryEntity>> {
-		const userOwnedBuiltinPlatforms: Array<PlatformCategoryEntity> = await this.platformCategoryRepository.getUserOwnedPlatforms(userProfileUuid);
+	public async getUserOwnedPlatforms(userProfileUuid: string, platformCategoryUuid: string): Promise<{ platforms: PlatformEntity; customPlatforms: CustomPlatformEntity }> {
+		// const userOwnedBuiltinPlatforms: Array<PlatformCategoryEntity> = await this.platformCategoryRepository.getUserOwnedPlatforms(userProfileUuid);
+		// const userOwnedCustomPlatforms: Array<PlatformCategoryEntity> = await this.platformCategoryRepository.getUserOwnedCustomPlatforms(userProfileUuid);
 
-		const userOwnedCustomPlatforms: Array<PlatformCategoryEntity> = await this.platformCategoryRepository.getUserOwnedCustomPlatforms(userProfileUuid);
+		const userOwnedBuiltinPlatforms: Array<PlatformEntity> = await this.platformRepository.getUserOwnedPlatforms(userProfileUuid, platformCategoryUuid);
 
-		let userOwnedPlatforms: Array<PlatformCategoryEntity> = [];
+		const userOwnedCustomPlatforms: Array<CustomPlatformEntity> = await this.customPlatformRepository.getUserOwnedCustomPlatforms(userProfileUuid, platformCategoryUuid);
 
-		userOwnedBuiltinPlatforms.forEach((eachPlatformCategory: PlatformCategoryEntity): void => {
-			userOwnedPlatforms = this.mergePlatformTypeInPlatformCategoryList(userOwnedPlatforms, eachPlatformCategory, "platformCategoryPlatforms");
-		});
+		/*let userOwnedPlatforms: Array<any> = [];
 
-		userOwnedCustomPlatforms.forEach((eachPlatformCategory: PlatformCategoryEntity): void => {
-			userOwnedPlatforms = this.mergePlatformTypeInPlatformCategoryList(userOwnedPlatforms, eachPlatformCategory, "platformCategoryCustomPlatforms");
-		});
+        userOwnedBuiltinPlatforms.forEach((eachPlatformCategory: PlatformEntity): void => {
+            userOwnedPlatforms = this.mergePlatformTypeInPlatformCategoryList(userOwnedPlatforms, eachPlatformCategory, "platformCategoryPlatforms");
+        });
 
-		return userOwnedPlatforms;
+        userOwnedCustomPlatforms.forEach((eachPlatformCategory: CustomPlatformEntity): void => {
+            userOwnedPlatforms = this.mergePlatformTypeInPlatformCategoryList(userOwnedPlatforms, eachPlatformCategory, "platformCategoryCustomPlatforms");
+        });*/
+		return {
+			platforms: userOwnedBuiltinPlatforms,
+			customPlatforms: userOwnedCustomPlatforms,
+		};
 	}
 
 	private mergePlatformTypeInPlatformCategoryList<T extends "platformCategoryPlatforms" | "platformCategoryCustomPlatforms">(
