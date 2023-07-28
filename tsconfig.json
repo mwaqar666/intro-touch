@@ -1,69 +1,43 @@
 {
-  "compilerOptions": {
-    "module": "ESNext",
-    "target": "ES6",
-    "moduleResolution": "Node",
-    "baseUrl": ".",
-    "incremental": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-    "noFallthroughCasesInSwitch": true,
-    "strictPropertyInitialization": false,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "skipLibCheck": false,
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@/stacks/*": [
-        "stacks/*"
-      ],
-      "@/backend-core/authentication/*": [
-        "packages/backend/core/authentication/src/*"
-      ],
-      "@/backend-core/authorization/*": [
-        "packages/backend/core/authorization/src/*"
-      ],
-      "@/backend-core/config/*": [
-        "packages/backend/core/config/src/*"
-      ],
-      "@/backend-core/core/*": [
-        "packages/backend/core/core/src/*"
-      ],
-      "@/backend-core/database/*": [
-        "packages/backend/core/database/src/*"
-      ],
-      "@/backend-core/ignition/*": [
-        "packages/backend/core/ignition/src/*"
-      ],
-      "@/backend-core/mailer/*": [
-        "packages/backend/core/mailer/src/*"
-      ],
-      "@/backend-core/request-processor/*": [
-        "packages/backend/core/request-processor/src/*"
-      ],
-      "@/backend-core/router/*": [
-        "packages/backend/core/router/src/*"
-      ],
-      "@/backend-core/validation/*": [
-        "packages/backend/core/validation/src/*"
-      ],
-      "@/backend/platform/*": [
-        "packages/backend/platform/src/*"
-      ],
-      "@/backend/user/*": [
-        "packages/backend/user/src/*"
-      ]
-    }
-  }
+	"compilerOptions": {
+		"module": "ESNext",
+		"target": "ES6",
+		"moduleResolution": "Node",
+		"baseUrl": ".",
+		"incremental": true,
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"strict": true,
+		"strictNullChecks": true,
+		"noImplicitAny": true,
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
+		"noFallthroughCasesInSwitch": true,
+		"strictPropertyInitialization": false,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"skipLibCheck": false,
+		"forceConsistentCasingInFileNames": true,
+		"paths": {
+			"@/stacks/*": ["stacks/*"],
+			"@/backend-core/authentication/*": ["packages/backend/core/authentication/src/*"],
+			"@/backend-core/authorization/*": ["packages/backend/core/authorization/src/*"],
+			"@/backend-core/config/*": ["packages/backend/core/config/src/*"],
+			"@/backend-core/core/*": ["packages/backend/core/core/src/*"],
+			"@/backend-core/database/*": ["packages/backend/core/database/src/*"],
+			"@/backend-core/ignition/*": ["packages/backend/core/ignition/src/*"],
+			"@/backend-core/mailer/*": ["packages/backend/core/mailer/src/*"],
+			"@/backend-core/request-processor/*": ["packages/backend/core/request-processor/src/*"],
+			"@/backend-core/router/*": ["packages/backend/core/router/src/*"],
+			"@/backend-core/validation/*": ["packages/backend/core/validation/src/*"],
+			"@/backend/platform/*": ["packages/backend/platform/src/*"],
+			"@/backend/user/*": ["packages/backend/user/src/*"]
+		}
+	}
 }

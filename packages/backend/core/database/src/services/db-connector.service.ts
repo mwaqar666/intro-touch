@@ -1,6 +1,7 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IDatabaseConfig } from "@/backend-core/config/types";
 import { Inject } from "iocc";
+import * as pg from "pg";
 import { Sequelize } from "sequelize-typescript";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { IDbConnector, IDbManager } from "@/backend-core/database/interface/db";
@@ -49,6 +50,7 @@ export class DbConnectorService implements IDbConnector<Sequelize> {
 
 		const sequelize: Sequelize = new Sequelize({
 			database: dbConfig.databaseName,
+			dialectModule: pg,
 			host: dbConfig.databaseHost,
 			port: dbConfig.databasePort,
 			username: dbConfig.databaseUser,

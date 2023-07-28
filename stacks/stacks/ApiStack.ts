@@ -51,7 +51,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 			EMAIL_FROM: emailFrom,
 		},
 		nodejs: {
-			install: ["pg", "pg-hstore"],
+			install: ["pg-hstore"],
 			esbuild: {
 				plugins: [esBuildDecoratorPlugin],
 			},

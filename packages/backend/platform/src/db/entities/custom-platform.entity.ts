@@ -3,9 +3,8 @@ import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, Pri
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, BelongsTo, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
 import { PlatformCategoryEntity } from "@/backend/platform/db/entities/platform-category.entity";
-import { PlatformProfileEntity } from "@/backend/platform/db/entities/platform-profile.entity";
 
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => CustomPlatformEntity),
@@ -32,6 +31,10 @@ export class CustomPlatformEntity extends BaseEntity<CustomPlatformEntity> {
 	@Column({ type: DataType.STRING(255) })
 	public customPlatformIcon: string;
 
+	@AllowNull(false)
+	@Column({ type: DataType.STRING(255) })
+	public customPlatformIdentity: string;
+
 	@IsActiveColumn
 	public customPlatformIsActive: boolean;
 
@@ -50,13 +53,6 @@ export class CustomPlatformEntity extends BaseEntity<CustomPlatformEntity> {
 		foreignKey: "customPlatformPlatformCategoryId",
 	})
 	public customPlatformPlatformCategory: PlatformCategoryEntity;
-
-	@HasMany(() => PlatformProfileEntity, {
-		as: "customPlatformPlatformProfiles",
-		sourceKey: "customPlatformId",
-		foreignKey: "platformProfileCustomPlatformId",
-	})
-	public customPlatformPlatformProfiles: Array<PlatformProfileEntity>;
 
 	@BelongsTo(() => UserProfileEntity, {
 		as: "customPlatformUserProfile",

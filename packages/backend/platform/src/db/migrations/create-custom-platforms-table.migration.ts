@@ -18,6 +18,10 @@ export class CreateCustomPlatformsTable extends AbstractMigration {
 				allowNull: false,
 				type: DataType.STRING(255),
 			},
+			customPlatformIdentity: {
+				allowNull: false,
+				type: DataType.STRING(255),
+			},
 			customPlatformIsActive: this.createIsActiveKeyProps(),
 			customPlatformCreatedAt: this.createCreatedAtKeyProps(),
 			customPlatformUpdatedAt: this.createUpdatedAtKeyProps(),

@@ -9,8 +9,7 @@ export class CreatePlatformProfilesTable extends AbstractMigration {
 			platformProfileId: this.createPrimaryKeyProps(),
 			platformProfileUuid: this.createUuidKeyProps(),
 			platformProfileProfileId: this.createForeignKeyProps(),
-			platformProfilePlatformId: this.createForeignKeyProps(true),
-			platformProfileCustomPlatformId: this.createForeignKeyProps(true),
+			platformProfilePlatformId: this.createForeignKeyProps(),
 			platformProfileIdentity: {
 				allowNull: false,
 				type: DataType.STRING(255),
@@ -22,13 +21,9 @@ export class CreatePlatformProfilesTable extends AbstractMigration {
 		await this.createForeignKeyConstraint("platformProfiles", "platformProfileProfileId", "userProfiles", "userProfileId");
 
 		await this.createForeignKeyConstraint("platformProfiles", "platformProfilePlatformId", "platforms", "platformId");
-
-		await this.createForeignKeyConstraint("platformProfiles", "platformProfileCustomPlatformId", "customPlatforms", "customPlatformId");
 	}
 
 	public override async down(): Promise<void> {
-		await this.dropForeignKeyConstraint("platformProfiles", "platformProfileCustomPlatformId");
-
 		await this.dropForeignKeyConstraint("platformProfiles", "platformProfilePlatformId");
 
 		await this.dropForeignKeyConstraint("platformProfiles", "platformProfileProfileId");
