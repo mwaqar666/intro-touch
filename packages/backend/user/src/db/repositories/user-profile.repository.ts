@@ -7,18 +7,12 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		super(UserProfileEntity);
 	}
 
-	public async getUserProfiles(userProfileUserId: number, userActiveUserProfileId: number): Promise<Array<UserProfileEntity>> {
-		const userProfiles: Promise<Array<UserProfileEntity>> = await this.findAll({
+	public getUserProfiles(userProfileUserId: number): Promise<Array<UserProfileEntity>> {
+		return await this.findAll({
 			findOptions: {
 				where: { userProfileUserId },
 			},
 			scopes: [EntityScopeConst.isActive],
 		});
-
-		/*return userProfiles.map((userProfile: UserProfileEntity) => ({
-            ...userProfile,
-            isActive: userProfile.userProfileId === userActiveUserProfileId,
-        }));*/
-		return userProfiles;
 	}
 }

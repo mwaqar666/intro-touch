@@ -9,7 +9,7 @@ export class UserProfileService {
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 	) {}
 
-	public getUserProfiles(userProfileUserId: number, userActiveUserProfileId: number): Promise<Array<UserProfileEntity>> {
-		return this.userProfileRepository.getUserProfiles(userProfileUserId, userActiveUserProfileId);
+	public getUserProfiles(userProfileUserId: number): Promise<Array<UserProfileEntity>> {
+		return this.userProfileRepository.getUserProfiles(userProfileUserId);
 	}
 }

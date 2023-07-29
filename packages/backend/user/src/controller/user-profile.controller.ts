@@ -17,6 +17,6 @@ export class UserProfileController {
 	public async getUserProfiles(@Auth authEntity: UserEntity): Promise<{ userProfiles: Array<UserProfileEntity> }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_USER_PROFILE]);
 
-		return { userProfiles: await this.userProfileService.getUserProfiles(authEntity.userId, authEntity.userActiveUserProfileId) };
+		return { userProfiles: await this.userProfileService.getUserProfiles(authEntity.userId) };
 	}
 }
