@@ -5,11 +5,8 @@ export const EntityScopeConst = {
 	// Regarding UUID
 	primaryKeyAndUuidOnly: "primaryKeyAndUuidOnly",
 
-	// Regarding Other Columns
-	withColumns: "withColumns",
-	withoutColumns: "withoutColumns",
-
 	// Miscellaneous
 	isActive: "isActive",
 	withoutTimestamps: "withoutTimestamps",
+	withoutSelection: "withoutSelection",
 };

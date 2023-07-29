@@ -13,12 +13,14 @@ export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntit
 			findOptions: {
 				include: [
 					{
+						required: true,
 						as: "customPlatformPlatformCategory",
-						model: PlatformCategoryEntity.scope(EntityScopeConst.primaryKeyAndUuidOnly),
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 						where: { platformCategoryUuid },
 					},
 				],
 			},
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
 
@@ -27,18 +29,20 @@ export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntit
 			findOptions: {
 				include: [
 					{
+						required: true,
 						as: "customPlatformPlatformCategory",
-						model: PlatformCategoryEntity.scope(EntityScopeConst.primaryKeyAndUuidOnly),
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 						where: { platformCategoryUuid },
 					},
 					{
 						required: true,
-						model: UserProfileEntity.scope([EntityScopeConst.primaryKeyAndUuidOnly]),
+						model: UserProfileEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 						as: "customPlatformUserProfile",
 						where: { userProfileUuid },
 					},
 				],
 			},
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
 }

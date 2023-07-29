@@ -13,13 +13,14 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 			findOptions: {
 				include: [
 					{
+						required: true,
 						as: "platformPlatformCategory",
-						model: PlatformCategoryEntity.scope(EntityScopeConst.primaryKeyAndUuidOnly),
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 						where: { platformCategoryUuid },
 					},
 				],
 			},
-			scopes: [EntityScopeConst.withoutTimestamps],
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
 
@@ -28,8 +29,9 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 			findOptions: {
 				include: [
 					{
+						required: true,
 						as: "platformPlatformCategory",
-						model: PlatformCategoryEntity.scope(EntityScopeConst.primaryKeyAndUuidOnly),
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 						where: { platformCategoryUuid },
 					},
 					{
@@ -39,7 +41,7 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 						include: [
 							{
 								required: true,
-								model: UserProfileEntity.scope([EntityScopeConst.primaryKeyAndUuidOnly]),
+								model: UserProfileEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 								as: "platformProfileProfile",
 								where: { userProfileUuid },
 							},
@@ -47,7 +49,7 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 					},
 				],
 			},
-			scopes: [EntityScopeConst.withoutTimestamps],
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
 }
