@@ -2,7 +2,7 @@ import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ITransactionStore } from "@/backend-core/database/types";
 import { Inject } from "iocc";
-import type { UserProfileEntity } from "@/backend/user/db/entities";
+import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
 import type { UpdateUserProfileRequestDto } from "@/backend/user/dto/update-user-profile";
 
@@ -14,8 +14,8 @@ export class UserProfileService {
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
-	public getUserProfiles(userProfileUserId: number): Promise<Array<UserProfileEntity>> {
-		return this.userProfileRepository.getUserProfiles(userProfileUserId);
+	public getAuthUserProfileDropdown(authEntity: UserEntity): Promise<Array<UserProfileEntity>> {
+		return this.userProfileRepository.getAuthUserProfileDropdown(authEntity);
 	}
 
 	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {

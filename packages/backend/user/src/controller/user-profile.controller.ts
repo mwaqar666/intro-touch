@@ -15,7 +15,7 @@ export class UserProfileController {
 		@Inject(AuthorizationTokenConst.Authorization) private readonly authorization: IAuthorization,
 	) {}
 
-	public async getUserProfiles(@Auth authEntity: UserEntity): Promise<{ userProfiles: Array<UserProfileEntity> }> {
+	public async getAuthUserProfileDropdown(@Auth authEntity: UserEntity): Promise<{ userProfiles: Array<UserProfileEntity> }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_USER_PROFILE]);
 
 		return { userProfiles: await this.userProfileService.getUserProfiles(authEntity.userId) };
