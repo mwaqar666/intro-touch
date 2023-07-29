@@ -1,8 +1,8 @@
 {
-	"name": "@intro-touch/backend-core-config",
-	"version": "0.0.0",
-	"dependencies": {
-		"iocc": "^2.1.5",
-		"joi": "^17.9.2"
-	}
+  "name": "@intro-touch/backend-core-config",
+  "version": "0.0.0",
+  "dependencies": {
+    "iocc": "^2.1.5",
+    "joi": "^17.9.2"
+  }
 }
