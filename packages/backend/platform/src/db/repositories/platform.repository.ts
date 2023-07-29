@@ -1,6 +1,7 @@
+import { UserProfileEntity } from "@/backend/user/db/entities";
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
-import { PlatformCategoryEntity, PlatformEntity } from "@/backend/platform/db/entities";
+import { PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 
 export class PlatformRepository extends BaseRepository<PlatformEntity> {
 	public constructor() {
@@ -12,13 +13,43 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 			findOptions: {
 				include: [
 					{
+						required: true,
 						as: "platformPlatformCategory",
-						model: PlatformCategoryEntity.scope(EntityScopeConst.primaryKeyAndUuidOnly),
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 						where: { platformCategoryUuid },
 					},
 				],
 			},
-			scopes: [EntityScopeConst.withoutTimestamps],
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
+		});
+	}
+
+	public getUserOwnedPlatforms(userProfileUuid: string, platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
+		return this.findAll({
+			findOptions: {
+				include: [
+					{
+						required: true,
+						as: "platformPlatformCategory",
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
+						where: { platformCategoryUuid },
+					},
+					{
+						required: true,
+						model: PlatformProfileEntity.scope([EntityScopeConst.withoutTimestamps]),
+						as: "platformPlatformProfile",
+						include: [
+							{
+								required: true,
+								model: UserProfileEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
+								as: "platformProfileProfile",
+								where: { userProfileUuid },
+							},
+						],
+					},
+				],
+			},
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
 }

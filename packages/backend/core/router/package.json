@@ -1,7 +1,7 @@
 {
-	"name": "@intro-touch/backend-core-router",
-	"version": "0.0.0",
-	"dependencies": {
-		"iocc": "^2.1.5"
-	}
+  "name": "@intro-touch/backend-core-router",
+  "version": "0.0.0",
+  "dependencies": {
+    "iocc": "^2.1.5"
+  }
 }

@@ -14,7 +14,8 @@ export class ScopeFactory<TEntity extends BaseEntity<TEntity>> {
 			.preparePrimaryKeyScopes()
 			.prepareUuidKeyScopes()
 			.prepareTimestampsScopes()
-			.prepareActiveColumnScopes();
+			.prepareWithoutSelectionScope()
+			.prepareActiveColumnScope();
 
 		return scopesInstance.scopes;
 	}
@@ -52,7 +53,13 @@ export class ScopeFactory<TEntity extends BaseEntity<TEntity>> {
 		return this;
 	}
 
-	private prepareActiveColumnScopes(): ScopeFactory<TEntity> {
+	private prepareWithoutSelectionScope(): ScopeFactory<TEntity> {
+		this.scopes["withoutSelection"] = { attributes: [] };
+
+		return this;
+	}
+
+	private prepareActiveColumnScope(): ScopeFactory<TEntity> {
 		if (this.model.isActiveColumnName) this.scopes["isActive"] = { where: { [this.model.isActiveColumnName]: true } };
 
 		return this;
