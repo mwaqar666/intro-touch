@@ -60,9 +60,19 @@ export class UserRouter implements IRouter {
 						handler: this.userProfileController.getUserProfiles,
 					},
 					{
-						path: "/profile/{userProfileUuid}",
-						method: RouteMethod.GET,
-						handler: this.userProfileController.getUserProfile,
+						prefix: "/profile",
+						routes: [
+							{
+								path: "/{userProfileUuid}",
+								method: RouteMethod.GET,
+								handler: this.userProfileController.getUserProfile,
+							},
+							{
+								path: "/update/{userProfileUuid}",
+								method: RouteMethod.PATCH,
+								handler: this.userProfileController.updateUserProfile,
+							},
+						],
 					},
 				],
 			},
