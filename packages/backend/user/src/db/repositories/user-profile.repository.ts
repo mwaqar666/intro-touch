@@ -2,7 +2,6 @@ import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
 import type { Transaction } from "sequelize";
 import type { UserEntity } from "@/backend/user/db/entities";
-import type { ITransactionStore } from "@/backend-core/database/types";
 import { UserProfileEntity } from "@/backend/user/db/entities";
 import type { UpdateUserProfileRequestDto } from "@/backend/user/dto/update-user-profile";
 
