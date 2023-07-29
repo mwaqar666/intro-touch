@@ -1,7 +1,6 @@
 ---
 to: packages/<%= seederPath %>/<%= name.replace(/\s/g, "-") %>.seeder.ts
 ---
-
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";

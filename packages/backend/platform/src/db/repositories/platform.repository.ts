@@ -23,7 +23,7 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 		});
 	}
 
-	public getUserOwnedPlatforms(userProfileUuid: string, platformCategoryUuid: string): Promise<PlatformEntity> {
+	public getUserOwnedPlatforms(userProfileUuid: string, platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
 		return this.findAll({
 			findOptions: {
 				include: [
