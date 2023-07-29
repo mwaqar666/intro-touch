@@ -18,7 +18,7 @@ export class UserProfileController {
 	public async getAuthUserProfileDropdown(@Auth authEntity: UserEntity): Promise<{ userProfiles: Array<UserProfileEntity> }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_USER_PROFILE]);
 
-		return { userProfiles: await this.userProfileService.getUserProfiles(authEntity.userId) };
+		return { userProfiles: await this.userProfileService.getAuthUserProfileDropdown(authEntity) };
 	}
 
 	public async getUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {

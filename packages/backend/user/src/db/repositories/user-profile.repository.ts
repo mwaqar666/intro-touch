@@ -1,7 +1,7 @@
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
+import type { Transaction } from "sequelize";
 import type { UserEntity } from "@/backend/user/db/entities";
-import type { ITransactionStore } from "@/backend-core/database/types";
 import { UserProfileEntity } from "@/backend/user/db/entities";
 import type { UpdateUserProfileRequestDto } from "@/backend/user/dto/update-user-profile";
 
@@ -37,11 +37,11 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 			findOptions: {
 				where: { userProfileUuid },
 			},
-			scopes: [EntityScopeConst.isActive],
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
 
-	public updateUserProfile(userProfileUuid: string, updateUserProfileRequestDto: UpdateUserProfileRequestDto, { transaction }: ITransactionStore): Promise<UserProfileEntity> {
+	public updateUserProfile(userProfileUuid: string, updateUserProfileRequestDto: UpdateUserProfileRequestDto, transaction: Transaction): Promise<UserProfileEntity> {
 		return this.updateOne({
 			findOptions: {
 				where: { userProfileUuid },

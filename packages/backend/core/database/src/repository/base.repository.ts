@@ -56,6 +56,7 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		}
 
 		scopedFindOptions.findOptions = { where: { [this.concreteEntity.primaryKeyAttribute]: entity } as WhereOptions<TEntity> };
+
 		return await this.findOne(scopedFindOptions);
 	}
 

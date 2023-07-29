@@ -25,7 +25,7 @@ export class UserProfileService {
 	public async updateUserProfile(userProfileUuid: string, updateUserProfileRequestDto: UpdateUserProfileRequestDto): Promise<UserProfileEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
-				return this.userProfileRepository.updateUserProfile(userProfileUuid, updateUserProfileRequestDto, { transaction });
+				return this.userProfileRepository.updateUserProfile(userProfileUuid, updateUserProfileRequestDto, transaction);
 			},
 		});
 	}
