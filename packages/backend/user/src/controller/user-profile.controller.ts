@@ -1,7 +1,7 @@
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
 import { PermissionsEnum } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
-import { Auth, Controller } from "@/backend-core/request-processor/decorators";
+import { Auth, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileService } from "@/backend/user/services";
@@ -18,5 +18,11 @@ export class UserProfileController {
 		await this.authorization.can(authEntity, [PermissionsEnum.LIST_USER_PROFILE]);
 
 		return { userProfiles: await this.userProfileService.getUserProfiles(authEntity.userId) };
+	}
+
+	public async getUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {
+		await this.authorization.can(authEntity, [PermissionsEnum.VIEW_USER_PROFILE]);
+
+		return { userProfile: await this.userProfileService.getUserProfile(userProfileUuid) };
 	}
 }

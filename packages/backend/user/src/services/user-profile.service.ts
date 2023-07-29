@@ -12,4 +12,8 @@ export class UserProfileService {
 	public getUserProfiles(userProfileUserId: number): Promise<Array<UserProfileEntity>> {
 		return this.userProfileRepository.getUserProfiles(userProfileUserId);
 	}
+
+	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
+		return this.userProfileRepository.getUserProfile(userProfileUuid);
+	}
 }

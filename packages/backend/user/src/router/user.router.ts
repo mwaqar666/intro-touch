@@ -59,6 +59,11 @@ export class UserRouter implements IRouter {
 						method: RouteMethod.GET,
 						handler: this.userProfileController.getUserProfiles,
 					},
+					{
+						path: "/profile/{userProfileUuid}",
+						method: RouteMethod.GET,
+						handler: this.userProfileController.getUserProfile,
+					},
 				],
 			},
 		];

@@ -8,9 +8,18 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 	}
 
 	public getUserProfiles(userProfileUserId: number): Promise<Array<UserProfileEntity>> {
-		return await this.findAll({
+		return this.findAll({
 			findOptions: {
 				where: { userProfileUserId },
+			},
+			scopes: [EntityScopeConst.isActive],
+		});
+	}
+
+	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
+		return this.findOneOrFail({
+			findOptions: {
+				where: { userProfileUuid },
 			},
 			scopes: [EntityScopeConst.isActive],
 		});
