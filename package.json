@@ -12,7 +12,7 @@
     "gen": "hygen",
     "fix": "npm run fix:eslint && npm run fix:prettier",
     "fix:eslint": "eslint --fix --ignore-path .eslintignore --ext .js,.ts,.jsx,.tsx,.mjs .",
-    "fix:prettier": "prettier --write --check --ignore-path .prettierignore \"**/*.+(js|ts|jsx|tsx|cjs|mjs|json)\""
+    "fix:prettier": "prettier --write --ignore-path .prettierignore \"**/*.+(js|ts|jsx|tsx|cjs|mjs|json)\""
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",
