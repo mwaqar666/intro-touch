@@ -8,7 +8,7 @@ import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
 import omit from "lodash.omit";
-import { AllowNull, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
 @Scopes(() => ({
@@ -61,6 +61,13 @@ export class UserEntity extends BaseEntity<UserEntity> {
 		foreignKey: "userProfileUserId",
 	})
 	public userUserProfiles: Array<UserProfileEntity>;
+
+	@HasOne(() => UserProfileEntity, {
+		as: "userLiveUserProfile",
+		sourceKey: "userId",
+		foreignKey: "userProfileUserId",
+	})
+	public userLiveUserProfile: UserProfileEntity;
 
 	@HasMany(() => VerificationTokenEntity, {
 		as: "userTokens",
