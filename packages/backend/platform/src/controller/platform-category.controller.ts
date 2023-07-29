@@ -5,14 +5,13 @@ import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Controller } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { PlatformCategoryEntity } from "@/backend/platform/db/entities";
-import type { PlatformCategoryService } from "@/backend/platform/services";
-import { PlatformService } from "@/backend/platform/services";
+import { PlatformCategoryService } from "@/backend/platform/services";
 
 @Controller
 export class PlatformCategoryController {
 	public constructor(
 		// Dependencies
-		@Inject(PlatformService) private readonly platformCategoryService: PlatformCategoryService,
+		@Inject(PlatformCategoryService) private readonly platformCategoryService: PlatformCategoryService,
 		@Inject(AuthorizationTokenConst.Authorization) private readonly authorization: IAuthorization,
 	) {}
 

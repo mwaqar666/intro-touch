@@ -1,3 +1,4 @@
+import { UserProfileEntity } from "@/backend/user/db/entities";
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
 import { CustomPlatformEntity, PlatformCategoryEntity } from "@/backend/platform/db/entities";
@@ -12,12 +13,36 @@ export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntit
 			findOptions: {
 				include: [
 					{
+						required: true,
 						as: "customPlatformPlatformCategory",
-						model: PlatformCategoryEntity.scope(EntityScopeConst.primaryKeyAndUuidOnly),
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
 						where: { platformCategoryUuid },
 					},
 				],
 			},
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
+		});
+	}
+
+	public getUserOwnedCustomPlatforms(userProfileUuid: string, platformCategoryUuid: string): Promise<Array<CustomPlatformEntity>> {
+		return this.findAll({
+			findOptions: {
+				include: [
+					{
+						required: true,
+						as: "customPlatformPlatformCategory",
+						model: PlatformCategoryEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
+						where: { platformCategoryUuid },
+					},
+					{
+						required: true,
+						model: UserProfileEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
+						as: "customPlatformUserProfile",
+						where: { userProfileUuid },
+					},
+				],
+			},
+			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
 }
