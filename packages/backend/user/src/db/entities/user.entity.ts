@@ -8,7 +8,7 @@ import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
 import omit from "lodash.omit";
-import { AllowNull, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, HasMany, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
 @Scopes(() => ({
@@ -55,6 +55,13 @@ export class UserEntity extends BaseEntity<UserEntity> {
 	@DeletedAtColumn
 	public userDeletedAt: Nullable<Date>;
 
+	public readonly userActiveUserProfileId: number;
+
+	@BelongsTo(() => UserProfileEntity, {
+		as: "userActiveUser",
+		targetKey: "userProfileId",
+		foreignKey: "userActiveUserProfileId",
+	})
 	@HasMany(() => UserProfileEntity, {
 		as: "userUserProfiles",
 		sourceKey: "userId",

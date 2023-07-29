@@ -2,13 +2,14 @@ import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
-import { UserAdminController, UserController } from "@/backend/user/controller";
+import { UserAdminController, UserController, UserProfileController } from "@/backend/user/controller";
 
 export class UserRouter implements IRouter {
 	public constructor(
 		// Dependencies
 		@Inject(UserController) private readonly userController: UserController,
 		@Inject(UserAdminController) private readonly userAdminController: UserAdminController,
+		@Inject(UserProfileController) private readonly userProfileController: UserProfileController,
 	) {}
 
 	public registerRoutes(): Array<IRoute> {
@@ -52,6 +53,11 @@ export class UserRouter implements IRouter {
 						path: "/delete",
 						method: RouteMethod.DELETE,
 						handler: this.userController.deleteAccount,
+					},
+					{
+						path: "/profiles",
+						method: RouteMethod.GET,
+						handler: this.userProfileController.getUserProfiles,
 					},
 				],
 			},
