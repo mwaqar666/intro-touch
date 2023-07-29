@@ -1,5 +1,5 @@
 import { Inject } from "iocc";
-import type { UserProfileEntity } from "@/backend/user/db/entities";
+import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
 
 export class UserProfileService {
@@ -9,7 +9,7 @@ export class UserProfileService {
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 	) {}
 
-	public getUserProfiles(userProfileUserId: number): Promise<Array<UserProfileEntity>> {
-		return this.userProfileRepository.getUserProfiles(userProfileUserId);
+	public getAuthUserProfileDropdown(authEntity: UserEntity): Promise<Array<UserProfileEntity>> {
+		return this.userProfileRepository.getAuthUserProfileDropdown(authEntity);
 	}
 }

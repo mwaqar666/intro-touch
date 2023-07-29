@@ -1,7 +1,7 @@
 import { AbstractModule } from "@/backend-core/core/concrete/module";
 import { DbExtension } from "@/backend-core/database/extensions";
 import { RouterExtension } from "@/backend-core/router/extensions";
-import { UserAdminController, UserController, UserProfileController } from "@/backend/user/controller";
+import { UserController, UserProfileController } from "@/backend/user/controller";
 import { UserDbRegister } from "@/backend/user/db/user-db.register";
 import { UserRouter } from "@/backend/user/router";
 import { UserAuthService, UserProfileService, UserService } from "@/backend/user/services";
@@ -9,7 +9,6 @@ import { UserAuthService, UserProfileService, UserService } from "@/backend/user
 export class UserModule extends AbstractModule {
 	public override async register(): Promise<void> {
 		this.container.registerSingleton(UserController);
-		this.container.registerSingleton(UserAdminController);
 		this.container.registerSingleton(UserProfileController);
 
 		// Services
