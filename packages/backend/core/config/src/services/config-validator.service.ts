@@ -32,6 +32,8 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.DB_TOKEN]: joi.string().required(),
 
 				[ConfigConst.GOOGLE_CLIENT_ID]: joi.string().required(),
+				[ConfigConst.FACEBOOK_CLIENT_ID]: joi.string().required(),
+				[ConfigConst.FACEBOOK_CLIENT_SECRET]: joi.string().required(),
 				[ConfigConst.REDIRECT_URL]: joi.string().required(),
 				[ConfigConst.TOKEN_EXPIRY]: joi.string().required(),
 
