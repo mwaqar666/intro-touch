@@ -16,6 +16,8 @@ export interface IConfigValidation {
 	[ConfigConst.DB_TOKEN]: StringSchema;
 
 	[ConfigConst.GOOGLE_CLIENT_ID]: StringSchema;
+	[ConfigConst.FACEBOOK_CLIENT_ID]: StringSchema;
+	[ConfigConst.FACEBOOK_CLIENT_SECRET]: StringSchema;
 	[ConfigConst.REDIRECT_URL]: StringSchema;
 	[ConfigConst.TOKEN_EXPIRY]: StringSchema;
 

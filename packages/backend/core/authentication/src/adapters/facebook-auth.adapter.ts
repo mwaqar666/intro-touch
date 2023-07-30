@@ -1,4 +1,6 @@
 import type { UserEntity } from "@/backend/user/db/entities";
+import { ConfigTokenConst } from "@/backend-core/config/const";
+import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";
 import type { ApiResponse } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { IdTokenClaims, TokenSet } from "openid-client";
@@ -11,12 +13,15 @@ export class FacebookAuthAdapter implements IAuthAdapter<IFacebookAdapter> {
 	public constructor(
 		// Dependencies
 		@Inject(AdapterService) private readonly adapterService: AdapterService,
+		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
 	public configureAuthAdapter(): IAuthAdapterRecord<IFacebookAdapter> {
+		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
+
 		const facebookAdapter = FacebookAdapter({
-			clientID: "827602072357909",
-			clientSecret: "55f9cddf66fc4db92bf9e2687403b5f8",
+			clientID: authConfig.facebookClientId,
+			clientSecret: authConfig.facebookClientSecret,
 			scope: "openid email",
 			onSuccess: async (tokenSet: TokenSet): Promise<ApiResponse> => {
 				const claims: IdTokenClaims = tokenSet.claims();

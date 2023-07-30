@@ -18,6 +18,8 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 			},
 			auth: {
 				googleClientId: EnvExtractor.env(schema, ConfigConst.GOOGLE_CLIENT_ID),
+				facebookClientId: EnvExtractor.env(schema, ConfigConst.FACEBOOK_CLIENT_ID),
+				facebookClientSecret: EnvExtractor.env(schema, ConfigConst.FACEBOOK_CLIENT_SECRET),
 				redirectUrl: EnvExtractor.env(schema, ConfigConst.REDIRECT_URL),
 				tokenExpiry: EnvExtractor.env(schema, ConfigConst.TOKEN_EXPIRY),
 			},

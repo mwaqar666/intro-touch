@@ -24,6 +24,8 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 	const appVersion: string = Config.get("APP_VERSION");
 	const appKey: string = Config.get("APP_KEY");
 	const googleClientId: string = Config.get("GOOGLE_CLIENT_ID");
+	const facebookClientId: string = Config.get("FACEBOOK_CLIENT_ID");
+	const facebookClientSecret: string = Config.get("FACEBOOK_CLIENT_SECRET");
 	const authRedirectUrl: string = Config.get("REDIRECT_URL");
 	const tokenExpiry: string = Config.get("TOKEN_EXPIRY");
 	const frontEndUrl: string = Config.get("FRONTEND_URL");
@@ -46,6 +48,8 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 			DB_TOKEN: databaseToken,
 			FRONTEND_URL: frontEndUrl,
 			GOOGLE_CLIENT_ID: googleClientId,
+			FACEBOOK_CLIENT_ID: facebookClientId,
+			FACEBOOK_CLIENT_SECRET: facebookClientSecret,
 			REDIRECT_URL: authRedirectUrl,
 			TOKEN_EXPIRY: tokenExpiry,
 			EMAIL_FROM: emailFrom,

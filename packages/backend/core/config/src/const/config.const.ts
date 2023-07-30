@@ -13,6 +13,8 @@ export class ConfigConst {
 	public static readonly DB_TOKEN = "DB_TOKEN";
 
 	public static readonly GOOGLE_CLIENT_ID = "GOOGLE_CLIENT_ID";
+	public static readonly FACEBOOK_CLIENT_ID = "FACEBOOK_CLIENT_ID";
+	public static readonly FACEBOOK_CLIENT_SECRET = "FACEBOOK_CLIENT_SECRET";
 	public static readonly REDIRECT_URL = "REDIRECT_URL";
 	public static readonly TOKEN_EXPIRY = "TOKEN_EXPIRY";
 

@@ -1,5 +1,7 @@
 export interface IAuthConfig {
 	readonly googleClientId: string;
+	readonly facebookClientId: string;
+	readonly facebookClientSecret: string;
 	readonly redirectUrl: string;
 	readonly tokenExpiry: string;
 }
