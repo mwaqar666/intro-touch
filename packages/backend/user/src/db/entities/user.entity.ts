@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import { HashService } from "@/backend-core/authentication/services/crypt";
@@ -38,6 +39,11 @@ export class UserEntity extends BaseEntity<UserEntity> {
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(50) })
 	public userEmail: string;
+
+	@Unique
+	@AllowNull(false)
+	@Column({ type: DataType.STRING(50) })
+	public userUsername: string;
 
 	@AllowNull(true)
 	@Column({ type: DataType.STRING(50) })
@@ -90,6 +96,16 @@ export class UserEntity extends BaseEntity<UserEntity> {
 
 		const hashService: HashService = AppContainer.resolve(HashService);
 		instance.userPassword = await hashService.hash(instance.userPassword);
+
+		return instance;
+	}
+
+	@BeforeCreate
+	public static createUniqueUsername(instance: UserEntity): UserEntity {
+		const firstName: string = instance.userFirstName.trim().toLowerCase();
+		const lastName: string = instance.userLastName.trim().toLowerCase();
+
+		instance.userUsername = `${firstName}-${lastName}-${randomUUID()}`;
 
 		return instance;
 	}

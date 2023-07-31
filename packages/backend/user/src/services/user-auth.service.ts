@@ -1,4 +1,4 @@
-import { DbTokenConst, EntityScopeConst } from "@/backend-core/database/const";
+import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ITransactionStore } from "@/backend-core/database/types";
 import type { Nullable } from "@/stacks/types";
@@ -17,21 +17,11 @@ export class UserAuthService {
 	) {}
 
 	public findActiveUserByEmail(userEmail: string): Promise<Nullable<UserEntity>> {
-		return this.userRepository.findOne({
-			findOptions: {
-				where: { userEmail },
-			},
-			scopes: [EntityScopeConst.isActive],
-		});
+		return this.userRepository.findActiveUserByEmail(userEmail);
 	}
 
 	public findActiveUserByUuid(userUuid: string): Promise<Nullable<UserEntity>> {
-		return this.userRepository.findOne({
-			findOptions: {
-				where: { userUuid },
-			},
-			scopes: [EntityScopeConst.isActive],
-		});
+		return this.userRepository.findActiveUserByUuid(userUuid);
 	}
 
 	public createNewUserWithProfile(userProperties: IFindOrCreateUserProps): Promise<UserEntity> {

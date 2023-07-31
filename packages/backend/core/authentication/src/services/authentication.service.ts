@@ -66,13 +66,13 @@ export class AuthenticationService {
 		return true;
 	}
 
-	public async findOrCreateUser(findOrCreateUserProps: IFindOrCreateUserProps): Promise<[UserEntity, boolean]> {
+	public async findOrCreateUser(findOrCreateUserProps: Omit<IFindOrCreateUserProps, "userPassword">): Promise<[UserEntity, boolean]> {
 		let created = true;
 
 		let entity: Nullable<UserEntity> = await this.userAuthService.findActiveUserByEmail(findOrCreateUserProps.userEmail);
 
 		if (entity) created = false;
-		else entity = await this.userAuthService.createNewUserWithProfile(findOrCreateUserProps);
+		else entity = await this.userAuthService.createNewUserWithProfile({ ...findOrCreateUserProps, userPassword: null });
 
 		return [entity, created];
 	}

@@ -78,6 +78,6 @@ export class ResponseHandlerService implements IResponseHandler {
 
 		if (responseToInspect.statusCode < 300 || responseToInspect.statusCode > 399) return false;
 
-		return !responseToInspect.headers["location"];
+		return !!responseToInspect.headers["location"];
 	}
 }

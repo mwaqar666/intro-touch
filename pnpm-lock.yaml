@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -156,9 +156,6 @@ importers:
       umzug:
         specifier: ^3.2.1
         version: 3.2.1
-      uuid:
-        specifier: ^9.0.0
-        version: 9.0.0
     devDependencies:
       '@types/lodash.omit':
         specifier: ^4.5.7
@@ -166,9 +163,6 @@ importers:
       '@types/pg':
         specifier: ^8.10.2
         version: 8.10.2
-      '@types/uuid':
-        specifier: ^9.0.2
-        version: 9.0.2
 
   packages/backend/core/ignition:
     dependencies:
@@ -3346,10 +3340,6 @@ packages:
 
   /@types/semver@7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
-    dev: true
-
-  /@types/uuid@9.0.2:
-    resolution: {integrity: sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==}
     dev: true
 
   /@types/validator@13.7.17:
@@ -8403,6 +8393,7 @@ packages:
   /uuid@9.0.0:
     resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
     hasBin: true
+    dev: true
 
   /validator@13.9.0:
     resolution: {integrity: sha512-B+dGG8U3fdtM0/aNK4/X8CXq/EcxU2WPrPEkJGslb47qyHsxmbggTWK0yEA4qnYVNF+nxNlN88o14hIcPmSIEA==}

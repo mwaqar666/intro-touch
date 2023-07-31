@@ -1,7 +1,7 @@
+import { randomUUID } from "crypto";
 import type { Delegate } from "@/stacks/types";
 import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, Default, DeletedAt, ForeignKey, PrimaryKey, Unique, UpdatedAt } from "sequelize-typescript";
 import type { ModelClassGetter } from "sequelize-typescript/dist/model/shared/model-class-getter";
-import { v4 as uuid } from "uuid";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IEntityType } from "@/backend-core/database/types";
 
@@ -17,7 +17,7 @@ export const UuidKeyColumn: PropertyDecorator = <PropertyDecorator>(<TEntity ext
 
 	Column({ type: DataType.STRING(50) })(target, propertyKey);
 	AllowNull(false)(target, propertyKey);
-	Default(uuid)(target, propertyKey);
+	Default(randomUUID)(target, propertyKey);
 	Unique(target, propertyKey);
 });
 
@@ -45,7 +45,7 @@ export const DeletedAtColumn: PropertyDecorator = <PropertyDecorator>(<TEntity e
 });
 
 export const DefaultUuid: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
-	Default(uuid)(target, propertyKey);
+	Default(randomUUID)(target, propertyKey);
 });
 
 export const IsActiveColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {

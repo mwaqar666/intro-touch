@@ -1,11 +1,12 @@
 import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
-import { UserProfileRepository } from "@/backend/user/db/repositories";
+import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
 
 export class UserService {
 	public constructor(
 		// Dependencies
 
+		@Inject(UserRepository) private readonly userRepository: UserRepository,
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 	) {}
 
@@ -15,5 +16,15 @@ export class UserService {
 		authEntity.setDataValue("userLiveUserProfile", userLiveProfile);
 
 		return authEntity;
+	}
+
+	public async getUserPublicPreviewWithLiveProfile(userUsername: string): Promise<UserEntity> {
+		const user: UserEntity = await this.userRepository.findOrFailActiveUserByUsername(userUsername);
+
+		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getAuthUserLiveProfile(user);
+
+		user.setDataValue("userLiveUserProfile", userLiveProfile);
+
+		return user;
 	}
 }

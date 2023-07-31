@@ -41,6 +41,26 @@ export class AuthenticationRouter implements IRouter {
 							},
 						],
 					},
+					{
+						prefix: "/google",
+						routes: [
+							{
+								path: "/callback",
+								method: RouteMethod.GET,
+								handler: this.authenticationController.socialAuth,
+							},
+						],
+					},
+					{
+						prefix: "/facebook",
+						routes: [
+							{
+								path: "/callback",
+								method: RouteMethod.GET,
+								handler: this.authenticationController.socialAuth,
+							},
+						],
+					},
 				],
 			},
 		];

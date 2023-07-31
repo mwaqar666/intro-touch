@@ -15,30 +15,45 @@ export class UserRouter implements IRouter {
 		return [
 			{
 				prefix: "/user",
-				guards: [AuthRequestGuard],
 				routes: [
 					{
-						path: "/me",
-						method: RouteMethod.GET,
-						handler: this.userController.me,
-					},
-					{
-						path: "/profiles",
-						method: RouteMethod.GET,
-						handler: this.userProfileController.getAuthUserProfileDropdown,
-					},
-					{
-						prefix: "/profile",
+						prefix: "/",
 						routes: [
 							{
-								path: "/{userProfileUuid}",
+								path: "/{userUsername}",
 								method: RouteMethod.GET,
-								handler: this.userProfileController.getUserProfile,
+								handler: this.userController.publicPreview,
+							},
+						],
+					},
+					{
+						prefix: "/",
+						guards: [AuthRequestGuard],
+						routes: [
+							{
+								path: "/me",
+								method: RouteMethod.GET,
+								handler: this.userController.me,
 							},
 							{
-								path: "/update/{userProfileUuid}",
-								method: RouteMethod.PATCH,
-								handler: this.userProfileController.updateUserProfile,
+								path: "/profiles",
+								method: RouteMethod.GET,
+								handler: this.userProfileController.getAuthUserProfileDropdown,
+							},
+							{
+								prefix: "/profile",
+								routes: [
+									{
+										path: "/{userProfileUuid}",
+										method: RouteMethod.GET,
+										handler: this.userProfileController.getUserProfile,
+									},
+									{
+										path: "/update/{userProfileUuid}",
+										method: RouteMethod.PATCH,
+										handler: this.userProfileController.updateUserProfile,
+									},
+								],
 							},
 						],
 					},
