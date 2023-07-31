@@ -1,6 +1,6 @@
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
-import { HashService } from "@/backend-core/authentication/services";
+import { HashService } from "@/backend-core/authentication/services/crypt";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { AppContainer } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
