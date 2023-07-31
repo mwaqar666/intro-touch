@@ -1,20 +1,30 @@
 import { AbstractModule } from "@/backend-core/core/concrete/module";
 import { DbExtension } from "@/backend-core/database/extensions";
+import { RouterExtension } from "@/backend-core/router/extensions";
 import { FacebookAuthAdapter, GoogleAuthAdapter, SelfAuthAdapter } from "@/backend-core/authentication/adapters";
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
+import { AuthenticationController } from "@/backend-core/authentication/controllers";
 import { AuthenticationDbRegister } from "@/backend-core/authentication/db/authentication-db.register";
 import type { IAuthAdapter, IAuthAdapterResolver } from "@/backend-core/authentication/interface";
-import { HashService, VerificationTokenService } from "@/backend-core/authentication/services";
-import { AdapterService } from "@/backend-core/authentication/services/adapter";
+import { AuthenticationRouter } from "@/backend-core/authentication/router";
+import { AuthenticationService, VerificationTokenService } from "@/backend-core/authentication/services";
+import { AuthMailService, AuthRedirectionService, AuthTokenService } from "@/backend-core/authentication/services/auth-utils";
+import { HashService } from "@/backend-core/authentication/services/crypt";
 import { AuthAdapterResolverService, GuardResolverService } from "@/backend-core/authentication/services/resolver";
 import type { IFacebookAdapter, IGoogleAdapter } from "@/backend-core/authentication/types";
 
 export class AuthenticationModule extends AbstractModule {
 	public override async register(): Promise<void> {
+		// Controllers
+		this.container.registerSingleton(AuthenticationController);
+
 		// Auth services
-		this.container.registerSingleton(HashService);
-		this.container.registerSingleton(AdapterService);
+		this.container.registerSingleton(AuthenticationService);
 		this.container.registerSingleton(VerificationTokenService);
+		this.container.registerSingleton(AuthMailService);
+		this.container.registerSingleton(AuthTokenService);
+		this.container.registerSingleton(AuthRedirectionService);
+		this.container.registerSingleton(HashService);
 
 		// Resolver Services
 		this.container.registerSingleton(AuthenticationTokenConst.GuardResolverToken, GuardResolverService);
@@ -27,6 +37,11 @@ export class AuthenticationModule extends AbstractModule {
 
 		// Database
 		DbExtension.registerDb(AuthenticationDbRegister);
+	}
+
+	public override async boot(): Promise<void> {
+		// Routing
+		RouterExtension.addRouter(AuthenticationRouter);
 	}
 
 	public override async postBoot(): Promise<void> {

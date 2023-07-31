@@ -27,6 +27,8 @@ export class RouteBuilderService implements IRouteBuilder {
 
 				if (route.guards) routeGroupToPrepare.guards = [...routeGroupToPrepare.guards, ...route.guards];
 
+				if (route.routeType) routeGroupToPrepare.routeType = route.routeType;
+
 				if (route.requestInterceptors) routeGroupToPrepare.requestInterceptors = [...routeGroupToPrepare.requestInterceptors, ...route.requestInterceptors];
 
 				if (route.responseInterceptors) routeGroupToPrepare.responseInterceptors = [...routeGroupToPrepare.responseInterceptors, ...route.responseInterceptors];
@@ -41,9 +43,12 @@ export class RouteBuilderService implements IRouteBuilder {
 				method: route.method,
 				handler: route.handler,
 				guards: [],
+				routeType: routeGroup.routeType,
 				requestInterceptors: [],
 				responseInterceptors: [],
 			};
+
+			if (route.routeType) routeToPrepare.routeType = route.routeType;
 
 			const routeGuards: Constructable<IGuard, Array<any>>[] = [...routeGroup.guards];
 			if (route.guards) routeGuards.push(...route.guards);

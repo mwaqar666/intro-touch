@@ -1,7 +1,7 @@
 import type { IGuard } from "@/backend-core/authentication/interface";
 import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
 import type { Constructable, Delegate, ExclusiveUnion, Optional } from "@/stacks/types";
-import type { RouteMethod } from "@/backend-core/router/enum";
+import type { RouteMethod, RouteType } from "@/backend-core/router/enum";
 
 export interface IGroupedRoute {
 	/**
@@ -18,6 +18,11 @@ export interface IGroupedRoute {
 	 * Guards to apply to this group of routes
 	 */
 	guards?: Array<Constructable<IGuard, Array<any>>>;
+
+	/**
+	 * Route type, this denotes where this route will be registered. Default is RouteType.GLOBAL
+	 */
+	routeType?: RouteType;
 
 	/**
 	 * Request interceptors to apply to this group of routes
@@ -50,6 +55,11 @@ export interface ISimpleRoute {
 	 * Guards to apply to this route
 	 */
 	guards?: Array<Constructable<IGuard, Array<any>>>;
+
+	/**
+	 * Route type, this denotes where this route will be registered. Default is RouteType.GLOBAL
+	 */
+	routeType?: RouteType;
 
 	/**
 	 * Request interceptors to apply to this route

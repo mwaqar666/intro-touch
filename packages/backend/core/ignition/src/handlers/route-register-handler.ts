@@ -5,7 +5,7 @@ import type { IntroTouch } from "@/backend-core/ignition/main";
 export const routeRegisterHandler = async (): Promise<Array<IStackRoute>> => {
 	await import("reflect-metadata");
 
-	const { IntroTouch } = await import("../main/intro-touch");
+	const { IntroTouch } = await import("@/backend-core/ignition/main/intro-touch");
 	const { RouterTokenConst } = await import("@/backend-core/router/const");
 
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();

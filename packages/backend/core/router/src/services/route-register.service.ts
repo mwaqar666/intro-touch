@@ -1,7 +1,8 @@
 import { InternalServerException } from "@/backend-core/request-processor/exceptions";
-import type { ApiRequest, Optional } from "@/stacks/types";
+import type { ApiRequest, Nullable } from "@/stacks/types";
+import { RouteBuilderConst } from "@/backend-core/router/const";
 import type { RouteMethod } from "@/backend-core/router/enum";
-import type { IBuiltRoute, IPathParams, IQueryParams, IResolvedRoute, IRoute, IRouter, IRouteRegister } from "@/backend-core/router/interface";
+import type { IBuiltRoute, IPathParams, IResolvedRoute, IRoute, IRouter, IRouteRegister, ISimpleRoute } from "@/backend-core/router/interface";
 
 export class RouteRegisterService implements IRouteRegister {
 	private moduleRoutes: Array<IRoute> = [];
@@ -20,28 +21,53 @@ export class RouteRegisterService implements IRouteRegister {
 	}
 
 	public resolveRoute(apiRequest: ApiRequest): IResolvedRoute {
-		const [method, path]: [RouteMethod, string] = <[RouteMethod, string]>apiRequest.routeKey.split(" ");
+		const { method, path } = apiRequest.requestContext.http;
 
-		const matchedRoute: Optional<IBuiltRoute> = this.builtRoutes.find((builtRoute: IBuiltRoute): boolean => {
-			return builtRoute.method === method && builtRoute.path === path;
-		});
+		const matchedRoute: Nullable<[Required<ISimpleRoute>, IPathParams]> = this.matchRouteInRegisteredRoutes(<RouteMethod>method, path);
+		if (!matchedRoute) throw new InternalServerException(`Route with path: '[${method}]: ${path}' not found!`);
 
-		if (matchedRoute) {
-			return {
-				...matchedRoute,
-				pathParams: this.getTypedPathParams(apiRequest),
-				queryParams: this.getTypedQueryParams(apiRequest),
-			};
+		const [builtRoute, pathParams]: [Required<ISimpleRoute>, IPathParams] = matchedRoute;
+
+		return {
+			...builtRoute,
+			pathParams,
+			queryParams: apiRequest.queryStringParameters ?? {},
+		};
+	}
+
+	private matchRouteInRegisteredRoutes(method: RouteMethod, path: string): Nullable<[Required<ISimpleRoute>, IPathParams]> {
+		const requestedPathSegments: Array<string> = path.split("/");
+
+		for (const builtRoute of this.builtRoutes) {
+			if (builtRoute.method !== method) continue;
+
+			const routeToMatchSegments: Array<string> = builtRoute.path.split("/");
+			if (requestedPathSegments.length !== routeToMatchSegments.length) continue;
+
+			const matchedRouteParams: Nullable<IPathParams> = this.matchRouteSegmentBySegment(requestedPathSegments, routeToMatchSegments);
+
+			if (matchedRouteParams) return [builtRoute, matchedRouteParams];
 		}
 
-		throw new InternalServerException(`Route with path: "${apiRequest.routeKey}" not found!`);
+		return null;
 	}
 
-	private getTypedPathParams(apiRequest: ApiRequest): IPathParams {
-		return <IPathParams>apiRequest.pathParameters ?? {};
-	}
+	private matchRouteSegmentBySegment(requestedPathSegments: Array<string>, routeToMatchSegments: Array<string>): Nullable<IPathParams> {
+		const routeParams: IPathParams = {};
 
-	private getTypedQueryParams(apiRequest: ApiRequest): IQueryParams {
-		return <IQueryParams>(apiRequest.queryStringParameters ?? {});
+		for (let segmentIndex = 0; segmentIndex < requestedPathSegments.length; segmentIndex++) {
+			const routeToMatchCurrentSegment: string = <string>routeToMatchSegments[segmentIndex];
+			const requestedPathCurrentSegment: string = <string>requestedPathSegments[segmentIndex];
+
+			if (routeToMatchCurrentSegment === requestedPathCurrentSegment) continue;
+
+			const isRouteParameterSegment: boolean = routeToMatchCurrentSegment.startsWith(RouteBuilderConst.RouteSegmentStart) && routeToMatchCurrentSegment.endsWith(RouteBuilderConst.RouteSegmentEnd);
+			if (!isRouteParameterSegment) return null;
+
+			const currentRouteParameter: string = routeToMatchCurrentSegment.slice(1, routeToMatchCurrentSegment.length - 1);
+			routeParams[currentRouteParameter] = requestedPathCurrentSegment;
+		}
+
+		return routeParams;
 	}
 }

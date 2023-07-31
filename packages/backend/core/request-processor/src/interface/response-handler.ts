@@ -10,4 +10,10 @@ export interface IResponseHandler {
 	createFailedResponse<T extends IError>(data: T): IFailedResponse<T>;
 
 	createFailedResponse<T extends IError>(data: T, code: number): IFailedResponse<T>;
+
+	isFailedResponse(response: unknown): response is IFailedResponse<IError>;
+
+	isSuccessfulResponse(response: unknown): response is ISuccessfulResponse<unknown>;
+
+	isRedirectionResponse(response: unknown): response is ISuccessfulResponse<unknown>;
 }

@@ -2,7 +2,7 @@ import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import type { IGuardResolver } from "@/backend-core/authentication/interface";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/interface";
-import type { ApiRequest, ApiResponse, DeepPartial } from "@/stacks/types";
+import type { ApiRequest, ApiResponse } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
@@ -69,34 +69,24 @@ export class RequestProcessorService implements IRequestProcessor {
 	}
 
 	private handleHandlerResponse(response: unknown): ISuccessfulResponse<unknown> {
-		if (this.isFailedResponse(response)) {
+		if (this.responseHandler.isFailedResponse(response)) {
 			throw new Exception(response.body.errors.message, response.statusCode, response.body.errors.context);
 		}
 
-		if (this.isSuccessfulResponse(response)) {
+		if (this.responseHandler.isSuccessfulResponse(response)) {
 			return response;
 		}
 
+		if (this.responseHandler.isRedirectionResponse(response)) {
+			return {
+				...response,
+				body: {
+					data: {},
+					errors: null,
+				},
+			};
+		}
+
 		return this.responseHandler.createSuccessfulResponse(response);
-	}
-
-	private isSuccessfulResponse(response: unknown): response is ISuccessfulResponse<unknown> {
-		if (!response) return false;
-
-		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
-
-		if (!responseToInspect.statusCode) return false;
-
-		return !!responseToInspect.body && responseToInspect.body.data !== null;
-	}
-
-	private isFailedResponse(response: unknown): response is IFailedResponse<IError> {
-		if (!response) return false;
-
-		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
-
-		if (!responseToInspect.statusCode) return false;
-
-		return !!responseToInspect.body && responseToInspect.body.errors !== null;
 	}
 }

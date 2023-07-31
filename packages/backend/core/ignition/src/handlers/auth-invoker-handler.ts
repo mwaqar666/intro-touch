@@ -8,7 +8,7 @@ export const authInvokerHandler = async (request: ApiRequest, context: Context):
 	await import("reflect-metadata");
 
 	const { AuthHandler } = await import("sst/node/auth");
-	const { IntroTouch } = await import("../main/intro-touch");
+	const { IntroTouch } = await import("@/backend-core/ignition/main/intro-touch");
 	const { AuthenticationTokenConst } = await import("@/backend-core/authentication/const");
 
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();

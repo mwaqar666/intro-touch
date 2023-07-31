@@ -1,3 +1,4 @@
+import type { DeepPartial } from "@/stacks/types";
 import { Exception } from "@/backend-core/request-processor/exceptions";
 import type { IResponseHandler } from "@/backend-core/request-processor/interface";
 import type { IAppException, IError, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
@@ -46,5 +47,37 @@ export class ResponseHandlerService implements IResponseHandler {
 			},
 			statusCode: code,
 		};
+	}
+
+	public isFailedResponse(response: unknown): response is IFailedResponse<IError> {
+		if (!response) return false;
+
+		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
+
+		if (!responseToInspect.statusCode) return false;
+
+		return !!responseToInspect.body && responseToInspect.body.errors !== null;
+	}
+
+	public isSuccessfulResponse(response: unknown): response is ISuccessfulResponse<unknown> {
+		if (!response) return false;
+
+		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
+
+		if (!responseToInspect.statusCode) return false;
+
+		return !!responseToInspect.body && responseToInspect.body.data !== null;
+	}
+
+	public isRedirectionResponse(response: unknown): response is ISuccessfulResponse<unknown> {
+		if (!response) return false;
+
+		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
+
+		if (!responseToInspect.statusCode || !responseToInspect.headers) return false;
+
+		if (responseToInspect.statusCode < 300 || responseToInspect.statusCode > 399) return false;
+
+		return !responseToInspect.headers["location"];
 	}
 }
