@@ -1,9 +1,9 @@
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
+import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Transaction } from "sequelize";
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserProfileEntity } from "@/backend/user/db/entities";
-import type { UpdateUserProfileRequestDto } from "@/backend/user/dto/update-user-profile";
 
 export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 	public constructor() {
@@ -41,12 +41,12 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		});
 	}
 
-	public updateUserProfile(userProfileUuid: string, updateUserProfileRequestDto: UpdateUserProfileRequestDto, transaction: Transaction): Promise<UserProfileEntity> {
+	public updateUserProfile(userProfileUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<UserProfileEntity>>, transaction: Transaction): Promise<UserProfileEntity> {
 		return this.updateOne({
 			findOptions: {
 				where: { userProfileUuid },
 			},
-			valuesToUpdate: updateUserProfileRequestDto,
+			valuesToUpdate,
 			transaction,
 		});
 	}

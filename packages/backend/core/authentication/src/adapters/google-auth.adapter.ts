@@ -1,23 +1,24 @@
-import type { UserEntity } from "@/backend/user/db/entities";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";
-import type { ApiResponse } from "@/stacks/types";
+import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
+import type { IRequestProcessor } from "@/backend-core/request-processor/interface";
+import type { ApiResponse, ILambdaInput } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { IdTokenClaims, TokenSet } from "openid-client";
 import { GoogleAdapter } from "sst/node/auth";
 import type { Adapter } from "sst/node/auth/adapter/adapter";
+import { BaseAdapter } from "@/backend-core/authentication/base";
 import type { IAuthAdapter } from "@/backend-core/authentication/interface";
-import { AuthenticationService } from "@/backend-core/authentication/services";
-import { AuthRedirectionService } from "@/backend-core/authentication/services/auth-utils";
 import type { IAuthAdapterRecord, IGoogleAdapter } from "@/backend-core/authentication/types";
 
-export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
+export class GoogleAuthAdapter extends BaseAdapter implements IAuthAdapter<IGoogleAdapter> {
 	public constructor(
 		// Dependencies
-		@Inject(AuthenticationService) private readonly authenticationService: AuthenticationService,
-		@Inject(AuthRedirectionService) private readonly authRedirectionService: AuthRedirectionService,
+		@Inject(RequestProcessorTokenConst.RequestProcessorToken) private readonly requestProcessor: IRequestProcessor,
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
-	) {}
+	) {
+		super();
+	}
 
 	public configureAuthAdapter(): IAuthAdapterRecord<IGoogleAdapter> {
 		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
@@ -28,15 +29,16 @@ export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 			onSuccess: async (tokenSet: TokenSet): Promise<ApiResponse> => {
 				const claims: IdTokenClaims = tokenSet.claims();
 
-				const [userEntity, created]: [UserEntity, boolean] = await this.authenticationService.findOrCreateUser({
-					userEmail: claims.email ?? "",
-					userFirstName: claims.given_name ?? "",
-					userLastName: claims.family_name ?? "",
-					userPicture: claims.picture ?? "",
-					userPassword: null,
+				const { request, context }: ILambdaInput = this.prepareRequestAndContext();
+
+				request.body = JSON.stringify({
+					userEmail: claims.email,
+					userFirstName: claims.given_name,
+					userLastName: claims.family_name,
+					userPicture: claims.picture,
 				});
 
-				return this.authRedirectionService.prepareRedirectionResponse(userEntity, created);
+				return this.requestProcessor.processRequest(request, context);
 			},
 		});
 

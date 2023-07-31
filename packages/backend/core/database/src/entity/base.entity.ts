@@ -1,8 +1,8 @@
+import { randomUUID } from "crypto";
 import type { Key } from "@/stacks/types";
 import omit from "lodash.omit";
 import type { ModelStatic } from "sequelize";
 import { BeforeCreate, Model } from "sequelize-typescript";
-import { v4 as uuid } from "uuid";
 import type { IEntityScope, IEntityType } from "@/backend-core/database/types";
 
 export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Model<TEntity> {
@@ -35,13 +35,7 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 		const existingUuid = model[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName];
 		if (existingUuid) return;
 
-		model[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName] = uuid();
-	}
-
-	public removeDataValue(this: TEntity, key: keyof TEntity): void {
-		this.changed(key, true);
-
-		delete this.dataValues[key];
+		model[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName] = randomUUID();
 	}
 
 	public override toJSON(): object {

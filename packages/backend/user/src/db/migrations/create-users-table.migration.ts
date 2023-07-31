@@ -25,6 +25,11 @@ export class CreateUsersTable extends AbstractMigration {
 				allowNull: false,
 				type: DataType.STRING(50),
 			},
+			userUsername: {
+				unique: true,
+				allowNull: false,
+				type: DataType.STRING(50),
+			},
 			userPassword: {
 				allowNull: true,
 				type: DataType.STRING(255),

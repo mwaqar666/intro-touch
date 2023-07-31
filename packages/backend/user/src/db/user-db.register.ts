@@ -6,7 +6,7 @@ import type { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityType } from "@/backend-core/database/types";
 import type { Constructable } from "@/stacks/types";
 import { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
-import { AlterUsersTable, CreateUserProfilesTable, CreateUsersTable } from "@/backend/user/db/migrations";
+import { CreateUserProfilesTable, CreateUsersTable } from "@/backend/user/db/migrations";
 import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
 import { UsersSeeder } from "@/backend/user/db/seeders";
 
@@ -16,7 +16,7 @@ export class UserDbRegister extends AbstractDbRegister {
 	}
 
 	public override registerMigrations(): Array<Constructable<IMigration>> {
-		return [CreateUsersTable, CreateUserProfilesTable, AlterUsersTable];
+		return [CreateUsersTable, CreateUserProfilesTable];
 	}
 
 	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
