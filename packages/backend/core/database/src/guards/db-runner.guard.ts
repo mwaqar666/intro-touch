@@ -2,7 +2,7 @@ import type { IGuard } from "@/backend-core/authentication/interface";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IDatabaseConfig } from "@/backend-core/config/types";
 import { UnauthorizedException } from "@/backend-core/request-processor/exceptions";
-import type { IControllerRequest } from "@/backend-core/request-processor/types";
+import type { IAppRequest } from "@/backend-core/request-processor/types";
 import type { IPathParams, IQueryParams } from "@/backend-core/router/interface";
 import type { Optional } from "@/stacks/types";
 import { Inject } from "iocc";
@@ -11,7 +11,7 @@ export interface IMigrationTokenQueryParams extends IQueryParams {
 	token: Optional<string>;
 }
 
-export type IDbRequest = IControllerRequest<object, IPathParams, IMigrationTokenQueryParams>;
+export type IDbRequest = IAppRequest<object, IPathParams, IMigrationTokenQueryParams>;
 
 export class DbRunnerGuard implements IGuard<IDbRequest> {
 	public constructor(

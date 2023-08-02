@@ -10,22 +10,22 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		super(UserProfileEntity);
 	}
 
-	public getAuthUserProfileDropdown(authEntity: UserEntity): Promise<Array<UserProfileEntity>> {
+	public getUserProfileDropdown(userEntity: UserEntity): Promise<Array<UserProfileEntity>> {
 		return this.findAll({
 			findOptions: {
 				attributes: ["userProfileFirstName", "userProfileLastName", "userProfilePicture", "userProfileEmail"],
-				where: { userProfileUserId: authEntity.userId },
+				where: { userProfileUserId: userEntity.userId },
 			},
 			scopes: [EntityScopeConst.isActive, EntityScopeConst.primaryKeyAndUuidOnly],
 		});
 	}
 
-	public getAuthUserLiveProfile(authEntity: UserEntity): Promise<UserProfileEntity> {
+	public getUserLiveProfile(userEntity: UserEntity): Promise<UserProfileEntity> {
 		return this.findOneOrFail({
 			findOptions: {
 				where: {
 					userProfileIsLive: true,
-					userProfileUserId: authEntity.userId,
+					userProfileUserId: userEntity.userId,
 				},
 			},
 			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
@@ -38,6 +38,13 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 				where: { userProfileUuid },
 			},
 			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
+		});
+	}
+
+	public createUserProfile(valuesToCreate: Partial<IEntityTableColumnProperties<UserProfileEntity>>, transaction: Transaction): Promise<UserProfileEntity> {
+		return this.createOne({
+			valuesToCreate,
+			transaction,
 		});
 	}
 

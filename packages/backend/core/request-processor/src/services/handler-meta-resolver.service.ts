@@ -6,7 +6,7 @@ import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { HandlerMetaConst } from "@/backend-core/request-processor/const";
 import type { IHandlerMetaResolver } from "@/backend-core/request-processor/interface";
-import type { IControllerRequest, IHandlerMetaMap, IHandlerMetaType, IHandlerPathMeta, IHandlerQueryMeta } from "@/backend-core/request-processor/types";
+import type { IAppRequest, IHandlerMetaMap, IHandlerMetaType, IHandlerPathMeta, IHandlerQueryMeta } from "@/backend-core/request-processor/types";
 
 export class HandlerMetaResolverService implements IHandlerMetaResolver {
 	public constructor(
@@ -15,7 +15,7 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 		@Inject(ValidationTokenConst.ValidatorToken) private readonly validator: IValidator,
 	) {}
 
-	public async resolveHandlerMeta(request: IControllerRequest, context: Context, resolvedRoute: IResolvedRoute): Promise<Array<any>> {
+	public async resolveHandlerMeta(request: IAppRequest, context: Context, resolvedRoute: IResolvedRoute): Promise<Array<any>> {
 		const controllerMetaMap: Nullable<IHandlerMetaMap> = this.extractHandlerClassMetaMap(resolvedRoute);
 		if (!controllerMetaMap) return [];
 
@@ -57,7 +57,7 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 		return methodName.startsWith(boundMethodIdentifier) ? methodName.slice(boundMethodIdentifier.length) : methodName;
 	}
 
-	private async resolveMetaData(request: IControllerRequest, context: Context, handlerMeta: IHandlerMetaType): Promise<unknown> {
+	private async resolveMetaData(request: IAppRequest, context: Context, handlerMeta: IHandlerMetaType): Promise<unknown> {
 		switch (handlerMeta.type) {
 			case "body":
 				return await this.validator.validate(handlerMeta.schema, request.body);
@@ -74,13 +74,13 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 		}
 	}
 
-	private async resolveAuthMetaData(request: IControllerRequest): Promise<unknown> {
+	private async resolveAuthMetaData(request: IAppRequest): Promise<unknown> {
 		if ("auth" in request) return request.auth;
 
 		return null;
 	}
 
-	private async resolvePathMetaData(request: IControllerRequest, handlerMeta: IHandlerPathMeta): Promise<unknown> {
+	private async resolvePathMetaData(request: IAppRequest, handlerMeta: IHandlerPathMeta): Promise<unknown> {
 		if (typeof handlerMeta.schema === "string") {
 			return request.pathParams[handlerMeta.schema];
 		}
@@ -88,7 +88,7 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 		return this.validator.validate(handlerMeta.schema, request.pathParams);
 	}
 
-	private async resolveQueryMetaData(request: IControllerRequest, handlerMeta: IHandlerQueryMeta): Promise<unknown> {
+	private async resolveQueryMetaData(request: IAppRequest, handlerMeta: IHandlerQueryMeta): Promise<unknown> {
 		if (typeof handlerMeta.schema === "string") {
 			return request.queryParams[handlerMeta.schema];
 		}

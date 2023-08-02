@@ -20,7 +20,7 @@ export class UserRouter implements IRouter {
 						prefix: "/",
 						routes: [
 							{
-								path: "/{userUsername}",
+								path: "/preview/{userUsername}",
 								method: RouteMethod.GET,
 								handler: this.userController.publicPreview,
 							},
@@ -47,6 +47,11 @@ export class UserRouter implements IRouter {
 										path: "/{userProfileUuid}",
 										method: RouteMethod.GET,
 										handler: this.userProfileController.getUserProfile,
+									},
+									{
+										path: "/create",
+										method: RouteMethod.POST,
+										handler: this.userProfileController.createUserProfile,
 									},
 									{
 										path: "/update/{userProfileUuid}",

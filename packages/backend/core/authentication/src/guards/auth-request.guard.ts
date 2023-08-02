@@ -1,7 +1,7 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserAuthService } from "@/backend/user/services";
 import { UnauthorizedException } from "@/backend-core/request-processor/exceptions";
-import type { IControllerAuthRequest } from "@/backend-core/request-processor/types";
+import type { IAuthAppRequest } from "@/backend-core/request-processor/types";
 import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { SessionValue } from "sst/node/auth";
@@ -9,7 +9,7 @@ import { useSession } from "sst/node/auth";
 import type { IGuard } from "@/backend-core/authentication/interface";
 import { VerificationTokenService } from "@/backend-core/authentication/services";
 
-export class AuthRequestGuard implements IGuard<IControllerAuthRequest> {
+export class AuthRequestGuard implements IGuard<IAuthAppRequest> {
 	public constructor(
 		// Dependencies
 
@@ -17,7 +17,7 @@ export class AuthRequestGuard implements IGuard<IControllerAuthRequest> {
 		@Inject(VerificationTokenService) private readonly verificationTokenService: VerificationTokenService,
 	) {}
 
-	public async guard(request: IControllerAuthRequest): Promise<void> {
+	public async guard(request: IAuthAppRequest): Promise<void> {
 		const session: SessionValue = useSession();
 
 		if (session.type !== "user") throw new UnauthorizedException();

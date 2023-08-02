@@ -1,10 +1,10 @@
 import type { DeepPartial } from "@/stacks/types";
 import { Exception } from "@/backend-core/request-processor/exceptions";
 import type { IResponseHandler } from "@/backend-core/request-processor/interface";
-import type { IAppException, IError, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { IAppException, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
 export class ResponseHandlerService implements IResponseHandler {
-	public handleException(exception: unknown): IFailedResponse<IError> {
+	public handleException(exception: unknown): IFailedResponse<IErrorResponseBody> {
 		if (exception instanceof Exception) {
 			const { message, code, context }: IAppException = exception.toError();
 			return this.createFailedResponse(
@@ -37,9 +37,9 @@ export class ResponseHandlerService implements IResponseHandler {
 		};
 	}
 
-	public createFailedResponse<T extends IError>(data: T): IFailedResponse<T>;
-	public createFailedResponse<T extends IError>(data: T, code: number): IFailedResponse<T>;
-	public createFailedResponse<T extends IError>(data: T, code = 500): IFailedResponse<T> {
+	public createFailedResponse<T extends IErrorResponseBody>(data: T): IFailedResponse<T>;
+	public createFailedResponse<T extends IErrorResponseBody>(data: T, code: number): IFailedResponse<T>;
+	public createFailedResponse<T extends IErrorResponseBody>(data: T, code = 500): IFailedResponse<T> {
 		return {
 			body: {
 				data: null,
@@ -49,7 +49,7 @@ export class ResponseHandlerService implements IResponseHandler {
 		};
 	}
 
-	public isFailedResponse(response: unknown): response is IFailedResponse<IError> {
+	public isFailedResponse(response: unknown): response is IFailedResponse<IErrorResponseBody> {
 		if (!response) return false;
 
 		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;

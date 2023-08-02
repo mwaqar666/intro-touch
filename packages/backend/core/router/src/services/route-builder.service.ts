@@ -2,6 +2,7 @@ import type { IGuard } from "@/backend-core/authentication/interface";
 import { AppContainer } from "@/backend-core/core/extensions";
 import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
 import type { Constructable } from "@/stacks/types";
+import { OnDuplicateRegister } from "iocc";
 import { RouteBuilderConst } from "@/backend-core/router/const";
 import type { IBuiltGroupRoute, IBuiltRoute, IGroupedRoute, IRoute, IRouteBuilder } from "@/backend-core/router/interface";
 
@@ -92,7 +93,7 @@ export class RouteBuilderService implements IRouteBuilder {
 
 	private registerRouteRunnersWithContainer<T>(runners: Array<Constructable<T, Array<any>>>): void {
 		runners.forEach((runner: Constructable<T, Array<any>>): void => {
-			AppContainer.registerSingleton(runner, { onDuplicate: "ignore" });
+			AppContainer.registerSingleton(runner, { onDuplicate: OnDuplicateRegister.IGNORE });
 		});
 	}
 }

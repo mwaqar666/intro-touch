@@ -8,7 +8,7 @@ import { Inject } from "iocc";
 import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
 import { Exception } from "@/backend-core/request-processor/exceptions";
 import type { IHandlerMetaResolver, IInterceptorResolver, IRequestProcessor, IResponseHandler } from "@/backend-core/request-processor/interface";
-import type { IControllerRequest, IControllerResponse, IError, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { IAppRequest, IAppResponse, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
 export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
@@ -24,7 +24,7 @@ export class RequestProcessorService implements IRequestProcessor {
 		try {
 			const matchedRoute: IResolvedRoute = this.routeRegister.resolveRoute(apiRequest);
 
-			let request: IControllerRequest = this.prepareRequestObject(apiRequest, matchedRoute);
+			let request: IAppRequest = this.prepareRequestObject(apiRequest, matchedRoute);
 
 			await this.guardResolver.runRouteGuards(request, context, matchedRoute.guards);
 
@@ -36,13 +36,13 @@ export class RequestProcessorService implements IRequestProcessor {
 
 			return this.prepareResponseObject(response);
 		} catch (exception) {
-			const response: IFailedResponse<IError> = this.responseHandler.handleException(exception);
+			const response: IFailedResponse<IErrorResponseBody> = this.responseHandler.handleException(exception);
 
 			return this.prepareResponseObject(response);
 		}
 	}
 
-	private prepareRequestObject(request: ApiRequest, matchedRoute: IResolvedRoute): IControllerRequest {
+	private prepareRequestObject(request: ApiRequest, matchedRoute: IResolvedRoute): IAppRequest {
 		const requestBody: object = request.body ? JSON.parse(request.body) : {};
 
 		return {
@@ -53,7 +53,7 @@ export class RequestProcessorService implements IRequestProcessor {
 		};
 	}
 
-	private async runRouteHandler(matchedRoute: IResolvedRoute, request: IControllerRequest, context: Context): Promise<ISuccessfulResponse<unknown>> {
+	private async runRouteHandler(matchedRoute: IResolvedRoute, request: IAppRequest, context: Context): Promise<ISuccessfulResponse<unknown>> {
 		const handlerParams: Array<any> = await this.handlerMetaResolver.resolveHandlerMeta(request, context, matchedRoute);
 
 		const handlerResponse: unknown = await matchedRoute.handler(...handlerParams);
@@ -61,7 +61,7 @@ export class RequestProcessorService implements IRequestProcessor {
 		return this.handleHandlerResponse(handlerResponse);
 	}
 
-	private prepareResponseObject(response: IControllerResponse): ApiResponse {
+	private prepareResponseObject(response: IAppResponse): ApiResponse {
 		return {
 			...response,
 			body: JSON.stringify(response.body),
