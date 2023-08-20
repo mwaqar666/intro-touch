@@ -14,10 +14,10 @@ export const routeInvokerHandler = async (request: ApiRequest, context: Context)
 	const introTouch: IntroTouch = await IntroTouch.getInstance().bootstrapApplication();
 
 	return introTouch.hotExecuteWithinApplicationContext(async (container: IContainer): Promise<ApiResponse> => {
-		const requestProcessor: IRequestProcessor = container.resolve(RequestProcessorTokenConst.RequestProcessorToken);
+		const apiHandler = ApiHandler(async (): Promise<ApiResponse> => {
+			const requestProcessor: IRequestProcessor = container.resolve(RequestProcessorTokenConst.RequestProcessorToken);
 
-		const apiHandler = ApiHandler(async (request: ApiRequest, context: Context): Promise<ApiResponse> => {
-			return requestProcessor.processRequest(request, context);
+			return requestProcessor.processRequest();
 		});
 
 		return apiHandler(request, context);

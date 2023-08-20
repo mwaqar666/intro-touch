@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
-import type { Key } from "@/stacks/types";
+import type { Delegate, Key } from "@/stacks/types";
 import omit from "lodash.omit";
 import type { ModelStatic } from "sequelize";
-import { BeforeCreate, Model } from "sequelize-typescript";
+import { BeforeBulkCreate, BeforeCreate, Model } from "sequelize-typescript";
 import type { IEntityScope, IEntityType } from "@/backend-core/database/types";
 
 export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Model<TEntity> {
@@ -29,13 +29,28 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 	}
 
 	@BeforeCreate
-	public static generateUuid<TEntityStatic extends BaseEntity<TEntityStatic>>(model: TEntityStatic): void {
+	@BeforeBulkCreate
+	public static async generateUuid<TEntityStatic extends BaseEntity<TEntityStatic>>(model: TEntityStatic | Array<TEntityStatic>): Promise<void> {
 		if (!BaseEntity.uuidColumnName) return;
 
-		const existingUuid = model[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName];
-		if (existingUuid) return;
+		await BaseEntity.runHookForOneOrMoreInstances(model, async (instance: TEntityStatic): Promise<void> => {
+			const existingUuid = instance[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName];
+			if (existingUuid) return;
 
-		model[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName] = randomUUID();
+			instance[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName] = randomUUID();
+		});
+	}
+
+	protected static async runHookForOneOrMoreInstances<TEntityStatic extends BaseEntity<TEntityStatic>>(instanceOrInstances: TEntityStatic | Array<TEntityStatic>, callback: Delegate<[TEntityStatic], Promise<void>>): Promise<void> {
+		if (!Array.isArray(instanceOrInstances)) {
+			return await callback(instanceOrInstances);
+		}
+
+		await Promise.all(
+			instanceOrInstances.map((eachInstance: TEntityStatic): Promise<void> | void => {
+				return callback(eachInstance);
+			}),
+		);
 	}
 
 	public override toJSON(): object {

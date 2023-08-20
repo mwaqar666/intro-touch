@@ -215,6 +215,9 @@ importers:
       iocc:
         specifier: ^2.1.9
         version: 2.1.9(reflect-metadata@0.1.13)
+      sequelize:
+        specifier: ^6.32.0
+        version: 6.32.0(pg-hstore@2.3.4)(pg@8.11.0)
 
   packages/backend/platform:
     dependencies:
@@ -340,7 +343,7 @@ packages:
     engines: { node: '>= 14.15.0' }
     dependencies:
       jsonschema: 1.4.1
-      semver: 7.5.3
+      semver: 7.5.4
     dev: true
     bundledDependencies:
       - jsonschema
@@ -365,7 +368,7 @@ packages:
       '@aws-cdk/cloud-assembly-schema': 2.84.0
     dependencies:
       '@aws-cdk/cloud-assembly-schema': 2.84.0
-      semver: 7.5.3
+      semver: 7.5.4
     dev: true
     bundledDependencies:
       - semver
@@ -7750,6 +7753,7 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: true
 
   /semver@7.5.4:
     resolution: { integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA== }
@@ -7757,7 +7761,6 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
-    dev: true
 
   /send@0.18.0:
     resolution: { integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg== }
@@ -7842,7 +7845,7 @@ packages:
         optional: true
     dependencies:
       '@types/debug': 4.1.8
-      '@types/validator': 13.7.17
+      '@types/validator': 13.9.0
       debug: 4.3.4
       dottie: 2.0.6
       inflection: 1.13.4
@@ -7853,7 +7856,7 @@ packages:
       pg-connection-string: 2.6.1
       pg-hstore: 2.3.4
       retry-as-promised: 7.0.4
-      semver: 7.5.3
+      semver: 7.5.4
       sequelize-pool: 7.1.0
       toposort-class: 1.0.1
       uuid: 8.3.2

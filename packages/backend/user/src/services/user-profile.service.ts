@@ -26,7 +26,7 @@ export class UserProfileService {
 	public async createUserProfile(createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<UserProfileEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
-				return this.userProfileRepository.createUserProfile(createUserProfileRequestDto, transaction);
+				return this.userProfileRepository.createOne({ valuesToCreate: createUserProfileRequestDto, transaction });
 			},
 		});
 	}

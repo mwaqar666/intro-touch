@@ -1,5 +1,7 @@
+import { IsUnique } from "@/backend-core/validation/validators";
 import type { Optional } from "@/stacks/types";
 import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
+import { UserProfileRepository } from "@/backend/user/db/repositories";
 
 export class CreateUserProfileRequestDto {
 	@MaxLength(50)
@@ -17,6 +19,7 @@ export class CreateUserProfileRequestDto {
 	@IsNotEmpty()
 	public userProfilePicture: string;
 
+	@IsUnique({ repository: UserProfileRepository })
 	@MaxLength(50)
 	@IsEmail()
 	@IsString()

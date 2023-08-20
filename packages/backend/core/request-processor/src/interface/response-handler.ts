@@ -1,4 +1,5 @@
-import type { IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { ApiResponse } from "@/stacks/types";
+import type { IAppResponse, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
 export interface IResponseHandler {
 	handleException(exception: unknown): IFailedResponse<IErrorResponseBody>;
@@ -11,9 +12,7 @@ export interface IResponseHandler {
 
 	createFailedResponse<T extends IErrorResponseBody>(data: T, code: number): IFailedResponse<T>;
 
-	isFailedResponse(response: unknown): response is IFailedResponse<IErrorResponseBody>;
+	handleHandlerResponse(response: unknown): ISuccessfulResponse<unknown>;
 
-	isSuccessfulResponse(response: unknown): response is ISuccessfulResponse<unknown>;
-
-	isRedirectionResponse(response: unknown): response is ISuccessfulResponse<unknown>;
+	finalizeResponse(response: IAppResponse): ApiResponse;
 }

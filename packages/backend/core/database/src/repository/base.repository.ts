@@ -43,6 +43,12 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		return await this.concreteEntity.applyScopes<TEntity>(findOptions.scopes).findAll<TEntity>(findOptions.findOptions);
 	}
 
+	public async count(findOptions: IScopedFinderOptions<TEntity>): Promise<number> {
+		findOptions = this.providedOrDefaultScopedFindOptions(findOptions);
+
+		return await this.concreteEntity.applyScopes<TEntity>(findOptions.scopes).count(findOptions.findOptions);
+	}
+
 	public async resolveOne(entity: IEntityResolution<TEntity>, scopes?: IEntityScope): Promise<Nullable<TEntity>> {
 		if (typeof entity !== "string" && typeof entity !== "number") return entity;
 
@@ -172,12 +178,10 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		return deletedEntityCount > 0;
 	}
 
-	private providedOrDefaultScopedFindOptions(findOptions?: Partial<IScopedFinderOptions<TEntity>>): IScopedFinderOptions<TEntity> {
-		const scopedEntityFindOptions: Partial<IScopedFinderOptions<TEntity>> = findOptions ?? RepositoryConst.DefaultScopedFindOptions;
-
-		scopedEntityFindOptions.scopes = scopedEntityFindOptions.scopes ?? RepositoryConst.DefaultScopedFindOptions.scopes;
-		scopedEntityFindOptions.findOptions = scopedEntityFindOptions.findOptions ?? RepositoryConst.DefaultScopedFindOptions.findOptions;
-
-		return findOptions as IScopedFinderOptions<TEntity>;
+	private providedOrDefaultScopedFindOptions(findOptions?: Partial<IScopedFinderOptions<TEntity>>): Required<IScopedFinderOptions<TEntity>> {
+		return {
+			...RepositoryConst.DefaultScopedFindOptions,
+			...findOptions,
+		};
 	}
 }

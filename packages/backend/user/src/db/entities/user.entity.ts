@@ -3,13 +3,13 @@ import { VerificationTokenEntity } from "@/backend-core/authentication/db/entiti
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import { HashService } from "@/backend-core/authentication/services/crypt";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
-import { AppContainer } from "@/backend-core/core/extensions";
+import { App } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
 import omit from "lodash.omit";
-import { AllowNull, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
 @Scopes(() => ({
@@ -42,7 +42,7 @@ export class UserEntity extends BaseEntity<UserEntity> {
 
 	@Unique
 	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@Column({ type: DataType.STRING(100) })
 	public userUsername: string;
 
 	@AllowNull(true)
@@ -91,23 +91,26 @@ export class UserEntity extends BaseEntity<UserEntity> {
 
 	@BeforeUpdate
 	@BeforeCreate
-	public static async hashPassword(instance: UserEntity): Promise<UserEntity> {
-		if (!instance.changed("userPassword") || !instance.userPassword) return instance;
+	@BeforeBulkCreate
+	@BeforeBulkUpdate
+	public static async hashPasswordHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
+		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
+			if (!instance.changed("userPassword") || !instance.userPassword) return;
 
-		const hashService: HashService = AppContainer.resolve(HashService);
-		instance.userPassword = await hashService.hash(instance.userPassword);
-
-		return instance;
+			const hashService: HashService = App.container.resolve(HashService);
+			instance.userPassword = await hashService.hash(instance.userPassword);
+		});
 	}
 
 	@BeforeCreate
-	public static createUniqueUsername(instance: UserEntity): UserEntity {
-		const firstName: string = instance.userFirstName.trim().toLowerCase();
-		const lastName: string = instance.userLastName.trim().toLowerCase();
+	@BeforeBulkCreate
+	public static async createUsernameHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
+		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
+			const firstName: string = instance.userFirstName.trim().toLowerCase();
+			const lastName: string = instance.userLastName.trim().toLowerCase();
 
-		instance.userUsername = `${firstName}-${lastName}-${randomUUID()}`;
-
-		return instance;
+			instance.userUsername = `${firstName}-${lastName}-${randomUUID()}`;
+		});
 	}
 
 	public override toJSON(): object {
@@ -119,7 +122,7 @@ export class UserEntity extends BaseEntity<UserEntity> {
 	public async verifyPassword(plainPassword: string): Promise<boolean> {
 		if (!this.userPassword) throw new PasswordMissingException();
 
-		const hashService: HashService = AppContainer.resolve(HashService);
+		const hashService: HashService = App.container.resolve(HashService);
 		return await hashService.compare(plainPassword, this.userPassword);
 	}
 }

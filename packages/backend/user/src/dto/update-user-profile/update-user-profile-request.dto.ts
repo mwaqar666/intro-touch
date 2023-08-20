@@ -1,5 +1,7 @@
+import { IsUnique } from "@/backend-core/validation/validators";
 import type { Optional } from "@/stacks/types";
 import { IsBoolean, IsEmail, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
+import { UserProfileRepository } from "@/backend/user/db/repositories";
 
 export class UpdateUserProfileRequestDto {
 	@MaxLength(50)
@@ -17,6 +19,11 @@ export class UpdateUserProfileRequestDto {
 	@IsOptional()
 	public userProfilePicture: Optional<string>;
 
+	@IsUnique({
+		repository: UserProfileRepository,
+		extractParameterFrom: "path",
+		ignoreByParameter: "userProfileUuid",
+	})
 	@MaxLength(50)
 	@IsEmail()
 	@IsString()

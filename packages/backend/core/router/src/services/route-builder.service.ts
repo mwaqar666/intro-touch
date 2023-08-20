@@ -1,22 +1,28 @@
 import type { IGuard } from "@/backend-core/authentication/interface";
-import { AppContainer } from "@/backend-core/core/extensions";
+import { App } from "@/backend-core/core/extensions";
 import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
 import type { Constructable } from "@/stacks/types";
 import { OnDuplicateRegister } from "iocc";
 import { RouteBuilderConst } from "@/backend-core/router/const";
-import type { IBuiltGroupRoute, IBuiltRoute, IGroupedRoute, IRoute, IRouteBuilder } from "@/backend-core/router/interface";
+import type { IBuiltGroupRoute, IBuiltRoute, IGroupedRoute, IRoute, IRouteBuilder, IRouter } from "@/backend-core/router/interface";
 
 export class RouteBuilderService implements IRouteBuilder {
-	private builtRoutes: Array<IBuiltRoute> = [];
+	private _moduleRoutes: Array<IRoute> = [];
 
-	public buildRoutes(routes: Array<IRoute>): IRouteBuilder {
-		this.prepareRoutes(routes, RouteBuilderConst.DefaultRouteGroup);
+	private _builtRoutes: Array<IBuiltRoute> = [];
 
-		return this;
+	public get builtRoutes(): Array<IBuiltRoute> {
+		return this._builtRoutes;
 	}
 
-	public getBuiltRoutes(): Array<IBuiltRoute> {
-		return this.builtRoutes;
+	public addRouter(router: IRouter): void {
+		this._moduleRoutes.push(...router.registerRoutes());
+	}
+
+	public buildRoutes(): IRouteBuilder {
+		this.prepareRoutes(this._moduleRoutes, RouteBuilderConst.DefaultRouteGroup);
+
+		return this;
 	}
 
 	private prepareRoutes(routes: Array<IRoute>, routeGroup: IBuiltGroupRoute): void {
@@ -66,7 +72,7 @@ export class RouteBuilderService implements IRouteBuilder {
 			this.registerRouteRunnersWithContainer(routeResponseInterceptors);
 			routeToPrepare.responseInterceptors = routeResponseInterceptors;
 
-			this.builtRoutes.push(routeToPrepare);
+			this._builtRoutes.push(routeToPrepare);
 		});
 	}
 
@@ -93,7 +99,7 @@ export class RouteBuilderService implements IRouteBuilder {
 
 	private registerRouteRunnersWithContainer<T>(runners: Array<Constructable<T, Array<any>>>): void {
 		runners.forEach((runner: Constructable<T, Array<any>>): void => {
-			AppContainer.registerSingleton(runner, { onDuplicate: OnDuplicateRegister.IGNORE });
+			App.container.registerSingleton(runner, { onDuplicate: OnDuplicateRegister.IGNORE });
 		});
 	}
 }

@@ -1,4 +1,4 @@
-import { AppContainer } from "@/backend-core/core/extensions";
+import { App } from "@/backend-core/core/extensions";
 import type { Constructable } from "@/stacks/types";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IDbManager, IDbRegister } from "@/backend-core/database/interface/db";
@@ -29,19 +29,19 @@ export class DbManagerService implements IDbManager {
 
 	public resolveMigrations(): Array<IMigration> {
 		return this._migrationRegister.map((migrationClass: Constructable<IMigration>): IMigration => {
-			return AppContainer.resolve(migrationClass);
+			return App.container.resolve(migrationClass);
 		});
 	}
 
 	public resolveRepositories(): Array<BaseRepository<BaseEntity<any>>> {
 		return this._repositoryRegister.map((repositoryClass: Constructable<BaseRepository<BaseEntity<any>>>): BaseRepository<BaseEntity<any>> => {
-			return AppContainer.resolve(repositoryClass);
+			return App.container.resolve(repositoryClass);
 		});
 	}
 
 	public resolveSeeders(): Array<ISeeder> {
 		return this._seederRegister.map((seederClass: Constructable<ISeeder, any>): ISeeder => {
-			return AppContainer.resolve(seederClass);
+			return App.container.resolve(seederClass);
 		});
 	}
 
@@ -50,7 +50,7 @@ export class DbManagerService implements IDbManager {
 		this._migrationRegister.push(...migrationClasses);
 
 		migrationClasses.forEach((migrationClass: Constructable<IMigration>): void => {
-			AppContainer.registerSingleton(migrationClass);
+			App.container.registerSingleton(migrationClass);
 		});
 	}
 
@@ -59,7 +59,7 @@ export class DbManagerService implements IDbManager {
 		this._repositoryRegister.push(...repositoryClasses);
 
 		repositoryClasses.forEach((repositoryClass: Constructable<BaseRepository<BaseEntity<any>>>): void => {
-			AppContainer.registerSingleton(repositoryClass);
+			App.container.registerSingleton(repositoryClass);
 		});
 	}
 
@@ -68,7 +68,7 @@ export class DbManagerService implements IDbManager {
 		this._seederRegister.push(...seederClasses);
 
 		seederClasses.forEach((seederClass: Constructable<ISeeder, any>): void => {
-			AppContainer.registerSingleton(seederClass);
+			App.container.registerSingleton(seederClass);
 		});
 	}
 }

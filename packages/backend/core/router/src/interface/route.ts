@@ -96,7 +96,7 @@ export interface IRouteParams<P extends IPathParams = IPathParams, Q extends IQu
 	queryParams: Q;
 }
 
-export interface IResolvedRoute extends IBuiltRoute, IRouteParams {}
+export interface IResolvedRoute<P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> extends IBuiltRoute, IRouteParams<P, Q> {}
 
 export interface IRouter {
 	registerRoutes(): Array<IRoute>;

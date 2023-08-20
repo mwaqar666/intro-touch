@@ -41,13 +41,6 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		});
 	}
 
-	public createUserProfile(valuesToCreate: Partial<IEntityTableColumnProperties<UserProfileEntity>>, transaction: Transaction): Promise<UserProfileEntity> {
-		return this.createOne({
-			valuesToCreate,
-			transaction,
-		});
-	}
-
 	public updateUserProfile(userProfileUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<UserProfileEntity>>, transaction: Transaction): Promise<UserProfileEntity> {
 		return this.updateOne({
 			findOptions: {
