@@ -1,34 +1,30 @@
 import { IsUnique } from "@/backend-core/validation/validators";
 import type { Optional } from "@/stacks/types";
-import { IsBoolean, IsEmail, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
 
-export class UpdateUserProfileRequestDto {
+export class CreateUserProfileRequestDto {
 	@MaxLength(50)
 	@IsString()
-	@IsOptional()
-	public userProfileFirstName: Optional<string>;
+	@IsNotEmpty()
+	public userProfileFirstName: string;
 
 	@MaxLength(50)
 	@IsString()
-	@IsOptional()
-	public userProfileLastName: Optional<string>;
+	@IsNotEmpty()
+	public userProfileLastName: string;
 
 	@MaxLength(255)
 	@IsString()
-	@IsOptional()
-	public userProfilePicture: Optional<string>;
+	@IsNotEmpty()
+	public userProfilePicture: string;
 
-	@IsUnique({
-		repository: UserProfileRepository,
-		extractParameterFrom: "path",
-		ignoreByParameter: "userProfileUuid",
-	})
+	@IsUnique({ repository: UserProfileRepository })
 	@MaxLength(50)
 	@IsEmail()
 	@IsString()
-	@IsOptional()
-	public userProfileEmail: Optional<string>;
+	@IsNotEmpty()
+	public userProfileEmail: string;
 
 	@IsString()
 	@IsOptional()
@@ -63,10 +59,6 @@ export class UpdateUserProfileRequestDto {
 	@IsUrl()
 	@IsOptional()
 	public userProfileWebsite: Optional<string>;
-
-	@IsBoolean()
-	@IsOptional()
-	public userProfileIsLive: Optional<boolean>;
 
 	@IsBoolean()
 	@IsOptional()

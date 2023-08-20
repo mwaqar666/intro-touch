@@ -1,7 +1,9 @@
-import type { IBuiltRoute, IRoute } from "@/backend-core/router/interface/route";
+import type { IBuiltRoute, IRouter } from "@/backend-core/router/interface/route";
 
 export interface IRouteBuilder {
-	buildRoutes(routes: Array<IRoute>): IRouteBuilder;
+	get builtRoutes(): Array<IBuiltRoute>;
 
-	getBuiltRoutes(): Array<IBuiltRoute>;
+	addRouter(router: IRouter): void;
+
+	buildRoutes(): IRouteBuilder;
 }

@@ -1,10 +1,10 @@
-import type { DeepPartial } from "@/stacks/types";
+import type { ApiResponse, DeepPartial } from "@/stacks/types";
 import { Exception } from "@/backend-core/request-processor/exceptions";
 import type { IResponseHandler } from "@/backend-core/request-processor/interface";
-import type { IAppException, IError, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { IAppException, IAppResponse, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
 export class ResponseHandlerService implements IResponseHandler {
-	public handleException(exception: unknown): IFailedResponse<IError> {
+	public handleException(exception: unknown): IFailedResponse<IErrorResponseBody> {
 		if (exception instanceof Exception) {
 			const { message, code, context }: IAppException = exception.toError();
 			return this.createFailedResponse(
@@ -37,9 +37,9 @@ export class ResponseHandlerService implements IResponseHandler {
 		};
 	}
 
-	public createFailedResponse<T extends IError>(data: T): IFailedResponse<T>;
-	public createFailedResponse<T extends IError>(data: T, code: number): IFailedResponse<T>;
-	public createFailedResponse<T extends IError>(data: T, code = 500): IFailedResponse<T> {
+	public createFailedResponse<T extends IErrorResponseBody>(data: T): IFailedResponse<T>;
+	public createFailedResponse<T extends IErrorResponseBody>(data: T, code: number): IFailedResponse<T>;
+	public createFailedResponse<T extends IErrorResponseBody>(data: T, code = 500): IFailedResponse<T> {
 		return {
 			body: {
 				data: null,
@@ -49,7 +49,36 @@ export class ResponseHandlerService implements IResponseHandler {
 		};
 	}
 
-	public isFailedResponse(response: unknown): response is IFailedResponse<IError> {
+	public handleHandlerResponse(response: unknown): ISuccessfulResponse<unknown> {
+		if (this.isFailedHandlerResponse(response)) {
+			throw new Exception(response.body.errors.message, response.statusCode, response.body.errors.context);
+		}
+
+		if (this.isSuccessfulHandlerResponse(response)) {
+			return response;
+		}
+
+		if (this.isRedirectHandlerResponse(response)) {
+			return {
+				...response,
+				body: {
+					data: {},
+					errors: null,
+				},
+			};
+		}
+
+		return this.createSuccessfulResponse(response);
+	}
+
+	public finalizeResponse(response: IAppResponse): ApiResponse {
+		return {
+			...response,
+			body: JSON.stringify(response.body),
+		};
+	}
+
+	private isFailedHandlerResponse(response: unknown): response is IFailedResponse<IErrorResponseBody> {
 		if (!response) return false;
 
 		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
@@ -59,7 +88,7 @@ export class ResponseHandlerService implements IResponseHandler {
 		return !!responseToInspect.body && responseToInspect.body.errors !== null;
 	}
 
-	public isSuccessfulResponse(response: unknown): response is ISuccessfulResponse<unknown> {
+	private isSuccessfulHandlerResponse(response: unknown): response is ISuccessfulResponse<unknown> {
 		if (!response) return false;
 
 		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
@@ -69,7 +98,7 @@ export class ResponseHandlerService implements IResponseHandler {
 		return !!responseToInspect.body && responseToInspect.body.data !== null;
 	}
 
-	public isRedirectionResponse(response: unknown): response is ISuccessfulResponse<unknown> {
+	private isRedirectHandlerResponse(response: unknown): response is ISuccessfulResponse<unknown> {
 		if (!response) return false;
 
 		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;

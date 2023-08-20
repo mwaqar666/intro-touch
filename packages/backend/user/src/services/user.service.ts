@@ -11,7 +11,7 @@ export class UserService {
 	) {}
 
 	public async getAuthUserWithLiveProfile(authEntity: UserEntity): Promise<UserEntity> {
-		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getAuthUserLiveProfile(authEntity);
+		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(authEntity);
 
 		authEntity.setDataValue("userLiveUserProfile", userLiveProfile);
 
@@ -21,7 +21,7 @@ export class UserService {
 	public async getUserPublicPreviewWithLiveProfile(userUsername: string): Promise<UserEntity> {
 		const user: UserEntity = await this.userRepository.findOrFailActiveUserByUsername(userUsername);
 
-		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getAuthUserLiveProfile(user);
+		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(user);
 
 		user.setDataValue("userLiveUserProfile", userLiveProfile);
 

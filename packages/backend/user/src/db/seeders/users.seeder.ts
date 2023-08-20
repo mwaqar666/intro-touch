@@ -1,4 +1,3 @@
-import { HashService } from "@/backend-core/authentication/services/crypt";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
@@ -13,7 +12,6 @@ export class UsersSeeder implements ISeeder {
 	public constructor(
 		// Dependencies
 
-		@Inject(HashService) private readonly hashService: HashService,
 		@Inject(UserRepository) private readonly userRepository: UserRepository,
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
@@ -22,22 +20,20 @@ export class UsersSeeder implements ISeeder {
 	public async seed(): Promise<void> {
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
-				const hashedPassword: string = await this.hashService.hash("password");
-
 				const users: Array<UserEntity> = await this.userRepository.createMany({
 					valuesToCreate: [
 						{
 							userFirstName: "Muhammad",
 							userLastName: "Waqar",
 							userEmail: "muhammadwaqar666@gmail.com",
-							userPassword: hashedPassword,
+							userPassword: "password",
 							userPicture: "",
 						},
 						{
 							userFirstName: "Nabeel",
 							userLastName: "Baig",
 							userEmail: "mathswithnabeel@gmail.com",
-							userPassword: hashedPassword,
+							userPassword: "password",
 							userPicture: "",
 						},
 					],

@@ -36,7 +36,11 @@ export class Application implements IApplication {
 
 		this.validateModuleLifeCycleExecutedState();
 
-		return this.runRegisteredModuleRunCycle(executionContext);
+		const response: T = await this.runRegisteredModuleRunCycle(executionContext);
+
+		this.container.resetScopedDependencies();
+
+		return response;
 	}
 
 	public async coldExecuteWithinApplicationContext<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
@@ -44,7 +48,11 @@ export class Application implements IApplication {
 
 		this.validateModuleLifeCycleExecutedState();
 
-		return executionContext(this.container);
+		const response: T = await executionContext(this.container);
+
+		this.container.resetScopedDependencies();
+
+		return response;
 	}
 
 	private async registerModuleInstance(appModule: Constructable<IModule>): Promise<void> {

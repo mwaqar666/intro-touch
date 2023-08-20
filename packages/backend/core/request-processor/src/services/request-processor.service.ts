@@ -1,92 +1,52 @@
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import type { IGuardResolver } from "@/backend-core/authentication/interface";
-import { RouterTokenConst } from "@/backend-core/router/const";
-import type { IResolvedRoute, IRouteRegister } from "@/backend-core/router/interface";
-import type { ApiRequest, ApiResponse } from "@/stacks/types";
+import type { IResolvedRoute } from "@/backend-core/router/interface";
+import type { ApiResponse } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
-import { Exception } from "@/backend-core/request-processor/exceptions";
-import type { IHandlerMetaResolver, IInterceptorResolver, IRequestProcessor, IResponseHandler } from "@/backend-core/request-processor/interface";
-import type { IControllerRequest, IControllerResponse, IError, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { IHandlerMetaResolver, IInterceptorResolver, IRequestHandler, IRequestProcessor, IResponseHandler } from "@/backend-core/request-processor/interface";
+import type { IAppRequest, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
 export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
 		// Dependencies
-		@Inject(RouterTokenConst.RouteRegisterToken) private readonly routeRegister: IRouteRegister,
 		@Inject(AuthenticationTokenConst.GuardResolverToken) private readonly guardResolver: IGuardResolver,
+		@Inject(RequestProcessorTokenConst.RequestHandlerToken) private readonly requestHandler: IRequestHandler,
 		@Inject(RequestProcessorTokenConst.ResponseHandlerToken) private readonly responseHandler: IResponseHandler,
 		@Inject(RequestProcessorTokenConst.InterceptorResolverToken) private readonly interceptorResolver: IInterceptorResolver,
 		@Inject(RequestProcessorTokenConst.HandlerMetaResolverToken) private readonly handlerMetaResolver: IHandlerMetaResolver,
 	) {}
 
-	public async processRequest(apiRequest: ApiRequest, context: Context): Promise<ApiResponse> {
+	public async processRequest(): Promise<ApiResponse>;
+	public async processRequest(request: IAppRequest, context: Context): Promise<ApiResponse>;
+	public async processRequest(request?: IAppRequest, context?: Context): Promise<ApiResponse> {
 		try {
-			const matchedRoute: IResolvedRoute = this.routeRegister.resolveRoute(apiRequest);
+			let appRequest: IAppRequest = request ?? this.requestHandler.getRequest();
+			const appContext: Context = context ?? this.requestHandler.getContext();
+			const route: IResolvedRoute = this.requestHandler.getRoute();
 
-			let request: IControllerRequest = this.prepareRequestObject(apiRequest, matchedRoute);
+			await this.guardResolver.runRouteGuards(appRequest, appContext, route.guards);
 
-			await this.guardResolver.runRouteGuards(request, context, matchedRoute.guards);
+			appRequest = await this.interceptorResolver.runRouteRequestInterceptors(appRequest, appContext, route.requestInterceptors);
 
-			request = await this.interceptorResolver.runRouteRequestInterceptors(request, context, matchedRoute.requestInterceptors);
+			let response: ISuccessfulResponse<unknown> = await this.runRouteHandler(route, appRequest, appContext);
 
-			let response: ISuccessfulResponse<unknown> = await this.runRouteHandler(matchedRoute, request, context);
+			response = await this.interceptorResolver.runRouteResponseInterceptors(appRequest, response, appContext, route.responseInterceptors);
 
-			response = await this.interceptorResolver.runRouteResponseInterceptors(request, response, context, matchedRoute.responseInterceptors);
-
-			return this.prepareResponseObject(response);
+			return this.responseHandler.finalizeResponse(response);
 		} catch (exception) {
-			const response: IFailedResponse<IError> = this.responseHandler.handleException(exception);
+			const response: IFailedResponse<IErrorResponseBody> = this.responseHandler.handleException(exception);
 
-			return this.prepareResponseObject(response);
+			return this.responseHandler.finalizeResponse(response);
 		}
 	}
 
-	private prepareRequestObject(request: ApiRequest, matchedRoute: IResolvedRoute): IControllerRequest {
-		const requestBody: object = request.body ? JSON.parse(request.body) : {};
-
-		return {
-			...request,
-			pathParams: matchedRoute.pathParams,
-			queryParams: matchedRoute.queryParams,
-			body: requestBody,
-		};
-	}
-
-	private async runRouteHandler(matchedRoute: IResolvedRoute, request: IControllerRequest, context: Context): Promise<ISuccessfulResponse<unknown>> {
+	private async runRouteHandler(matchedRoute: IResolvedRoute, request: IAppRequest, context: Context): Promise<ISuccessfulResponse<unknown>> {
 		const handlerParams: Array<any> = await this.handlerMetaResolver.resolveHandlerMeta(request, context, matchedRoute);
 
 		const handlerResponse: unknown = await matchedRoute.handler(...handlerParams);
 
-		return this.handleHandlerResponse(handlerResponse);
-	}
-
-	private prepareResponseObject(response: IControllerResponse): ApiResponse {
-		return {
-			...response,
-			body: JSON.stringify(response.body),
-		};
-	}
-
-	private handleHandlerResponse(response: unknown): ISuccessfulResponse<unknown> {
-		if (this.responseHandler.isFailedResponse(response)) {
-			throw new Exception(response.body.errors.message, response.statusCode, response.body.errors.context);
-		}
-
-		if (this.responseHandler.isSuccessfulResponse(response)) {
-			return response;
-		}
-
-		if (this.responseHandler.isRedirectionResponse(response)) {
-			return {
-				...response,
-				body: {
-					data: {},
-					errors: null,
-				},
-			};
-		}
-
-		return this.responseHandler.createSuccessfulResponse(response);
+		return this.responseHandler.handleHandlerResponse(handlerResponse);
 	}
 }

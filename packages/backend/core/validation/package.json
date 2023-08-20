@@ -1,9 +1,10 @@
 {
-  "name": "@intro-touch/backend-validation",
+  "name": "@intro-touch/backend-core-validation",
   "version": "0.0.0",
   "dependencies": {
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "iocc": "^2.1.5"
+    "iocc": "^2.1.9",
+    "sequelize": "^6.32.0"
   }
 }

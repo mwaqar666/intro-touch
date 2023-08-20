@@ -1,5 +1,5 @@
-import type { IError } from "@/backend-core/request-processor/types/response";
+import type { IErrorResponseBody } from "@/backend-core/request-processor/types/response";
 
-export interface IAppException extends IError {
+export interface IAppException extends IErrorResponseBody {
 	code: number;
 }

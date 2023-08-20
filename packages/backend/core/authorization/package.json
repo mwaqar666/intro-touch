@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "class-validator": "^0.14.0",
-    "iocc": "^2.1.5",
+    "iocc": "^2.1.9",
     "sequelize": "^6.32.0",
     "sequelize-typescript": "^2.1.5"
   }
