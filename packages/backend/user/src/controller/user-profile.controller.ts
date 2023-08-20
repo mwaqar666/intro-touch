@@ -31,7 +31,7 @@ export class UserProfileController {
 	public async createUserProfile(@Auth authEntity: UserEntity, @Body(CreateUserProfileRequestDto) createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<{ userProfile: UserProfileEntity }> {
 		await this.authorization.can(authEntity, [PermissionsEnum.CREATE_USER_PROFILE]);
 
-		return { userProfile: await this.userProfileService.createUserProfile(createUserProfileRequestDto) };
+		return { userProfile: await this.userProfileService.createUserProfile(authEntity, createUserProfileRequestDto) };
 	}
 
 	public async updateUserProfile(

@@ -23,10 +23,16 @@ export class UserProfileService {
 		return this.userProfileRepository.getUserProfile(userProfileUuid);
 	}
 
-	public async createUserProfile(createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<UserProfileEntity> {
+	public async createUserProfile(userEntity: UserEntity, createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<UserProfileEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
-				return this.userProfileRepository.createOne({ valuesToCreate: createUserProfileRequestDto, transaction });
+				return this.userProfileRepository.createOne({
+					valuesToCreate: {
+						...createUserProfileRequestDto,
+						userProfileUserId: userEntity.userId,
+					},
+					transaction,
+				});
 			},
 		});
 	}

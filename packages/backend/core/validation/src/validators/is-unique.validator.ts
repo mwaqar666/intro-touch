@@ -26,6 +26,8 @@ export function IsUnique<T extends BaseEntity<T>, R extends BaseRepository<T>>(i
 @ValidatorConstraint({ async: true })
 export class IsUniqueConstraint<T extends BaseEntity<T>, R extends BaseRepository<T>> implements ValidatorConstraintInterface {
 	public async validate(value: Optional<string>, args: ValidationArguments): Promise<boolean> {
+		if (!value) return false;
+
 		const [validationConstraints]: [IUniqueValidatorOptions<T, R>] = <[IUniqueValidatorOptions<T, R>]>args.constraints;
 
 		const repository: R = App.container.resolve(validationConstraints.repository);
