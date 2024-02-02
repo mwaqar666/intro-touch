@@ -2,6 +2,8 @@ import type { Constructable } from "@/stacks/types";
 
 export type IHandlerMetaMap = Map<string, IHandlerMeta>;
 
+export type IHandlerMeta<T = object, P = object, Q = object> = Array<IHandlerMetaType<T, P, Q>>;
+
 export type IHandlerMetaType<T = object, P = object, Q = object> =
 	// Inject AWS request object
 	| IHandlerRequestMeta
@@ -21,37 +23,33 @@ export type IHandlerMetaType<T = object, P = object, Q = object> =
 	// Inject validated query params
 	| IHandlerQueryMeta<Q>;
 
-export type IHandlerMeta<T = object, P = object, Q = object> = Array<IHandlerMetaType<T, P, Q>>;
+export interface IHandlerBaseMeta {
+	parameterIndex: number;
+}
 
-export interface IHandlerRequestMeta {
+export interface IHandlerRequestMeta extends IHandlerBaseMeta {
 	type: "request";
-	parameterIndex: number;
 }
 
-export interface IHandlerContextMeta {
+export interface IHandlerContextMeta extends IHandlerBaseMeta {
 	type: "context";
-	parameterIndex: number;
 }
 
-export interface IHandlerBodyMeta<T = object> {
+export interface IHandlerBodyMeta<T = object> extends IHandlerBaseMeta {
 	type: "body";
-	parameterIndex: number;
 	schema: Constructable<T>;
 }
 
-export interface IHandlerAuthMeta {
+export interface IHandlerAuthMeta extends IHandlerBaseMeta {
 	type: "auth";
-	parameterIndex: number;
 }
 
-export interface IHandlerPathMeta<P = object> {
+export interface IHandlerPathMeta<P = object> extends IHandlerBaseMeta {
 	type: "path";
-	parameterIndex: number;
 	schema: Constructable<P> | string;
 }
 
-export interface IHandlerQueryMeta<Q = object> {
+export interface IHandlerQueryMeta<Q = object> extends IHandlerBaseMeta {
 	type: "query";
-	parameterIndex: number;
 	schema: Constructable<Q> | string;
 }

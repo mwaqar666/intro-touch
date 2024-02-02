@@ -34,7 +34,7 @@ export class Config {
 		return <string>process.env[name];
 	}
 
-	public static isLocal(stage: string): boolean {
-		return !["prod", "qa", "uat"].includes(stage);
+	public static isNotLocal(stage: string): boolean {
+		return ["prod", "qa", "uat"].includes(stage);
 	}
 }

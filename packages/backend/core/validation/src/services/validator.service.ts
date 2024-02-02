@@ -11,6 +11,7 @@ export class ValidatorService implements IValidator {
 
 		const errors: Array<ValidationError> = await validate(transformedObject, {
 			whitelist: true,
+			validationError: { target: false },
 		});
 
 		if (errors.length === 0) return transformedObject;

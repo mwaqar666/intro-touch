@@ -9,26 +9,29 @@ import { ApiStack, AuthStack, DatabaseStack, EmailStack, VpcStack } from "@/stac
 
 export default {
 	config({ stage }): ConfigOptions {
-		const appStage: string = stage ?? "dev";
+		stage = stage ?? "dev";
 
-		const dotEnvFilePath: string = resolve(`.env.${appStage}`);
+		const dotEnvFilePath: string = resolve(`.env.${stage}`);
 		const environment: DotenvConfigOutput = config({ path: dotEnvFilePath });
+
 		expand(environment);
 
 		return {
 			name: Config.get("APP_NAME"),
 			region: "us-east-2",
-			stage: appStage,
+			stage,
 		};
 	},
 	async stacks(app: App): Promise<void> {
-		if (!Config.isLocal(app.stage)) {
+		if (Config.isNotLocal(app.stage)) {
 			app.stack(VpcStack);
 		}
 
 		app.stack(DatabaseStack);
+
 		await app.stack(EmailStack);
 		await app.stack(ApiStack);
+
 		app.stack(AuthStack);
 	},
 } satisfies SSTConfig;

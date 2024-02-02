@@ -32,6 +32,7 @@ export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 				const requestProcessor: IRequestProcessor = App.container.resolve(RequestProcessorTokenConst.RequestProcessorToken);
 
 				const request: IAppRequest = requestHandler.getRequest();
+
 				request.body = {
 					userEmail: claims.email,
 					userFirstName: claims.given_name,

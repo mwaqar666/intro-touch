@@ -15,20 +15,19 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 		@Inject(ValidationTokenConst.ValidatorToken) private readonly validator: IValidator,
 	) {}
 
-	public async resolveHandlerMeta(request: IAppRequest, context: Context, resolvedRoute: IResolvedRoute): Promise<Array<any>> {
+	public async resolveHandlerMeta(request: IAppRequest, context: Context, resolvedRoute: IResolvedRoute): Promise<Array<unknown>> {
 		const controllerMetaMap: Nullable<IHandlerMetaMap> = this.extractHandlerClassMetaMap(resolvedRoute);
 		if (!controllerMetaMap) return [];
 
-		const handlerMetaArray: Array<IHandlerMetaType> = this.extractHandlerMeta(controllerMetaMap, resolvedRoute);
-
-		const handlerResolvedMetaParams: Array<unknown> = [];
-
-		for (const handlerMetaType of handlerMetaArray) {
-			const resolvedHandlerParam: unknown = await this.resolveMetaData(request, context, handlerMetaType);
-			handlerResolvedMetaParams.push(resolvedHandlerParam);
-		}
-
-		return handlerResolvedMetaParams;
+		return Promise.all(
+			this.extractHandlerMeta(controllerMetaMap, resolvedRoute)
+				.sort((firstHandlerMeta: IHandlerMetaType, secondHandlerMeta: IHandlerMetaType): number => {
+					return firstHandlerMeta.parameterIndex - secondHandlerMeta.parameterIndex;
+				})
+				.map((handlerMetaType: IHandlerMetaType): Promise<unknown> => {
+					return this.resolveMetaData(request, context, handlerMetaType);
+				}),
+		);
 	}
 
 	private extractHandlerClassMetaMap(resolvedRoute: IResolvedRoute): Nullable<IHandlerMetaMap> {
@@ -44,11 +43,7 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 
 		const handlerMetaArray: Optional<Array<IHandlerMetaType>> = controllerMetaMap.get(methodName);
 
-		if (!handlerMetaArray) return [];
-
-		return handlerMetaArray.sort((firstHandlerMeta: IHandlerMetaType, secondHandlerMeta: IHandlerMetaType): number => {
-			return firstHandlerMeta.parameterIndex - secondHandlerMeta.parameterIndex;
-		});
+		return handlerMetaArray ?? [];
 	}
 
 	private guessHandlerName(methodName: string): string {

@@ -1,18 +1,23 @@
 import type { ApiResponse } from "@/stacks/types";
-import type { IAppResponse, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { HttpStatusCode } from "@/backend-core/request-processor/enums";
+import type { IAppResponse, IErrorResponseBody, IFailedResponse, IHeaders, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
 export interface IResponseHandler {
 	handleException(exception: unknown): IFailedResponse<IErrorResponseBody>;
 
+	handleResponse<T>(response: unknown): ISuccessfulResponse<T>;
+
 	createSuccessfulResponse<T>(data: T): ISuccessfulResponse<T>;
 
-	createSuccessfulResponse<T>(data: T, code: number): ISuccessfulResponse<T>;
+	createSuccessfulResponse<T>(data: T, statusCode: HttpStatusCode): ISuccessfulResponse<T>;
 
-	createFailedResponse<T extends IErrorResponseBody>(data: T): IFailedResponse<T>;
+	createSuccessfulResponse<T>(data: T, statusCode: HttpStatusCode, headers: IHeaders): ISuccessfulResponse<T>;
 
-	createFailedResponse<T extends IErrorResponseBody>(data: T, code: number): IFailedResponse<T>;
+	createFailedResponse<E extends IErrorResponseBody>(error: E): IFailedResponse<E>;
 
-	handleHandlerResponse(response: unknown): ISuccessfulResponse<unknown>;
+	createFailedResponse<E extends IErrorResponseBody>(error: E, statusCode: HttpStatusCode): IFailedResponse<E>;
+
+	createFailedResponse<E extends IErrorResponseBody>(error: E, statusCode: HttpStatusCode, headers: IHeaders): IFailedResponse<E>;
 
 	finalizeResponse(response: IAppResponse): ApiResponse;
 }

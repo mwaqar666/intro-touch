@@ -22,17 +22,18 @@ export class RequestProcessorService implements IRequestProcessor {
 	public async processRequest(request: IAppRequest, context: Context): Promise<ApiResponse>;
 	public async processRequest(request?: IAppRequest, context?: Context): Promise<ApiResponse> {
 		try {
-			let appRequest: IAppRequest = request ?? this.requestHandler.getRequest();
-			const appContext: Context = context ?? this.requestHandler.getContext();
+			request ??= this.requestHandler.getRequest();
+			context ??= this.requestHandler.getContext();
+
 			const route: IResolvedRoute = this.requestHandler.getRoute();
 
-			await this.guardResolver.runRouteGuards(appRequest, appContext, route.guards);
+			await this.guardResolver.runRouteGuards(request, context, route.guards);
 
-			appRequest = await this.interceptorResolver.runRouteRequestInterceptors(appRequest, appContext, route.requestInterceptors);
+			request = await this.interceptorResolver.runRequestInterceptors(request, context, route.requestInterceptors);
 
-			let response: ISuccessfulResponse<unknown> = await this.runRouteHandler(route, appRequest, appContext);
+			let response: ISuccessfulResponse<unknown> = await this.runRouteHandler(route, request, context);
 
-			response = await this.interceptorResolver.runRouteResponseInterceptors(appRequest, response, appContext, route.responseInterceptors);
+			response = await this.interceptorResolver.runResponseInterceptors(request, response, context, route.responseInterceptors);
 
 			return this.responseHandler.finalizeResponse(response);
 		} catch (exception) {
@@ -43,10 +44,10 @@ export class RequestProcessorService implements IRequestProcessor {
 	}
 
 	private async runRouteHandler(matchedRoute: IResolvedRoute, request: IAppRequest, context: Context): Promise<ISuccessfulResponse<unknown>> {
-		const handlerParams: Array<any> = await this.handlerMetaResolver.resolveHandlerMeta(request, context, matchedRoute);
+		const handlerParams: Array<unknown> = await this.handlerMetaResolver.resolveHandlerMeta(request, context, matchedRoute);
 
 		const handlerResponse: unknown = await matchedRoute.handler(...handlerParams);
 
-		return this.responseHandler.handleHandlerResponse(handlerResponse);
+		return this.responseHandler.handleResponse(handlerResponse);
 	}
 }

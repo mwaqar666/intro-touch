@@ -1,6 +1,10 @@
 export class DatabaseConst {
 	public static readonly DatabaseId = (stage: string): string => `db-${stage}`;
 
+	public static readonly DatabaseWriterId = (stage: string): string => `db-writer-${stage}`;
+
+	public static readonly DatabaseReaderId = (stage: string): string => `db-reader-${stage}`;
+
 	public static readonly DatabaseSecretId = (stage: string): string => `dbSecret-${stage}`;
 
 	public static readonly DatabaseCredentialsSecret = (stage: string): string => `dbCredentials-${stage}`;

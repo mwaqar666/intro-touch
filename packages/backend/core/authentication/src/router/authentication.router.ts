@@ -46,7 +46,7 @@ export class AuthenticationRouter implements IRouter {
 						routes: [
 							{
 								path: "/callback",
-								method: RouteMethod.GET,
+								method: RouteMethod.POST,
 								handler: this.authenticationController.socialAuth,
 							},
 						],

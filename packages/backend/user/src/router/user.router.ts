@@ -17,14 +17,9 @@ export class UserRouter implements IRouter {
 				prefix: "/user",
 				routes: [
 					{
-						prefix: "/",
-						routes: [
-							{
-								path: "/preview/{userUsername}",
-								method: RouteMethod.GET,
-								handler: this.userController.publicPreview,
-							},
-						],
+						path: "/preview/{userUsername}",
+						method: RouteMethod.GET,
+						handler: this.userController.publicPreview,
 					},
 					{
 						prefix: "/",

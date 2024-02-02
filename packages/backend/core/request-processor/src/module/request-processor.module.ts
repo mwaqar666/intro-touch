@@ -5,8 +5,8 @@ import { HandlerMetaResolverService, InterceptorResolverService, RequestHandlerS
 export class RequestProcessorModule extends AbstractModule {
 	public override async register(): Promise<void> {
 		this.container.registerScoped(RequestProcessorTokenConst.RequestHandlerToken, RequestHandlerService);
-		this.container.registerScoped(RequestProcessorTokenConst.ResponseHandlerToken, ResponseHandlerService);
 		this.container.registerScoped(RequestProcessorTokenConst.RequestProcessorToken, RequestProcessorService);
+		this.container.registerSingleton(RequestProcessorTokenConst.ResponseHandlerToken, ResponseHandlerService);
 		this.container.registerSingleton(RequestProcessorTokenConst.InterceptorResolverToken, InterceptorResolverService);
 		this.container.registerSingleton(RequestProcessorTokenConst.HandlerMetaResolverToken, HandlerMetaResolverService);
 	}

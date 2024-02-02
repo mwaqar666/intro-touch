@@ -1,6 +1,6 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { Body, Controller } from "@/backend-core/request-processor/decorators";
-import type { ApiResponse } from "@/stacks/types";
+import type { ISuccessfulResponse } from "@/backend-core/request-processor/types";
 import { Inject } from "iocc";
 import { LoginRequestDto } from "@/backend-core/authentication/dto/login";
 import { RegisterRequestDto } from "@/backend-core/authentication/dto/register";
@@ -35,7 +35,7 @@ export class AuthenticationController {
 		return { resent: await this.authenticationService.resendEmailVerificationToken(resendRequestDto) };
 	}
 
-	public async socialAuth(@Body(SocialAuthRequestDto) socialAuthRequestDto: SocialAuthRequestDto): Promise<ApiResponse> {
+	public async socialAuth(@Body(SocialAuthRequestDto) socialAuthRequestDto: SocialAuthRequestDto): Promise<ISuccessfulResponse<void>> {
 		const foundOrCreatedUser: [UserEntity, boolean] = await this.authenticationService.findOrCreateUser(socialAuthRequestDto);
 
 		return this.authRedirectionService.prepareRedirectionResponse(...foundOrCreatedUser);

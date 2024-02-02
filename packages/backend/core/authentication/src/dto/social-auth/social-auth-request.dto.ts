@@ -18,7 +18,7 @@ export class SocialAuthRequestDto {
 	@IsNotEmpty()
 	public userLastName: string;
 
-	@MaxLength(50)
+	@MaxLength(255)
 	@IsString()
 	@IsNotEmpty()
 	public userPicture: string;

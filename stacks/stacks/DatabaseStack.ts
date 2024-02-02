@@ -1,11 +1,11 @@
-import { Aspects, RemovalPolicy } from "aws-cdk-lib";
+import { RemovalPolicy } from "aws-cdk-lib";
 import type { SecurityGroupProps } from "aws-cdk-lib/aws-ec2";
-import { InstanceType, Peer, Port, SecurityGroup, SubnetType } from "aws-cdk-lib/aws-ec2";
-import type { DatabaseClusterProps } from "aws-cdk-lib/aws-rds";
-import { AuroraPostgresEngineVersion, CfnDBCluster, Credentials, DatabaseCluster, DatabaseClusterEngine } from "aws-cdk-lib/aws-rds";
+import { Peer, Port, SecurityGroup, SubnetType } from "aws-cdk-lib/aws-ec2";
+import type { DatabaseClusterProps, IClusterInstance } from "aws-cdk-lib/aws-rds";
+import { AuroraPostgresEngineVersion, ClusterInstance, Credentials, DatabaseCluster, DatabaseClusterEngine } from "aws-cdk-lib/aws-rds";
+import type { ServerlessV2ClusterInstanceProps } from "aws-cdk-lib/aws-rds/lib/aurora-cluster-instance";
 import type { SecretProps } from "aws-cdk-lib/aws-secretsmanager";
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
-import type { IConstruct } from "constructs";
 import type { StackContext } from "sst/constructs";
 import { use } from "sst/constructs";
 import { Config } from "@/stacks/config";
@@ -59,13 +59,12 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 
 	const { vpc }: IVpcStack = use(VpcStack);
 
-	const dbSecurityGroupProps: SecurityGroupProps = {
-		vpc: vpc,
-		allowAllOutbound: true,
-	};
+	// Create database security group
+	const dbSecurityGroupProps: SecurityGroupProps = { vpc, allowAllOutbound: true };
 	const dbSecurityGroup: SecurityGroup = new SecurityGroup(stack, DatabaseConst.DbSecurityGroup(app.stage), dbSecurityGroupProps);
 	dbSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432), DatabaseConst.DbSecurityGroupDescription());
 
+	// Create database secret
 	const databaseSecretProps: SecretProps = {
 		secretName: DatabaseConst.DatabaseCredentialsSecret(app.stage),
 		generateSecretString: {
@@ -78,38 +77,31 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 	};
 	const databaseSecret: Secret = new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), databaseSecretProps);
 
+	// Create database reader
+	const databaseServerlessV2Props: ServerlessV2ClusterInstanceProps = { publiclyAccessible: true };
+	const databaseWriter: IClusterInstance = ClusterInstance.serverlessV2(DatabaseConst.DatabaseWriterId(app.stage), databaseServerlessV2Props);
+	const databaseReader: IClusterInstance = ClusterInstance.serverlessV2(DatabaseConst.DatabaseReaderId(app.stage), databaseServerlessV2Props);
+
+	// Create the database
 	const databaseProps: DatabaseClusterProps = {
 		engine: DatabaseClusterEngine.auroraPostgres({
-			version: AuroraPostgresEngineVersion.VER_15_2,
+			version: AuroraPostgresEngineVersion.VER_15_3,
 		}),
+		serverlessV2MaxCapacity: 1,
+		serverlessV2MinCapacity: 0.5,
 		port: parseInt(databasePort),
 		removalPolicy: RemovalPolicy.DESTROY,
 		credentials: Credentials.fromSecret(databaseSecret),
 		defaultDatabaseName: databaseName,
-		instances: 1,
-		instanceProps: {
-			vpc,
-			vpcSubnets: vpc.selectSubnets({
-				subnetType: SubnetType.PUBLIC,
-			}),
-			instanceType: new InstanceType("serverless"),
-			autoMinorVersionUpgrade: true,
-			publiclyAccessible: true,
-			securityGroups: [dbSecurityGroup],
-		},
+		writer: databaseWriter,
+		readers: [databaseReader],
+		vpc,
+		vpcSubnets: vpc.selectSubnets({
+			subnetType: SubnetType.PUBLIC,
+		}),
+		securityGroups: [dbSecurityGroup],
 	};
 	const database: DatabaseCluster = new DatabaseCluster(stack, DatabaseConst.DatabaseId(app.stage), databaseProps);
-
-	Aspects.of(database).add({
-		visit(node: IConstruct): void {
-			if (node instanceof CfnDBCluster) {
-				node.serverlessV2ScalingConfiguration = {
-					minCapacity: 0.5,
-					maxCapacity: 2,
-				};
-			}
-		},
-	});
 
 	const databaseHost: string = database.clusterEndpoint.hostname;
 	const databasePass: string = databaseSecret.secretValueFromJson("password").toString();
@@ -136,9 +128,9 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 };
 
 export const DatabaseStack = (stackContext: StackContext): IDatabaseStack => {
-	if (Config.isLocal(stackContext.app.stage)) {
-		return DatabaseLocalStack(stackContext);
+	if (Config.isNotLocal(stackContext.app.stage)) {
+		return DatabaseCloudStack(stackContext);
 	}
 
-	return DatabaseCloudStack(stackContext);
+	return DatabaseLocalStack(stackContext);
 };

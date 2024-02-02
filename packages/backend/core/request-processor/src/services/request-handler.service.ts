@@ -1,11 +1,11 @@
 import { RouteBuilderConst, RouterTokenConst } from "@/backend-core/router/const";
 import type { RouteMethod } from "@/backend-core/router/enum";
 import type { IBuiltRoute, IPathParams, IQueryParams, IResolvedRoute, IRouteBuilder } from "@/backend-core/router/interface";
-import type { ApiRequest, Nullable } from "@/stacks/types";
+import type { ApiRequest, Nullable, Optional } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { useEvent, useLambdaContext } from "sst/context";
-import { useJsonBody } from "sst/node/api";
+import { useBody } from "sst/node/api";
 import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { IRequestHandler } from "@/backend-core/request-processor/interface";
 import type { IAppRequest } from "@/backend-core/request-processor/types";
@@ -28,7 +28,7 @@ export class RequestHandlerService implements IRequestHandler {
 
 		this._request = {
 			...this._rawRequest,
-			body: useJsonBody() ?? {},
+			body: this.getRequestBody(),
 			pathParams: this.getRoute().pathParams,
 			queryParams: this.getRoute().queryParams,
 		};
@@ -57,6 +57,52 @@ export class RequestHandlerService implements IRequestHandler {
 		};
 
 		return <IResolvedRoute<P, Q>>this._route;
+	}
+
+	private getRequestBody(): object {
+		const jsonBody: Nullable<object> = this.tryGetJsonBody();
+
+		if (jsonBody) return jsonBody;
+
+		const formDataBody: Nullable<Record<string, string>> = this.tryGetFormDataBody();
+
+		if (formDataBody) return formDataBody;
+
+		return {};
+	}
+
+	private tryGetFormDataBody(): Nullable<Record<string, string>> {
+		const requestBody: Optional<string> = useBody();
+
+		if (!requestBody) return null;
+
+		const parsed: Record<string, string> = {};
+
+		const urlSearchParams: URLSearchParams = new URLSearchParams(requestBody);
+
+		for (const [paramKey, paramValue] of urlSearchParams) {
+			if (!paramKey) continue;
+
+			parsed[paramKey] = paramValue;
+		}
+
+		return parsed;
+	}
+
+	private tryGetJsonBody(): Nullable<object> {
+		const requestBody: Optional<string> = useBody();
+
+		if (!requestBody) return null;
+
+		try {
+			const parsed = JSON.parse(requestBody);
+
+			if (parsed && typeof parsed === "object") return parsed;
+		} catch (exception) {
+			/* empty */
+		}
+
+		return null;
 	}
 
 	private matchRouteInRegisteredRoutes(method: RouteMethod, path: string): Nullable<[IBuiltRoute, IPathParams]> {

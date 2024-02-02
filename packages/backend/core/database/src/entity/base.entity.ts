@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import type { Delegate, Key } from "@/stacks/types";
 import omit from "lodash.omit";
 import type { ModelStatic } from "sequelize";
-import { BeforeBulkCreate, BeforeCreate, Model } from "sequelize-typescript";
+import { BeforeBulkCreate, BeforeCreate, BeforeValidate, Model } from "sequelize-typescript";
 import type { IEntityScope, IEntityType } from "@/backend-core/database/types";
 
 export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Model<TEntity> {
@@ -28,6 +28,7 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 		return this.scope(scopesToApply);
 	}
 
+	@BeforeValidate
 	@BeforeCreate
 	@BeforeBulkCreate
 	public static async generateUuid<TEntityStatic extends BaseEntity<TEntityStatic>>(model: TEntityStatic | Array<TEntityStatic>): Promise<void> {

@@ -1,6 +1,7 @@
 import { compare, hash } from "bcryptjs";
+import type { IHash } from "@/backend-core/authentication/interface";
 
-export class HashService {
+export class HashService implements IHash {
 	public async hash(text: string): Promise<string> {
 		return await hash(text, 10);
 	}

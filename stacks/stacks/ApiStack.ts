@@ -32,7 +32,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 
 	const defaultFunctionProps: FunctionProps = {
 		timeout: "30 seconds",
-		runtime: "nodejs18.x",
+		runtime: "nodejs20.x",
 		architecture: "arm_64",
 		environment: {
 			NODE_ENV: app.stage,

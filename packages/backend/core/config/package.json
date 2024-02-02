@@ -2,7 +2,7 @@
   "name": "@intro-touch/backend-core-config",
   "version": "0.0.0",
   "dependencies": {
-    "iocc": "^2.1.9",
-    "joi": "^17.9.2"
+    "iocc": "^2.2.2",
+    "joi": "^17.11.0"
   }
 }

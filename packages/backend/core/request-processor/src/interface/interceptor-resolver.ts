@@ -4,7 +4,7 @@ import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/r
 import type { IAppRequest, ISuccessfulResponse } from "@/backend-core/request-processor/types";
 
 export interface IInterceptorResolver {
-	runRouteRequestInterceptors(request: IAppRequest, context: Context, interceptors: Array<Constructable<IRequestInterceptor, Array<unknown>>>): Promise<IAppRequest>;
+	runRequestInterceptors(request: IAppRequest, context: Context, interceptors: Array<Constructable<IRequestInterceptor, Array<unknown>>>): Promise<IAppRequest>;
 
-	runRouteResponseInterceptors(request: IAppRequest, response: ISuccessfulResponse<unknown>, context: Context, interceptors: Array<Constructable<IResponseInterceptor, Array<unknown>>>): Promise<ISuccessfulResponse<unknown>>;
+	runResponseInterceptors(request: IAppRequest, response: ISuccessfulResponse<unknown>, context: Context, interceptors: Array<Constructable<IResponseInterceptor, Array<unknown>>>): Promise<ISuccessfulResponse<unknown>>;
 }

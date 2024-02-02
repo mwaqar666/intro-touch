@@ -92,9 +92,9 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
 		const foundEntity: TEntity =
 			"findOptions" in updateOptions
 				? // Find by finder options
-				  await this.findOneOrFail({ findOptions: updateOptions.findOptions, scopes })
+					await this.findOneOrFail({ findOptions: updateOptions.findOptions, scopes })
 				: // Or resolve using primary key or uuid
-				  await this.resolveOneOrFail(updateOptions.entity, scopes);
+					await this.resolveOneOrFail(updateOptions.entity, scopes);
 
 		return foundEntity.update(updateOptions.valuesToUpdate as IEntityKeyValues<TEntity>, { transaction });
 	}

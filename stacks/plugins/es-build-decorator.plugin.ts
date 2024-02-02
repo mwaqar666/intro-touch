@@ -11,7 +11,7 @@ export const esBuildDecoratorPlugin: Plugin = {
 	setup: (build: PluginBuild): void => {
 		let parsedTsConfig: Nullable<ParsedCommandLine> = null;
 
-		build.onLoad({ filter: /\.ts$/ }, async (onLoadArgs: OnLoadArgs): Promise<Optional<OnLoadResult>> => {
+		build.onLoad({ filter: /\.ts$/ }, async (onLoadArgs: OnLoadArgs): Promise<OnLoadResult> => {
 			if (!parsedTsConfig) {
 				const fileName: Optional<string> = typescript.findConfigFile(cwd(), typescript.sys.fileExists);
 				if (!fileName) throw new Error(`Failed to open "${fileName}"`);

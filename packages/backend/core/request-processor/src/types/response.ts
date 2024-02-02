@@ -1,23 +1,28 @@
 import type { ApiResponse, Nullable } from "@/stacks/types";
+import type { HttpStatusCode } from "@/backend-core/request-processor/enums";
 
 export interface IResponseBody<T> {
 	body: T;
 }
 
+export interface IResponseHeaders {
+	headers: IHeaders;
+}
+
 export interface IResponseStatusCode {
-	statusCode: number;
+	statusCode: HttpStatusCode;
 }
 
-export interface IResponse<T = unknown> extends Omit<ApiResponse, "body" | "statusCode">, IResponseBody<T>, IResponseStatusCode {}
+export interface IResponse<T = unknown> extends Omit<ApiResponse, "body" | "statusCode" | "headers">, IResponseHeaders, IResponseBody<T>, IResponseStatusCode {}
 
-export interface ISuccessResponseBody<T> {
+export interface ISuccessfulResponseBody<T> {
 	data: T;
-	errors: null;
+	error: null;
 }
 
-export interface IFailResponseBody<E> {
+export interface IFailedResponseBody<E extends IErrorResponseBody> {
 	data: null;
-	errors: E;
+	error: E;
 }
 
 export interface IErrorResponseBody {
@@ -32,7 +37,9 @@ export interface IErrorResponseBody {
 	context: Nullable<unknown>;
 }
 
-export type ISuccessfulResponse<T> = IResponse<ISuccessResponseBody<T>>;
-export type IFailedResponse<E extends IErrorResponseBody> = IResponse<IFailResponseBody<E>>;
+export type IHeaders = Record<string, string | number | boolean>;
 
-export type IAppResponse<R = unknown, E extends IErrorResponseBody = IErrorResponseBody> = ISuccessfulResponse<R> | IFailedResponse<E>;
+export type ISuccessfulResponse<T> = IResponse<ISuccessfulResponseBody<T>>;
+export type IFailedResponse<E extends IErrorResponseBody> = IResponse<IFailedResponseBody<E>>;
+
+export type IAppResponse<T = unknown, E extends IErrorResponseBody = IErrorResponseBody> = ISuccessfulResponse<T> | IFailedResponse<E>;

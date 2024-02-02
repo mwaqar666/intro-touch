@@ -80,10 +80,8 @@ export class PlatformsSeeder implements ISeeder {
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
 				const platformCategories: Array<PlatformCategoryEntity> = await this.platformCategoryRepository.createMany({
-					valuesToCreate: platformCategorySeedData.map((platformCategorySeedDatum: IPlatformCategory): Partial<IEntityTableColumnProperties<PlatformCategoryEntity>> => {
-						return {
-							platformCategoryName: platformCategorySeedDatum.platformCategoryName,
-						};
+					valuesToCreate: platformCategorySeedData.map(({ platformCategoryName }: IPlatformCategory): Partial<IEntityTableColumnProperties<PlatformCategoryEntity>> => {
+						return { platformCategoryName };
 					}),
 					transaction,
 				});
@@ -91,19 +89,15 @@ export class PlatformsSeeder implements ISeeder {
 				const platformSeedData: Array<Partial<IEntityTableColumnProperties<PlatformEntity>>> = [];
 
 				for (const platformCategory of platformCategories) {
-					const platformCategorySeedDatum: Optional<IPlatformCategory> = platformCategorySeedData.find((platformCategorySeedDatum: IPlatformCategory): boolean => {
-						return platformCategorySeedDatum.platformCategoryName === platformCategory.platformCategoryName;
+					const platformCategorySeedDatum: Optional<IPlatformCategory> = platformCategorySeedData.find(({ platformCategoryName }: IPlatformCategory): boolean => {
+						return platformCategoryName === platformCategory.platformCategoryName;
 					});
 
 					if (!platformCategorySeedDatum) continue;
 
 					platformSeedData.push(
-						...platformCategorySeedDatum.platformCategoryPlatforms.map((platformSeedDatum: IPlatform): Partial<IEntityTableColumnProperties<PlatformEntity>> => {
-							return {
-								platformPlatformCategoryId: platformCategory.platformCategoryId,
-								platformName: platformSeedDatum.platformName,
-								platformIcon: platformSeedDatum.platformIcon,
-							};
+						...platformCategorySeedDatum.platformCategoryPlatforms.map(({ platformName, platformIcon }: IPlatform): Partial<IEntityTableColumnProperties<PlatformEntity>> => {
+							return { platformPlatformCategoryId: platformCategory.platformCategoryId, platformName, platformIcon };
 						}),
 					);
 				}

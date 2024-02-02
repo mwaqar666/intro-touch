@@ -1,74 +1,50 @@
 import type { ApiResponse, DeepPartial } from "@/stacks/types";
+import { HttpStatusCode } from "@/backend-core/request-processor/enums";
 import { Exception } from "@/backend-core/request-processor/exceptions";
 import type { IResponseHandler } from "@/backend-core/request-processor/interface";
-import type { IAppException, IAppResponse, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import type { IAppException, IAppResponse, IErrorResponseBody, IFailedResponse, IFailedResponseBody, IHeaders, ISuccessfulResponse, ISuccessfulResponseBody } from "@/backend-core/request-processor/types";
 
 export class ResponseHandlerService implements IResponseHandler {
 	public handleException(exception: unknown): IFailedResponse<IErrorResponseBody> {
 		if (exception instanceof Exception) {
 			const { message, code, context }: IAppException = exception.toError();
-			return this.createFailedResponse(
-				{
-					message,
-					context,
-				},
-				code,
-			);
+
+			return this.createFailedResponse({ message, context }, code);
 		}
 
-		return this.createFailedResponse(
-			{
-				message: (<Error>exception).message,
-				context: null,
-			},
-			500,
-		);
+		const message: string = (exception as Error).message ?? "Something went wrong! Please try again!";
+
+		return this.createFailedResponse({ message, context: null }, HttpStatusCode.InternalServerError);
+	}
+
+	public handleResponse<T>(response: unknown): ISuccessfulResponse<T> {
+		if (this.isSuccessfulHandlerResponse<T>(response)) return response;
+
+		if (this.isFailedHandlerResponse(response)) {
+			const { body, statusCode }: IFailedResponse<IErrorResponseBody> = response;
+
+			throw new Exception(body.error.message, statusCode, body.error.context);
+		}
+
+		return this.createSuccessfulResponse<T>(response as T);
 	}
 
 	public createSuccessfulResponse<T>(data: T): ISuccessfulResponse<T>;
-	public createSuccessfulResponse<T>(data: T, code: number): ISuccessfulResponse<T>;
-	public createSuccessfulResponse<T>(data: T, code = 200): ISuccessfulResponse<T> {
-		return {
-			body: {
-				data: data,
-				errors: null,
-			},
-			statusCode: code,
-		};
+	public createSuccessfulResponse<T>(data: T, statusCode: HttpStatusCode): ISuccessfulResponse<T>;
+	public createSuccessfulResponse<T>(data: T, statusCode: HttpStatusCode, headers: IHeaders): ISuccessfulResponse<T>;
+	public createSuccessfulResponse<T>(data: T, statusCode: HttpStatusCode = HttpStatusCode.Ok, headers: IHeaders = {}): ISuccessfulResponse<T> {
+		const body: ISuccessfulResponseBody<T> = { data, error: null };
+
+		return { body, statusCode, headers };
 	}
 
-	public createFailedResponse<T extends IErrorResponseBody>(data: T): IFailedResponse<T>;
-	public createFailedResponse<T extends IErrorResponseBody>(data: T, code: number): IFailedResponse<T>;
-	public createFailedResponse<T extends IErrorResponseBody>(data: T, code = 500): IFailedResponse<T> {
-		return {
-			body: {
-				data: null,
-				errors: data,
-			},
-			statusCode: code,
-		};
-	}
+	public createFailedResponse<E extends IErrorResponseBody>(error: E): IFailedResponse<E>;
+	public createFailedResponse<E extends IErrorResponseBody>(error: E, statusCode: HttpStatusCode): IFailedResponse<E>;
+	public createFailedResponse<E extends IErrorResponseBody>(error: E, statusCode: HttpStatusCode, headers: IHeaders): IFailedResponse<E>;
+	public createFailedResponse<E extends IErrorResponseBody>(error: E, statusCode: HttpStatusCode = HttpStatusCode.InternalServerError, headers: IHeaders = {}): IFailedResponse<E> {
+		const body: IFailedResponseBody<E> = { data: null, error };
 
-	public handleHandlerResponse(response: unknown): ISuccessfulResponse<unknown> {
-		if (this.isFailedHandlerResponse(response)) {
-			throw new Exception(response.body.errors.message, response.statusCode, response.body.errors.context);
-		}
-
-		if (this.isSuccessfulHandlerResponse(response)) {
-			return response;
-		}
-
-		if (this.isRedirectHandlerResponse(response)) {
-			return {
-				...response,
-				body: {
-					data: {},
-					errors: null,
-				},
-			};
-		}
-
-		return this.createSuccessfulResponse(response);
+		return { body, statusCode, headers };
 	}
 
 	public finalizeResponse(response: IAppResponse): ApiResponse {
@@ -79,34 +55,22 @@ export class ResponseHandlerService implements IResponseHandler {
 	}
 
 	private isFailedHandlerResponse(response: unknown): response is IFailedResponse<IErrorResponseBody> {
-		if (!response) return false;
+		if (response === undefined || response === null) return false;
 
-		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
+		const responseToInspect: DeepPartial<IFailedResponse<IErrorResponseBody>> = response;
 
-		if (!responseToInspect.statusCode) return false;
+		const isFailedStatusCode: boolean = !!responseToInspect.statusCode && responseToInspect.statusCode >= 400 && responseToInspect.statusCode < 600;
 
-		return !!responseToInspect.body && responseToInspect.body.errors !== null;
+		return isFailedStatusCode && !!responseToInspect.body && !!responseToInspect.body.error && "message" in responseToInspect.body.error && responseToInspect.body.data === null;
 	}
 
-	private isSuccessfulHandlerResponse(response: unknown): response is ISuccessfulResponse<unknown> {
-		if (!response) return false;
+	private isSuccessfulHandlerResponse<T>(response: unknown): response is ISuccessfulResponse<T> {
+		if (response === undefined || response === null) return false;
 
-		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
+		const responseToInspect: DeepPartial<ISuccessfulResponse<T>> = response;
 
-		if (!responseToInspect.statusCode) return false;
+		const isSuccessfulStatusCode: boolean = !!responseToInspect.statusCode && responseToInspect.statusCode >= 200 && responseToInspect.statusCode < 400;
 
-		return !!responseToInspect.body && responseToInspect.body.data !== null;
-	}
-
-	private isRedirectHandlerResponse(response: unknown): response is ISuccessfulResponse<unknown> {
-		if (!response) return false;
-
-		const responseToInspect: DeepPartial<ISuccessfulResponse<unknown>> = response;
-
-		if (!responseToInspect.statusCode || !responseToInspect.headers) return false;
-
-		if (responseToInspect.statusCode < 300 || responseToInspect.statusCode > 399) return false;
-
-		return !!responseToInspect.headers["location"];
+		return isSuccessfulStatusCode && !!responseToInspect.body && "data" in responseToInspect.body && responseToInspect.body.error === null;
 	}
 }

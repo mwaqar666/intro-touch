@@ -10,10 +10,6 @@ export class EmailTemplateFinderPlugin {
 		return EmailTemplateFinderPlugin.prepareEmailTemplates(emailTemplatePaths);
 	}
 
-	public static createEmailTemplateName(emailTemplatePath: string): string {
-		return basename(emailTemplatePath, ".html").replace(".", "-");
-	}
-
 	private static async prepareEmailTemplates(emailTemplatePaths: Array<string>): Promise<Array<IEmailTemplates>> {
 		const emailTemplates: Array<IEmailTemplates> = [];
 
@@ -26,6 +22,10 @@ export class EmailTemplateFinderPlugin {
 		}
 
 		return emailTemplates;
+	}
+
+	private static createEmailTemplateName(emailTemplatePath: string): string {
+		return basename(emailTemplatePath, ".html").replace(".", "-");
 	}
 
 	private static extractEmailSubject(emailTemplateName: string, emailTemplateHtml: string): string {
