@@ -1,9 +1,8 @@
 import type { ApiResponse } from "@/stacks/types";
-import type { Context } from "aws-lambda";
-import type { IAppRequest } from "@/backend-core/request-processor/types";
+import type { Request } from "@/backend-core/request-processor/handlers";
 
 export interface IRequestProcessor {
 	processRequest(): Promise<ApiResponse>;
 
-	processRequest(request: IAppRequest, context: Context): Promise<ApiResponse>;
+	processRequest(request: Request): Promise<ApiResponse>;
 }

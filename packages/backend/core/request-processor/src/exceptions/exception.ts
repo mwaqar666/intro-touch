@@ -11,7 +11,7 @@ export class Exception<T> extends Error {
 		super(message);
 	}
 
-	public toError(): IAppException {
+	public toError(): IAppException<T> {
 		return {
 			code: this.code,
 			message: this.message,

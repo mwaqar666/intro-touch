@@ -1,4 +1,5 @@
 import type { Adapter, FacebookAdapter, GoogleAdapter } from "sst/node/auth";
+import type { AuthAdapter } from "@/backend-core/authentication/enums";
 
 declare module "sst/node/auth" {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -15,7 +16,7 @@ export interface IAuthPayload {
 }
 
 export interface IAuthAdapterRecord<T extends Adapter = Adapter> {
-	identifier: string;
+	identifier: AuthAdapter;
 	adapter: T;
 }
 

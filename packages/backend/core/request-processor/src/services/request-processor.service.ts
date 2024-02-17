@@ -1,53 +1,50 @@
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import type { IGuardResolver } from "@/backend-core/authentication/interface";
+import { App } from "@/backend-core/core/extensions";
 import type { IResolvedRoute } from "@/backend-core/router/interface";
 import type { ApiResponse } from "@/stacks/types";
-import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
-import type { IHandlerMetaResolver, IInterceptorResolver, IRequestHandler, IRequestProcessor, IResponseHandler } from "@/backend-core/request-processor/interface";
-import type { IAppRequest, IErrorResponseBody, IFailedResponse, ISuccessfulResponse } from "@/backend-core/request-processor/types";
+import { Request, Response } from "@/backend-core/request-processor/handlers";
+import type { IHandlerMetaResolver, IInterceptorResolver, IRequestProcessor } from "@/backend-core/request-processor/interface";
 
 export class RequestProcessorService implements IRequestProcessor {
 	public constructor(
 		// Dependencies
 		@Inject(AuthenticationTokenConst.GuardResolverToken) private readonly guardResolver: IGuardResolver,
-		@Inject(RequestProcessorTokenConst.RequestHandlerToken) private readonly requestHandler: IRequestHandler,
-		@Inject(RequestProcessorTokenConst.ResponseHandlerToken) private readonly responseHandler: IResponseHandler,
 		@Inject(RequestProcessorTokenConst.InterceptorResolverToken) private readonly interceptorResolver: IInterceptorResolver,
 		@Inject(RequestProcessorTokenConst.HandlerMetaResolverToken) private readonly handlerMetaResolver: IHandlerMetaResolver,
 	) {}
 
 	public async processRequest(): Promise<ApiResponse>;
-	public async processRequest(request: IAppRequest, context: Context): Promise<ApiResponse>;
-	public async processRequest(request?: IAppRequest, context?: Context): Promise<ApiResponse> {
+	public async processRequest(request: Request): Promise<ApiResponse>;
+	public async processRequest(request?: Request): Promise<ApiResponse> {
 		try {
-			request ??= this.requestHandler.getRequest();
-			context ??= this.requestHandler.getContext();
+			request ??= App.container.resolve(Request);
 
-			const route: IResolvedRoute = this.requestHandler.getRoute();
+			const route: IResolvedRoute = request.route();
 
-			await this.guardResolver.runRouteGuards(request, context, route.guards);
+			await this.guardResolver.runRouteGuards(request, route.guards);
 
-			request = await this.interceptorResolver.runRequestInterceptors(request, context, route.requestInterceptors);
+			request = await this.interceptorResolver.runRequestInterceptors(request, route.requestInterceptors);
 
-			let response: ISuccessfulResponse<unknown> = await this.runRouteHandler(route, request, context);
+			let response: Response = await this.runRouteHandler(route, request);
 
-			response = await this.interceptorResolver.runResponseInterceptors(request, response, context, route.responseInterceptors);
+			response = await this.interceptorResolver.runResponseInterceptors(request, response, route.responseInterceptors);
 
-			return this.responseHandler.finalizeResponse(response);
+			return response.send();
 		} catch (exception) {
-			const response: IFailedResponse<IErrorResponseBody> = this.responseHandler.handleException(exception);
+			const response: Response = App.container.resolve(Response);
 
-			return this.responseHandler.finalizeResponse(response);
+			return response.handle(exception).send();
 		}
 	}
 
-	private async runRouteHandler(matchedRoute: IResolvedRoute, request: IAppRequest, context: Context): Promise<ISuccessfulResponse<unknown>> {
-		const handlerParams: Array<unknown> = await this.handlerMetaResolver.resolveHandlerMeta(request, context, matchedRoute);
+	private async runRouteHandler(matchedRoute: IResolvedRoute, request: Request): Promise<Response> {
+		const handlerParams: Array<unknown> = await this.handlerMetaResolver.resolveHandlerMeta(request, matchedRoute);
 
-		const handlerResponse: unknown = await matchedRoute.handler(...handlerParams);
+		const response: Response = App.container.resolve(Response);
 
-		return this.responseHandler.handleResponse(handlerResponse);
+		return response.handle(await matchedRoute.handler(...handlerParams));
 	}
 }

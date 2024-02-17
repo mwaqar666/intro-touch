@@ -5,13 +5,14 @@ import { FacebookAuthAdapter, GoogleAuthAdapter, SelfAuthAdapter } from "@/backe
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import { AuthenticationController } from "@/backend-core/authentication/controllers";
 import { HashService } from "@/backend-core/authentication/crypt";
-import { AuthenticationDbRegister } from "@/backend-core/authentication/db/authentication-db.register";
+import { VerificationTokenService } from "@/backend-core/authentication/dal";
+import { AuthenticationDbRegister } from "@/backend-core/authentication/db";
 import type { IAuthAdapter, IAuthAdapterResolver } from "@/backend-core/authentication/interface";
-import { AuthAdapterResolverService, GuardResolverService } from "@/backend-core/authentication/resolvers";
+import { AuthAdapterResolver, AuthEntityResolver, GuardResolver } from "@/backend-core/authentication/resolvers";
 import { AuthenticationRouter } from "@/backend-core/authentication/router";
-import { AuthenticationService, VerificationTokenService } from "@/backend-core/authentication/services";
-import { AuthMailService, AuthRedirectionService, AuthTokenService } from "@/backend-core/authentication/services/auth-utils";
+import { SignInService, SignUpService, SocialAuthService, VerificationService } from "@/backend-core/authentication/services";
 import type { IFacebookAdapter, IGoogleAdapter } from "@/backend-core/authentication/types";
+import { EmailUtilService, TokenUtilService } from "@/backend-core/authentication/utils";
 
 export class AuthenticationModule extends AbstractModule {
 	public override async register(): Promise<void> {
@@ -19,18 +20,25 @@ export class AuthenticationModule extends AbstractModule {
 		this.container.registerSingleton(AuthenticationController);
 
 		// Auth services
-		this.container.registerSingleton(AuthenticationService);
+		this.container.registerSingleton(SignInService);
+		this.container.registerSingleton(SignUpService);
+		this.container.registerSingleton(SocialAuthService);
+		this.container.registerSingleton(VerificationService);
+
+		// DAL Services
 		this.container.registerSingleton(VerificationTokenService);
-		this.container.registerSingleton(AuthMailService);
-		this.container.registerSingleton(AuthTokenService);
-		this.container.registerSingleton(AuthRedirectionService);
+
+		// Util Services
+		this.container.registerSingleton(EmailUtilService);
+		this.container.registerSingleton(TokenUtilService);
 
 		// Hashing and Encryption Services
 		this.container.registerSingleton(AuthenticationTokenConst.HashToken, HashService);
 
 		// Resolver Services
-		this.container.registerSingleton(AuthenticationTokenConst.GuardResolverToken, GuardResolverService);
-		this.container.registerSingleton(AuthenticationTokenConst.AuthAdapterResolverToken, AuthAdapterResolverService);
+		this.container.registerScoped(AuthenticationTokenConst.AuthEntityResolverToken, AuthEntityResolver);
+		this.container.registerSingleton(AuthenticationTokenConst.GuardResolverToken, GuardResolver);
+		this.container.registerSingleton(AuthenticationTokenConst.AuthAdapterResolverToken, AuthAdapterResolver);
 
 		// Authentication Adapters
 		this.container.registerSingleton(AuthenticationTokenConst.SelfAdapterToken, SelfAuthAdapter);

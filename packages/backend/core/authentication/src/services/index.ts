@@ -1,2 +1,4 @@
-export * from "./authentication.service";
-export * from "./verification-token.service";
+export * from "./sign-in.service";
+export * from "./sign-up.service";
+export * from "./social-auth.service";
+export * from "./verification.service";
