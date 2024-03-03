@@ -6,7 +6,7 @@ import type { IMailer } from "@/backend-core/mailer/interface";
 import { Inject } from "iocc";
 import type { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 
-export class AuthMailService {
+export class EmailUtilService {
 	public constructor(
 		// Dependencies
 
@@ -14,7 +14,7 @@ export class AuthMailService {
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
-	public async sendEmailVerificationEmailToUser(userEntity: UserEntity, verificationToken: VerificationTokenEntity): Promise<void> {
+	public async sendAccountVerificationEmailToUser(userEntity: UserEntity, verificationToken: VerificationTokenEntity): Promise<void> {
 		const frontendConfig: IFrontendConfig = this.configResolver.resolveConfig("frontend");
 
 		await this.mailer.to(userEntity.userEmail).send("send-otp.email.html", {

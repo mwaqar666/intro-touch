@@ -1,8 +1,7 @@
 import { App } from "@/backend-core/core/extensions";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { BaseRepository } from "@/backend-core/database/repository";
-import { RequestProcessorTokenConst } from "@/backend-core/request-processor/const";
-import type { IRequestHandler } from "@/backend-core/request-processor/interface";
+import { Request } from "@/backend-core/request-processor/handlers";
 import type { IResolvedRoute } from "@/backend-core/router/interface";
 import type { Optional } from "@/stacks/types";
 import type { ValidationArguments, ValidationOptions, ValidatorConstraintInterface } from "class-validator";
@@ -44,9 +43,9 @@ export class IsUniqueConstraint<T extends BaseEntity<T>, R extends BaseRepositor
 	}
 
 	private createIgnoreRowClause(ignoreUniqueOptions: IUniqueValidatorIgnoreOptions<T, R>): WhereOptions<T> {
-		const requestHandler: IRequestHandler = App.container.resolve(RequestProcessorTokenConst.RequestHandlerToken);
+		const request: Request = App.container.resolve(Request);
 
-		const currentRoute: IResolvedRoute = requestHandler.getRoute();
+		const currentRoute: IResolvedRoute = request.route();
 
 		const columnValueToIgnore: Optional<string> = currentRoute[ignoreUniqueOptions.extractParameterFrom === "path" ? "pathParams" : "queryParams"][ignoreUniqueOptions.ignoreByParameter];
 

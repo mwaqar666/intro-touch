@@ -89,7 +89,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 	stack.addOutputs({
 		nodeEnvironment: app.stage,
 		appName: app.name,
-		appVersion: appVersion,
+		appVersion,
 		apiUrl: api.url,
 		apiCustomDomainUrl: api.customDomainUrl,
 		apiArn: api.httpApiArn,

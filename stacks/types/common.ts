@@ -4,9 +4,7 @@ export type Optional<T> = undefined | T;
 
 export type Nullable<T> = null | T;
 
-export interface IAnyObject {
-	[key: string]: any;
-}
+export type IAnyObject = Record<string, any>;
 
 export type PossiblePromise<T> = T | Promise<T>;
 
@@ -19,6 +17,10 @@ export type Constructable<T, TArgs extends Array<unknown> = Array<void>> = new (
 export type PartialOnly<T, K extends Key<T>> = Partial<Pick<T, K>> & Omit<T, K>;
 
 export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+
+export type DeepReadonly<T> = {
+	readonly [P in keyof T]: DeepReadonly<T[P]>;
+};
 
 export type PositiveFilterCondition<T, P extends Key<T>, C> = T[P] extends C ? P : never;
 

@@ -8,7 +8,9 @@ export class RouterExtension {
 		App.container.registerSingleton(router);
 
 		const resolvedRouter: IRouter = App.container.resolve(router);
+
 		const routeBuilder: IRouteBuilder = App.container.resolve(RouterTokenConst.RouteBuilderToken);
+
 		routeBuilder.addRouter(resolvedRouter);
 	}
 }

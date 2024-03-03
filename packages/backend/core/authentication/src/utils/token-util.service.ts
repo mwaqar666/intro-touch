@@ -7,7 +7,7 @@ import ms from "ms";
 import { Session } from "sst/node/auth";
 import type { IAuthPayload } from "@/backend-core/authentication/types";
 
-export class AuthTokenService {
+export class TokenUtilService {
 	public constructor(
 		// Dependencies
 
@@ -22,7 +22,7 @@ export class AuthTokenService {
 		});
 	}
 
-	public createAuthPayload(authEntity: UserEntity): IAuthPayload {
+	private createAuthPayload(authEntity: UserEntity): IAuthPayload {
 		return {
 			userUuid: authEntity.userUuid,
 			userFirstName: authEntity.userFirstName,
@@ -31,7 +31,7 @@ export class AuthTokenService {
 		};
 	}
 
-	public createTokenProps(authEntity: UserEntity): SignerOptions {
+	private createTokenProps(authEntity: UserEntity): SignerOptions {
 		const authConfig: IAuthConfig = this.configResolver.resolveConfig("auth");
 
 		return {

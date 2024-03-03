@@ -7,7 +7,7 @@ export class AuthenticationRouter implements IRouter {
 	public constructor(
 		// Dependencies
 
-		@Inject(AuthenticationController) private readonly authenticationController: AuthenticationController,
+		@Inject(AuthenticationController) private readonly authController: AuthenticationController,
 	) {}
 
 	public registerRoutes(): Array<IRoute> {
@@ -22,45 +22,45 @@ export class AuthenticationRouter implements IRouter {
 							{
 								path: "/login",
 								method: RouteMethod.POST,
-								handler: this.authenticationController.basicLogin,
+								handler: this.authController.basicLogin,
 							},
 							{
 								path: "/register",
 								method: RouteMethod.POST,
-								handler: this.authenticationController.basicRegister,
+								handler: this.authController.basicRegister,
 							},
 							{
 								path: "/verify",
 								method: RouteMethod.POST,
-								handler: this.authenticationController.verifyRegisteredEmail,
+								handler: this.authController.verifyRegisteredEmail,
 							},
 							{
 								path: "/resend",
 								method: RouteMethod.POST,
-								handler: this.authenticationController.resendEmailVerificationToken,
+								handler: this.authController.resendEmailVerificationToken,
 							},
 						],
 					},
-					{
-						prefix: "/google",
-						routes: [
-							{
-								path: "/callback",
-								method: RouteMethod.POST,
-								handler: this.authenticationController.socialAuth,
-							},
-						],
-					},
-					{
-						prefix: "/facebook",
-						routes: [
-							{
-								path: "/callback",
-								method: RouteMethod.GET,
-								handler: this.authenticationController.socialAuth,
-							},
-						],
-					},
+					// {
+					// 	prefix: "/google",
+					// 	routes: [
+					// 		{
+					// 			path: "/callback",
+					// 			method: RouteMethod.POST,
+					// 			handler: this.authController.socialAuth,
+					// 		},
+					// 	],
+					// },
+					// {
+					// 	prefix: "/facebook",
+					// 	routes: [
+					// 		{
+					// 			path: "/callback",
+					// 			method: RouteMethod.POST,
+					// 			handler: this.authController.socialAuth,
+					// 		},
+					// 	],
+					// },
 				],
 			},
 		];

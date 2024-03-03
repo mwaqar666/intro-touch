@@ -83,13 +83,9 @@ export type IBuiltGroupRoute = Required<Omit<IGroupedRoute, "routes">>;
 
 export type IRoute = ExclusiveUnion<[ISimpleRoute, IGroupedRoute]>;
 
-export interface IPathParams {
-	[p: string]: string;
-}
+export type IPathParams = Record<string, string>;
 
-export interface IQueryParams {
-	[p: string]: Optional<string>;
-}
+export type IQueryParams = Record<string, Optional<string>>;
 
 export interface IRouteParams<P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> {
 	pathParams: P;

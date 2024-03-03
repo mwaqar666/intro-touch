@@ -3,6 +3,7 @@ import { RequestProcessorTokenConst } from "@/backend-core/request-processor/con
 import type { IRequestProcessor } from "@/backend-core/request-processor/interface";
 import type { ApiResponse } from "@/stacks/types";
 import { createAdapter } from "sst/node/auth";
+import { AuthAdapter } from "@/backend-core/authentication/enums";
 import type { IAuthAdapter } from "@/backend-core/authentication/interface";
 import type { IAuthAdapterRecord } from "@/backend-core/authentication/types";
 
@@ -18,7 +19,7 @@ export class SelfAuthAdapter implements IAuthAdapter {
 
 		return {
 			adapter: selfAuthAdapter(),
-			identifier: "self",
+			identifier: AuthAdapter.SELF,
 		};
 	}
 }

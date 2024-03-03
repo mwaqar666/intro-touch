@@ -1,7 +1,6 @@
 import type { IResolvedRoute } from "@/backend-core/router/interface";
-import type { Context } from "aws-lambda";
-import type { IAppRequest } from "@/backend-core/request-processor/types";
+import type { Request } from "@/backend-core/request-processor/handlers";
 
 export interface IHandlerMetaResolver {
-	resolveHandlerMeta(request: IAppRequest, context: Context, resolvedRoute: IResolvedRoute): Promise<Array<unknown>>;
+	resolveHandlerMeta(request: Request, resolvedRoute: IResolvedRoute): Promise<Array<unknown>>;
 }
