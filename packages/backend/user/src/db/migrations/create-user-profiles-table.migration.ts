@@ -46,6 +46,10 @@ export class CreateUserProfilesTable extends AbstractMigration {
 				allowNull: true,
 				type: DataType.STRING(50),
 			},
+			userProfileLandPhone: {
+				allowNull: true,
+				type: DataType.STRING(50),
+			},
 			userProfileFax: {
 				allowNull: true,
 				type: DataType.STRING(50),
