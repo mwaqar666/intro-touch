@@ -7,7 +7,7 @@ export class UserOwnedPlatformsResponseDto {
 }
 
 export class UserOwnedPlatformsTransformedResponseDto {
-	public platforms: Array<UserPlatform>;
+	public platforms: Array<UserBuiltInPlatform | UserCustomPlatform>;
 }
 
 export class UserPlatform {
@@ -16,4 +16,12 @@ export class UserPlatform {
 	public platformIcon: string;
 	public platformIdentity: string;
 	public platformIsActive: boolean;
+}
+
+export class UserBuiltInPlatform extends UserPlatform {
+	public platformType: "builtIn";
+}
+
+export class UserCustomPlatform extends UserPlatform {
+	public platformType: "custom";
 }

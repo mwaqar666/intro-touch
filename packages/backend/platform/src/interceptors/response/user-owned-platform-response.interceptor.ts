@@ -5,7 +5,7 @@ import { Response } from "@/backend-core/request-processor/handlers";
 import type { IResponseInterceptor } from "@/backend-core/request-processor/interface";
 import type { Nullable, PossiblePromise } from "@/stacks/types";
 import type { CustomPlatformEntity, PlatformEntity } from "@/backend/platform/db/entities";
-import type { UserOwnedPlatformsResponseDto, UserOwnedPlatformsTransformedResponseDto, UserPlatform } from "@/backend/platform/dto/user-owned";
+import type { UserBuiltInPlatform, UserCustomPlatform, UserOwnedPlatformsResponseDto, UserOwnedPlatformsTransformedResponseDto } from "@/backend/platform/dto/user-owned";
 
 export class UserOwnedPlatformResponseInterceptor implements IResponseInterceptor<Request, Response<UserOwnedPlatformsResponseDto>, Response<UserOwnedPlatformsTransformedResponseDto>> {
 	public intercept(_request: Request, response: Response<UserOwnedPlatformsResponseDto>): PossiblePromise<Response<UserOwnedPlatformsTransformedResponseDto>> {
@@ -13,8 +13,9 @@ export class UserOwnedPlatformResponseInterceptor implements IResponseIntercepto
 
 		if (!userOwnedPlatforms) throw new InternalServerException();
 
-		const userBuiltInPlatforms: Array<UserPlatform> = userOwnedPlatforms.platforms.map((platform: PlatformEntity): UserPlatform => {
+		const userBuiltInPlatforms: Array<UserBuiltInPlatform> = userOwnedPlatforms.platforms.map((platform: PlatformEntity): UserBuiltInPlatform => {
 			return {
+				platformType: "builtIn",
 				platformUuid: platform.platformUuid,
 				platformName: platform.platformName,
 				platformIcon: platform.platformIcon,
@@ -23,8 +24,9 @@ export class UserOwnedPlatformResponseInterceptor implements IResponseIntercepto
 			};
 		});
 
-		const userCustomPlatforms: Array<UserPlatform> = userOwnedPlatforms.customPlatforms.map((platform: CustomPlatformEntity): UserPlatform => {
+		const userCustomPlatforms: Array<UserCustomPlatform> = userOwnedPlatforms.customPlatforms.map((platform: CustomPlatformEntity): UserCustomPlatform => {
 			return {
+				platformType: "custom",
 				platformUuid: platform.customPlatformUuid,
 				platformName: platform.customPlatformName,
 				platformIcon: platform.customPlatformIcon,
@@ -33,7 +35,7 @@ export class UserOwnedPlatformResponseInterceptor implements IResponseIntercepto
 			};
 		});
 
-		const platforms: Array<UserPlatform> = [...userBuiltInPlatforms, ...userCustomPlatforms];
+		const platforms: Array<UserBuiltInPlatform | UserCustomPlatform> = [...userBuiltInPlatforms, ...userCustomPlatforms];
 
 		const transformedResponse: Response<UserOwnedPlatformsTransformedResponseDto> = App.container.resolve(Response<UserOwnedPlatformsTransformedResponseDto>);
 
