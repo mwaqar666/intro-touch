@@ -5,14 +5,14 @@ import { DbTokenConst } from "@/backend-core/database/const";
 import { MigrationController, SeedingController } from "@/backend-core/database/controllers";
 import type { IDbConnector } from "@/backend-core/database/interface/db";
 import { DbRouter } from "@/backend-core/database/router";
-import { DbConnectorService, DbManagerService, MigrationRunnerService, SeederRunnerService, TransactionManagerService } from "@/backend-core/database/services";
+import { DbManagerService, MigrationRunnerService, SeederRunnerService, SequelizeConnectorService, TransactionManagerService } from "@/backend-core/database/services";
 
 export class DatabaseModule extends AbstractModule {
 	public override async register(): Promise<void> {
 		this.container.registerSingleton(SeedingController);
 		this.container.registerSingleton(MigrationController);
 
-		this.container.registerSingleton(DbTokenConst.DbConnectorToken, DbConnectorService);
+		this.container.registerSingleton(DbTokenConst.DbConnectorToken, SequelizeConnectorService);
 		this.container.registerSingleton(DbTokenConst.DbManagerToken, DbManagerService);
 		this.container.registerSingleton(DbTokenConst.MigrationRunnerToken, MigrationRunnerService);
 		this.container.registerSingleton(DbTokenConst.SeederRunnerToken, SeederRunnerService);

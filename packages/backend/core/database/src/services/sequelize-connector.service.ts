@@ -6,7 +6,7 @@ import { Sequelize } from "sequelize-typescript";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { IDbConnector, IDbManager } from "@/backend-core/database/interface/db";
 
-export class DbConnectorService implements IDbConnector<Sequelize> {
+export class SequelizeConnectorService implements IDbConnector<Sequelize> {
 	private dbConnection: Sequelize;
 
 	public constructor(

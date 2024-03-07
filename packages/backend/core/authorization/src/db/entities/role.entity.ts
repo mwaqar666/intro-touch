@@ -1,8 +1,8 @@
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
 import { RolePermissionEntity } from "@/backend-core/authorization/db/entities/role-permission.entity";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities/user-role.entity";
 import type { RolesEnum } from "@/backend-core/authorization/enums";
@@ -17,6 +17,9 @@ export class RoleEntity extends BaseEntity<RoleEntity> {
 
 	@UuidKeyColumn
 	public roleUuid: string;
+
+	@ForeignKeyColumn(() => RoleEntity, true)
+	public roleParentId: Nullable<number>;
 
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(100) })
@@ -47,4 +50,18 @@ export class RoleEntity extends BaseEntity<RoleEntity> {
 		sourceKey: "roleId",
 	})
 	public roleUserRoles: Array<UserRoleEntity>;
+
+	@HasMany(() => RoleEntity, {
+		as: "roleChildrenRoles",
+		foreignKey: "roleParentId",
+		sourceKey: "roleId",
+	})
+	public roleChildrenRoles: Array<RoleEntity>;
+
+	@BelongsTo(() => RoleEntity, {
+		as: "roleParentRole",
+		foreignKey: "roleParentId",
+		targetKey: "roleId",
+	})
+	public roleParentRole: Nullable<RoleEntity>;
 }

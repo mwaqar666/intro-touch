@@ -10,21 +10,17 @@ export class UserService {
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 	) {}
 
-	public async getAuthUserWithLiveProfile(authEntity: UserEntity): Promise<UserEntity> {
-		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(authEntity);
+	public async getUserWithLiveProfile(userEntity: string): Promise<UserEntity>;
+	public async getUserWithLiveProfile(userEntity: UserEntity): Promise<UserEntity>;
+	public async getUserWithLiveProfile(userEntity: string | UserEntity): Promise<UserEntity> {
+		if (typeof userEntity === "string") {
+			userEntity = await this.userRepository.findOrFailActiveUserByUsername(userEntity);
+		}
 
-		authEntity.setDataValue("userLiveUserProfile", userLiveProfile);
+		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(userEntity);
 
-		return authEntity;
-	}
+		userEntity.setDataValue("userLiveUserProfile", userLiveProfile);
 
-	public async getUserPublicPreviewWithLiveProfile(userUsername: string): Promise<UserEntity> {
-		const user: UserEntity = await this.userRepository.findOrFailActiveUserByUsername(userUsername);
-
-		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(user);
-
-		user.setDataValue("userLiveUserProfile", userLiveProfile);
-
-		return user;
+		return userEntity;
 	}
 }

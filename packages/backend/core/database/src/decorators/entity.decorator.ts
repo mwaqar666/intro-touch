@@ -5,6 +5,18 @@ import type { ModelClassGetter } from "sequelize-typescript/dist/model/shared/mo
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IEntityType } from "@/backend-core/database/types";
 
+const ApplyTimestampDecorator = <TEntity extends BaseEntity<TEntity>, TimestampKey extends "createdAtColumnName" | "updatedAtColumnName" | "deletedAtColumnName">(
+	target: TEntity,
+	propertyKey: string,
+	timestampDecorator: PropertyDecorator,
+	timestampKey: TimestampKey,
+): void => {
+	const concreteEntity: IEntityType<TEntity> = <IEntityType<TEntity>>target.constructor;
+	concreteEntity[timestampKey] = propertyKey;
+
+	timestampDecorator(target, propertyKey);
+};
+
 export const PrimaryKeyColumn: PropertyDecorator = <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 	Column({ type: DataType.INTEGER })(target, propertyKey);
 	AutoIncrement(target, propertyKey);
@@ -21,7 +33,7 @@ export const UuidKeyColumn: PropertyDecorator = <PropertyDecorator>(<TEntity ext
 	Unique(target, propertyKey);
 });
 
-export const ForeignKeyColumn: Delegate<[ModelClassGetter<any, any>, boolean?], PropertyDecorator> = (entityGetter: ModelClassGetter<any, any>, nullable = false) => {
+export const ForeignKeyColumn: Delegate<[ModelClassGetter<any, any>, boolean?], PropertyDecorator> = (entityGetter: ModelClassGetter<any, any>, nullable: boolean = false) => {
 	return <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 		const concreteEntity: IEntityType<TEntity> = <IEntityType<TEntity>>target.constructor;
 		concreteEntity.foreignKeyNames.push(propertyKey);
@@ -56,15 +68,3 @@ export const IsActiveColumn: PropertyDecorator = <PropertyDecorator>(<TEntity ex
 	AllowNull(false)(target, propertyKey);
 	Default(true)(target, propertyKey);
 });
-
-const ApplyTimestampDecorator = <TEntity extends BaseEntity<TEntity>, TimestampKey extends "createdAtColumnName" | "updatedAtColumnName" | "deletedAtColumnName">(
-	target: TEntity,
-	propertyKey: string,
-	timestampDecorator: PropertyDecorator,
-	timestampKey: TimestampKey,
-): void => {
-	const concreteEntity: IEntityType<TEntity> = <IEntityType<TEntity>>target.constructor;
-	concreteEntity[timestampKey] = propertyKey;
-
-	timestampDecorator(target, propertyKey);
-};

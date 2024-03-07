@@ -5,12 +5,11 @@ import { PasswordMissingException } from "@/backend-core/authentication/exceptio
 import type { IHash } from "@/backend-core/authentication/interface";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { App } from "@/backend-core/core/extensions";
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import omit from "lodash.omit";
-import { AllowNull, BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
+import { AllowNull, BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
 @Scopes(() => ({
@@ -18,11 +17,16 @@ import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entit
 }))
 @Table({ tableName: "users" })
 export class UserEntity extends BaseEntity<UserEntity> {
+	public static override readonly hiddenKeys: Array<string> = ["userPassword"];
+
 	@PrimaryKeyColumn
 	public readonly userId: number;
 
 	@UuidKeyColumn
 	public readonly userUuid: string;
+
+	@ForeignKeyColumn(() => UserEntity, true)
+	public userParentId: Nullable<number>;
 
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(50) })
@@ -90,6 +94,20 @@ export class UserEntity extends BaseEntity<UserEntity> {
 	})
 	public userUserRoles: Array<UserRoleEntity>;
 
+	@HasMany(() => UserEntity, {
+		as: "userChildrenUsers",
+		foreignKey: "userParentId",
+		sourceKey: "userId",
+	})
+	public userChildrenUsers: Array<UserEntity>;
+
+	@BelongsTo(() => UserEntity, {
+		as: "userParentUser",
+		foreignKey: "userParentId",
+		targetKey: "userId",
+	})
+	public userParentUser: Nullable<UserEntity>;
+
 	@BeforeValidate
 	@BeforeUpdate
 	@BeforeCreate
@@ -114,12 +132,6 @@ export class UserEntity extends BaseEntity<UserEntity> {
 
 			instance.userUsername = `${firstName}-${lastName}-${randomUUID()}`;
 		});
-	}
-
-	public override toJSON(): object {
-		const plainModel: object = super.toJSON();
-
-		return omit(plainModel, ["userPassword"]);
 	}
 
 	public async verifyPassword(plainPassword: string): Promise<boolean> {
