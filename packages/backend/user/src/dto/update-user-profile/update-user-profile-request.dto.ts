@@ -57,6 +57,11 @@ export class UpdateUserProfileRequestDto {
 	@MaxLength(50)
 	@IsString()
 	@IsOptional()
+	public userProfileLandPhone: Optional<string>;
+
+	@MaxLength(50)
+	@IsString()
+	@IsOptional()
 	public userProfileFax: Optional<string>;
 
 	@MaxLength(255)
