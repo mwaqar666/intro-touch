@@ -1,1 +1,1 @@
-export * from "./model.decorator";
+export * from "./entity.decorator";

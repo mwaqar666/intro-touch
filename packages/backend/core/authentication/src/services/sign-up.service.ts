@@ -1,5 +1,6 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserAuthService } from "@/backend/user/services";
+import type { IFindOrCreateUserProps } from "@/backend/user/types";
 import { Inject } from "iocc";
 import { VerificationTokenService } from "@/backend-core/authentication/dal";
 import type { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
@@ -15,7 +16,9 @@ export class SignUpService {
 	) {}
 
 	public async basicRegister(registerRequestDto: RegisterRequestDto): Promise<boolean> {
-		const user: UserEntity = await this.userAuthService.createNewUserWithProfile(registerRequestDto);
+		const findOrCreateUserProps: IFindOrCreateUserProps = { ...registerRequestDto, userParentId: 1 };
+
+		const user: UserEntity = await this.userAuthService.createNewUserWithProfile(findOrCreateUserProps);
 
 		const verificationToken: VerificationTokenEntity = await this.verificationTokenService.createEmailVerificationToken(user);
 

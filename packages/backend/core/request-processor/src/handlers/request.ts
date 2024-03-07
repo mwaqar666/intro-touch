@@ -1,15 +1,18 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import type { IAuthEntityResolver } from "@/backend-core/authentication/interface";
+import { App } from "@/backend-core/core/extensions";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IPathParams, IQueryParams, IResolvedRoute, IRouteResolver } from "@/backend-core/router/interface";
 import type { ApiRequest, ApiRequestHeaders, DeepReadonly, Key, Nullable, Optional } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { useEvent, useLambdaContext } from "sst/context";
-import { useBody } from "sst/node/api";
+import { InternalServerException } from "@/backend-core/request-processor/exceptions";
+import type { IBodyParser } from "@/backend-core/request-processor/interface";
+import { FormDataParser, JsonParser, UrlEncodedFormParser } from "@/backend-core/request-processor/parsers";
 
-export class Request<T = object, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> {
+export class Request<T extends object = object, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> {
 	private _body: Nullable<T> = null;
 	private _route: IResolvedRoute<P, Q>;
 	private readonly awsRequest: DeepReadonly<ApiRequest>;
@@ -32,9 +35,7 @@ export class Request<T = object, P extends IPathParams = IPathParams, Q extends 
 	}
 
 	public getPathParams(): P;
-
 	public getPathParams<Param extends Key<P>>(param: Param): P[Param];
-
 	public getPathParams<Param extends Key<P>>(param?: Param): P | P[Param] {
 		const pathParams: P = this.route().pathParams;
 
@@ -44,9 +45,7 @@ export class Request<T = object, P extends IPathParams = IPathParams, Q extends 
 	}
 
 	public getQueryParams(): Q;
-
 	public getQueryParams<Param extends Key<Q>>(param: Param): Q[Param];
-
 	public getQueryParams<Param extends Key<Q>>(param?: Param): Q | Q[Param] {
 		const queryParams: Q = this.route().queryParams;
 
@@ -58,13 +57,10 @@ export class Request<T = object, P extends IPathParams = IPathParams, Q extends 
 	public getBody(): T {
 		if (this._body) return this._body;
 
-		this._body = this.tryGetJsonBody();
-		if (this._body) return this._body;
+		const bodyParser: IBodyParser<T> = this.getRequestBodyParser();
 
-		this._body = this.tryGetFormDataBody();
-		if (this._body) return this._body;
+		this._body = bodyParser.parse(this);
 
-		this._body = {} as T;
 		return this._body;
 	}
 
@@ -72,49 +68,33 @@ export class Request<T = object, P extends IPathParams = IPathParams, Q extends 
 		this._body = body;
 	}
 
-	public async auth(): Promise<Nullable<UserEntity>> {
-		return this.authEntityResolver.resolve();
+	public getHeaders(): DeepReadonly<ApiRequestHeaders>;
+	public getHeaders(header: string): Optional<string>;
+	public getHeaders(header?: string): DeepReadonly<ApiRequestHeaders> | Optional<string> {
+		const headers: DeepReadonly<ApiRequestHeaders> = this.awsRequest.headers;
+
+		if (!header) return headers;
+
+		return headers[header.toLowerCase()];
 	}
 
-	public headers(): ApiRequestHeaders {
-		return this.awsRequest.headers;
+	public async auth(): Promise<Nullable<UserEntity>> {
+		return this.authEntityResolver.resolve();
 	}
 
 	public context(): Context {
 		return useLambdaContext();
 	}
 
-	private tryGetJsonBody(): Nullable<T> {
-		const requestBody: Optional<string> = useBody();
+	private getRequestBodyParser(): IBodyParser<T> {
+		const contentType: Optional<string> = this.getHeaders("Content-Type");
 
-		if (!requestBody) return null;
+		if (!contentType || contentType === "application/json") return App.container.resolve(JsonParser<T>);
 
-		try {
-			const parsed = JSON.parse(requestBody);
+		if (contentType === "application/x-www-form-urlencoded") return App.container.resolve(UrlEncodedFormParser<T>);
 
-			if (parsed && typeof parsed === "object") return parsed;
-		} catch (exception) {
-			/* empty */
-		}
+		if (contentType.includes("multipart/form-data")) return App.container.resolve(FormDataParser<T>);
 
-		return null;
-	}
-
-	private tryGetFormDataBody(): Nullable<T> {
-		const requestBody: Optional<string> = useBody();
-
-		if (!requestBody) return null;
-
-		const parsed: T = {} as T;
-
-		const urlSearchParams: URLSearchParams = new URLSearchParams(requestBody);
-
-		for (const [paramKey, paramValue] of urlSearchParams) {
-			if (!paramKey) continue;
-
-			parsed[paramKey as Key<T>] = paramValue as T[Key<T>];
-		}
-
-		return parsed;
+		throw new InternalServerException("Unknown body");
 	}
 }
