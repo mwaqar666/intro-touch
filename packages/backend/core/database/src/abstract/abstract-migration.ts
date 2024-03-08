@@ -86,7 +86,7 @@ export abstract class AbstractMigration implements IMigration {
 		return this.queryInterface.removeConstraint(targetTable, this.createForeignKeyConstraintName(targetTable, targetColumn));
 	}
 
-	protected createForeignKeyConstraintName(targetTable: string, targetColumn: string): string {
+	private createForeignKeyConstraintName(targetTable: string, targetColumn: string): string {
 		return `${targetTable}_${targetColumn}_fkey`;
 	}
 }

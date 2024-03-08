@@ -25,6 +25,7 @@ export class RolesSeeder implements ISeeder {
 							roleName: RolesEnum.ADMIN,
 						},
 						{
+							roleParentId: 1,
 							roleName: RolesEnum.CUSTOMER,
 						},
 					],

@@ -30,6 +30,7 @@ export class UsersSeeder implements ISeeder {
 							userPicture: "",
 						},
 						{
+							userParentId: 1,
 							userFirstName: "Nabeel",
 							userLastName: "Baig",
 							userEmail: "mathswithnabeel@gmail.com",
