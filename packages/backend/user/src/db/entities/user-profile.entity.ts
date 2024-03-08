@@ -59,6 +59,10 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 
 	@AllowNull(true)
 	@Column({ type: DataType.STRING(50) })
+	public userProfileLandPhone: Nullable<string>;
+
+	@AllowNull(true)
+	@Column({ type: DataType.STRING(50) })
 	public userProfileFax: Nullable<string>;
 
 	@AllowNull(true)

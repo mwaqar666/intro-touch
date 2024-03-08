@@ -12,8 +12,9 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 	public static foreignKeyNames: Array<string> = [];
 
 	// Column Exposure Information
-	public static readonly exposePrimaryKey = false;
+	public static readonly exposePrimaryKey: boolean = false;
 	public static readonly exposeForeignKeys: Array<string> = [];
+	public static readonly hiddenKeys: Array<string> = [];
 
 	// Timestamps Information
 	public static createdAtColumnName: string;
@@ -58,12 +59,16 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Mo
 		const keysToExclude: Array<string> = [];
 		const entityStatic: IEntityType<TEntity> = this.constructor as IEntityType<TEntity>;
 
-		if (!BaseEntity.exposePrimaryKey) keysToExclude.push(entityStatic.primaryKeyAttribute);
+		if (!entityStatic.exposePrimaryKey) keysToExclude.push(entityStatic.primaryKeyAttribute);
 
-		for (const foreignKey of BaseEntity.foreignKeyNames) {
-			if (BaseEntity.exposeForeignKeys.includes(foreignKey)) continue;
+		for (const foreignKey of entityStatic.foreignKeyNames) {
+			if (entityStatic.exposeForeignKeys.includes(foreignKey)) continue;
 
 			keysToExclude.push(foreignKey);
+		}
+
+		for (const hiddenKey of entityStatic.hiddenKeys) {
+			keysToExclude.push(hiddenKey);
 		}
 
 		return omit(this.dataValues, keysToExclude);

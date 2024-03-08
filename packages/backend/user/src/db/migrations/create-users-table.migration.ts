@@ -8,6 +8,7 @@ export class CreateUsersTable extends AbstractMigration {
 		await this.queryInterface.createTable("users", {
 			userId: this.createPrimaryKeyProps(),
 			userUuid: this.createUuidKeyProps(),
+			userParentId: this.createForeignKeyProps(true),
 			userFirstName: {
 				allowNull: false,
 				type: DataType.STRING(50),
@@ -39,9 +40,13 @@ export class CreateUsersTable extends AbstractMigration {
 			userUpdatedAt: this.createUpdatedAtKeyProps(),
 			userDeletedAt: this.createDeletedAtKeyProps(),
 		});
+
+		await this.createForeignKeyConstraint("users", "userParentId", "users", "userId");
 	}
 
 	public override async down(): Promise<void> {
+		await this.dropForeignKeyConstraint("users", "userParentId");
+
 		await this.queryInterface.dropTable("users");
 	}
 }

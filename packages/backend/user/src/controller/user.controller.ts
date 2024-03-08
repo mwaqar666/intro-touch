@@ -10,11 +10,11 @@ export class UserController {
 		@Inject(UserService) private readonly userService: UserService,
 	) {}
 
-	public async me(@Auth authEntity: UserEntity): Promise<{ user: UserEntity }> {
-		return { user: await this.userService.getAuthUserWithLiveProfile(authEntity) };
+	public async me(@Auth userEntity: UserEntity): Promise<{ user: UserEntity }> {
+		return { user: await this.userService.getUserWithLiveProfile(userEntity) };
 	}
 
 	public async publicPreview(@Path("userUsername") userUsername: string): Promise<{ user: UserEntity }> {
-		return { user: await this.userService.getUserPublicPreviewWithLiveProfile(userUsername) };
+		return { user: await this.userService.getUserWithLiveProfile(userUsername) };
 	}
 }

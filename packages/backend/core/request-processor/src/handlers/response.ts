@@ -15,6 +15,20 @@ export class Response<T = unknown, C = unknown> {
 		return this;
 	}
 
+	public addHeaders(headers: IHeaders): Response<T, C> {
+		this._headers = { ...this._headers, ...headers };
+
+		return this;
+	}
+
+	public removeHeaders(...headers: Array<string>): Response<T, C> {
+		headers.forEach((header: string): void => {
+			delete this._headers[header];
+		});
+
+		return this;
+	}
+
 	public getHeaders(): IHeaders {
 		return this._headers;
 	}

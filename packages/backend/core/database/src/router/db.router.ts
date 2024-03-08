@@ -19,17 +19,17 @@ export class DbRouter implements IRouter {
 				routes: [
 					{
 						path: "migration/up",
-						method: RouteMethod.GET,
+						method: RouteMethod.POST,
 						handler: this.migrationController.runMigrations,
 					},
 					{
 						path: "migration/down",
-						method: RouteMethod.GET,
+						method: RouteMethod.POST,
 						handler: this.migrationController.revertMigrations,
 					},
 					{
 						path: "seed",
-						method: RouteMethod.GET,
+						method: RouteMethod.POST,
 						handler: this.seedingController.seed,
 					},
 				],

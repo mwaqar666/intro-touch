@@ -3,6 +3,7 @@ import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
 import { CustomPlatformController, PlatformCategoryController, PlatformController } from "@/backend/platform/controller";
+import { UserOwnedPlatformResponseInterceptor } from "@/backend/platform/interceptors";
 
 export class PlatformRouter implements IRouter {
 	public constructor(
@@ -36,6 +37,7 @@ export class PlatformRouter implements IRouter {
 					{
 						path: "/owned/{userProfileUuid}/{platformCategoryUuid}",
 						method: RouteMethod.GET,
+						responseInterceptors: [UserOwnedPlatformResponseInterceptor],
 						handler: this.platformController.getUserOwnedPlatforms,
 					},
 				],
