@@ -1,5 +1,6 @@
 import type { NumberSchema, StringSchema } from "joi";
 import type { ConfigConst } from "@/backend-core/config/const";
+import type { StorageDriver } from "@/backend-core/storage/enums";
 
 export interface IConfigValidation {
 	[ConfigConst.NODE_ENV]: StringSchema;
@@ -14,6 +15,8 @@ export interface IConfigValidation {
 	[ConfigConst.DB_USER]: StringSchema;
 	[ConfigConst.DB_PASS]: StringSchema;
 	[ConfigConst.DB_TOKEN]: StringSchema;
+
+	[ConfigConst.STORAGE_DRIVER]: StringSchema<StorageDriver>;
 
 	[ConfigConst.GOOGLE_CLIENT_ID]: StringSchema;
 	[ConfigConst.FACEBOOK_CLIENT_ID]: StringSchema;

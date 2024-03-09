@@ -16,7 +16,7 @@ export class CustomPlatformController {
 	) {}
 
 	public async getCustomPlatformsByPlatformCategory(@Auth authEntity: UserEntity, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<{ customPlatforms: Array<CustomPlatformEntity> }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
+		await this.authorization.can(authEntity, [PermissionsEnum.ListPlatform]);
 
 		return { customPlatforms: await this.customPlatformService.getCustomPlatformsByPlatformCategory(platformCategoryUuid) };
 	}

@@ -124,7 +124,7 @@ export class RouteBuilderService implements IRouteBuilder {
 	}
 
 	private prepareCorsRouteIfRequired(builtRoute: IBuiltRoute): Nullable<IBuiltRoute> {
-		if (builtRoute.method === RouteMethod.GET || builtRoute.method === RouteMethod.HEAD) return null;
+		if (builtRoute.method === RouteMethod.Get || builtRoute.method === RouteMethod.Head) return null;
 
 		const response: Response = App.container.resolve(Response);
 
@@ -136,10 +136,10 @@ export class RouteBuilderService implements IRouteBuilder {
 
 		return {
 			path: builtRoute.path,
-			method: RouteMethod.OPTIONS,
+			method: RouteMethod.Options,
 			handler: (): Response => response,
 			guards: [],
-			routeType: RouteType.APPLICATION,
+			routeType: RouteType.Application,
 			requestInterceptors: [],
 			responseInterceptors: [],
 		};

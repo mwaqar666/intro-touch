@@ -32,7 +32,7 @@ export class UserRolesSeeder implements ISeeder {
 
 				const adminRole: Nullable<RoleEntity> = await this.roleRepository.findOne({
 					findOptions: {
-						where: { roleName: RolesEnum.ADMIN },
+						where: { roleName: RolesEnum.Admin },
 					},
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});

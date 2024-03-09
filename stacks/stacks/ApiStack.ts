@@ -23,6 +23,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 	const domainName: string = Config.get("APP_DOMAIN");
 	const appVersion: string = Config.get("APP_VERSION");
 	const appKey: string = Config.get("APP_KEY");
+	const storageDriver: string = Config.get("STORAGE_DRIVER");
 	const googleClientId: string = Config.get("GOOGLE_CLIENT_ID");
 	const facebookClientId: string = Config.get("FACEBOOK_CLIENT_ID");
 	const facebookClientSecret: string = Config.get("FACEBOOK_CLIENT_SECRET");
@@ -46,6 +47,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 			DB_USER: databaseUser,
 			DB_PASS: databasePass,
 			DB_TOKEN: databaseToken,
+			STORAGE_DRIVER: storageDriver,
 			FRONTEND_URL: frontEndUrl,
 			GOOGLE_CLIENT_ID: googleClientId,
 			FACEBOOK_CLIENT_ID: facebookClientId,

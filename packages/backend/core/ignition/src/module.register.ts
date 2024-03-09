@@ -8,6 +8,7 @@ import { DatabaseModule } from "@/backend-core/database/module";
 import { MailerModule } from "@/backend-core/mailer/module";
 import { RequestProcessorModule } from "@/backend-core/request-processor/module";
 import { RouterModule } from "@/backend-core/router/module";
+import { StorageModule } from "@/backend-core/storage/module";
 import { ValidationModule } from "@/backend-core/validation/module";
 import type { Constructable } from "@/stacks/types";
 
@@ -23,6 +24,7 @@ export class ModuleRegister {
 			AuthorizationModule,
 			ValidationModule,
 			MailerModule,
+			StorageModule,
 
 			// Application business modules
 			UserModule,

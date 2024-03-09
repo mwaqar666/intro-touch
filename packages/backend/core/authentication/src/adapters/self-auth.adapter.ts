@@ -19,7 +19,7 @@ export class SelfAuthAdapter implements IAuthAdapter {
 
 		return {
 			adapter: selfAuthAdapter(),
-			identifier: AuthAdapter.SELF,
+			identifier: AuthAdapter.Self,
 		};
 	}
 }

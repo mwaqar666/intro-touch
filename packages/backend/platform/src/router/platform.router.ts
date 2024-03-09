@@ -21,22 +21,22 @@ export class PlatformRouter implements IRouter {
 				routes: [
 					{
 						path: "/category",
-						method: RouteMethod.GET,
+						method: RouteMethod.Get,
 						handler: this.platformCategoryController.getPlatformCategories,
 					},
 					{
 						path: "/builtin/{platformCategoryUuid}",
-						method: RouteMethod.GET,
+						method: RouteMethod.Get,
 						handler: this.platformController.getPlatformsByPlatformCategory,
 					},
 					{
 						path: "/custom/{platformCategoryUuid}",
-						method: RouteMethod.GET,
+						method: RouteMethod.Get,
 						handler: this.customPlatformController.getCustomPlatformsByPlatformCategory,
 					},
 					{
 						path: "/owned/{userProfileUuid}/{platformCategoryUuid}",
-						method: RouteMethod.GET,
+						method: RouteMethod.Get,
 						responseInterceptors: [UserOwnedPlatformResponseInterceptor],
 						handler: this.platformController.getUserOwnedPlatforms,
 					},

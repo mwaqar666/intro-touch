@@ -1,3 +1,5 @@
+import type { StorageDriver } from "@/backend-core/storage/enums";
+
 export interface IAuthConfig {
 	readonly googleClientId: string;
 	readonly facebookClientId: string;
@@ -31,10 +33,15 @@ export interface IDatabaseConfig {
 	readonly databaseToken: string;
 }
 
+export interface IStorageConfig {
+	readonly driver: StorageDriver;
+}
+
 export interface IConfig {
 	readonly app: IAppConfig;
 	readonly auth: IAuthConfig;
 	readonly email: IEmailConfig;
 	readonly frontend: IFrontendConfig;
 	readonly database: IDatabaseConfig;
+	readonly storage: IStorageConfig;
 }

@@ -1,10 +1,9 @@
 import type { Key } from "@/stacks/types";
 import { ConfigConst } from "@/backend-core/config/const";
 import { EnvExtractor } from "@/backend-core/config/helpers";
-import type { IConfigResolver } from "@/backend-core/config/interface";
-import type { IConfig, IConfigValidation } from "@/backend-core/config/types";
+import type { IAppConfigResolver, IConfig, IConfigValidation } from "@/backend-core/config/types";
 
-export class ConfigResolverService implements IConfigResolver<IConfig, IConfigValidation> {
+export class ConfigResolverService implements IAppConfigResolver {
 	private configCache: IConfig;
 
 	public buildConfig(schema: IConfigValidation): void {
@@ -36,6 +35,9 @@ export class ConfigResolverService implements IConfigResolver<IConfig, IConfigVa
 				databaseUser: EnvExtractor.env(schema, ConfigConst.DB_USER),
 				databasePass: EnvExtractor.env(schema, ConfigConst.DB_PASS),
 				databaseToken: EnvExtractor.env(schema, ConfigConst.DB_TOKEN),
+			},
+			storage: {
+				driver: EnvExtractor.env(schema, ConfigConst.STORAGE_DRIVER),
 			},
 		};
 	}

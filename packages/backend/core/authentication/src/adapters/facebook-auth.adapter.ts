@@ -46,7 +46,7 @@ export class FacebookAuthAdapter implements IAuthAdapter<IFacebookAdapter> {
 
 		return {
 			adapter: facebookAdapter,
-			identifier: AuthAdapter.FACEBOOK,
+			identifier: AuthAdapter.Facebook,
 		};
 	}
 }

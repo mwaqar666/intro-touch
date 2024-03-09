@@ -3,7 +3,7 @@ import { CreatedAtColumn, DefaultUuid, ForeignKeyColumn, PrimaryKeyColumn, Updat
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
-import type { TokenTypeEnum } from "@/backend-core/authentication/db/enums";
+import type { TokenType } from "@/backend-core/authentication/db/enums";
 
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => VerificationTokenEntity),
@@ -30,7 +30,7 @@ export class VerificationTokenEntity extends BaseEntity<VerificationTokenEntity>
 
 	@AllowNull(false)
 	@Column({ type: DataType.INTEGER })
-	public tokenType: TokenTypeEnum;
+	public tokenType: TokenType;
 
 	@CreatedAtColumn
 	public tokenCreatedAt: Date;
