@@ -24,14 +24,14 @@ export class RolePermissionsSeeder implements ISeeder {
 		await this.transactionManager.executeTransaction({
 			operation: async (): Promise<void> => {
 				const admin: Nullable<RoleEntity> = await this.roleRepository.findOne({
-					findOptions: { where: { roleName: RolesEnum.ADMIN } },
+					findOptions: { where: { roleName: RolesEnum.Admin } },
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});
 
 				if (admin) await this.seedAdminPermissions(admin);
 
 				const customer: Nullable<RoleEntity> = await this.roleRepository.findOne({
-					findOptions: { where: { roleName: RolesEnum.CUSTOMER } },
+					findOptions: { where: { roleName: RolesEnum.Customer } },
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});
 
@@ -67,15 +67,15 @@ export class RolePermissionsSeeder implements ISeeder {
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
 				const customerPermissions: Array<PermissionsEnum> = [
-					PermissionsEnum.LIST_PLATFORM_CATEGORY,
-					PermissionsEnum.VIEW_PLATFORM_CATEGORY,
-					PermissionsEnum.LIST_PLATFORM,
-					PermissionsEnum.VIEW_PLATFORM,
-					PermissionsEnum.LIST_CUSTOM_PLATFORM,
-					PermissionsEnum.VIEW_CUSTOM_PLATFORM,
-					PermissionsEnum.CREATE_CUSTOM_PLATFORM,
-					PermissionsEnum.UPDATE_CUSTOM_PLATFORM,
-					PermissionsEnum.DELETE_CUSTOM_PLATFORM,
+					PermissionsEnum.ListPlatformCategory,
+					PermissionsEnum.ViewPlatformCategory,
+					PermissionsEnum.ListPlatform,
+					PermissionsEnum.ViewPlatform,
+					PermissionsEnum.ListCustomPlatform,
+					PermissionsEnum.ViewCustomPlatform,
+					PermissionsEnum.CreateCustomPlatform,
+					PermissionsEnum.UpdateCustomPlatform,
+					PermissionsEnum.DeleteCustomPlatform,
 				];
 
 				const permissions: Array<PermissionEntity> = await this.permissionRepository.findAll({

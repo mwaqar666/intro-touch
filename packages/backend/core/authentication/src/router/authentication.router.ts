@@ -14,29 +14,29 @@ export class AuthenticationRouter implements IRouter {
 		return [
 			{
 				prefix: "/auth",
-				routeType: RouteType.APPLICATION,
+				routeType: RouteType.Application,
 				routes: [
 					{
 						prefix: "/self",
 						routes: [
 							{
 								path: "/login",
-								method: RouteMethod.POST,
+								method: RouteMethod.Post,
 								handler: this.authController.basicLogin,
 							},
 							{
 								path: "/register",
-								method: RouteMethod.POST,
+								method: RouteMethod.Post,
 								handler: this.authController.basicRegister,
 							},
 							{
 								path: "/verify",
-								method: RouteMethod.POST,
+								method: RouteMethod.Post,
 								handler: this.authController.verifyRegisteredEmail,
 							},
 							{
 								path: "/resend",
-								method: RouteMethod.POST,
+								method: RouteMethod.Post,
 								handler: this.authController.resendEmailVerificationToken,
 							},
 						],
@@ -46,7 +46,7 @@ export class AuthenticationRouter implements IRouter {
 					// 	routes: [
 					// 		{
 					// 			path: "/callback",
-					// 			method: RouteMethod.POST,
+					// 			method: RouteMethod.Post,
 					// 			handler: this.authController.socialAuth,
 					// 		},
 					// 	],
@@ -56,7 +56,7 @@ export class AuthenticationRouter implements IRouter {
 					// 	routes: [
 					// 		{
 					// 			path: "/callback",
-					// 			method: RouteMethod.POST,
+					// 			method: RouteMethod.Post,
 					// 			handler: this.authController.socialAuth,
 					// 		},
 					// 	],

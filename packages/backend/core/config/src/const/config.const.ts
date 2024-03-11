@@ -12,6 +12,8 @@ export class ConfigConst {
 	public static readonly DB_PASS = "DB_PASS";
 	public static readonly DB_TOKEN = "DB_TOKEN";
 
+	public static readonly STORAGE_DRIVER = "STORAGE_DRIVER";
+
 	public static readonly GOOGLE_CLIENT_ID = "GOOGLE_CLIENT_ID";
 	public static readonly FACEBOOK_CLIENT_ID = "FACEBOOK_CLIENT_ID";
 	public static readonly FACEBOOK_CLIENT_SECRET = "FACEBOOK_CLIENT_SECRET";

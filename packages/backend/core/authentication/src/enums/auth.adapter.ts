@@ -1,5 +1,5 @@
 export enum AuthAdapter {
-	SELF = "self",
-	GOOGLE = "google",
-	FACEBOOK = "facebook",
+	Self = "self",
+	Google = "google",
+	Facebook = "facebook",
 }

@@ -1,9 +1,9 @@
 export enum RouteMethod {
-	GET = "GET",
-	POST = "POST",
-	PUT = "PUT",
-	PATCH = "PATCH",
-	DELETE = "DELETE",
-	HEAD = "HEAD",
-	OPTIONS = "OPTIONS",
+	Get = "GET",
+	Post = "POST",
+	Put = "PUT",
+	Patch = "PATCH",
+	Delete = "DELETE",
+	Head = "HEAD",
+	Options = "OPTIONS",
 }

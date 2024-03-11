@@ -55,6 +55,9 @@
       "@/backend-core/router/*": [
         "packages/backend/core/router/src/*"
       ],
+      "@/backend-core/storage/*": [
+        "packages/backend/core/storage/src/*"
+      ],
       "@/backend-core/validation/*": [
         "packages/backend/core/validation/src/*"
       ],

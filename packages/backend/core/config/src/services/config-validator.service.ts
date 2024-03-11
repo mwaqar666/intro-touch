@@ -1,13 +1,13 @@
 import { BadRequestException } from "@/backend-core/request-processor/exceptions";
-import type { IAnyObject } from "@/stacks/types";
+import { StorageDriver } from "@/backend-core/storage/enums";
 import type { ObjectSchema, ValidationResult } from "joi";
-import * as joi from "joi";
+import joi from "joi";
 import { ConfigConst } from "@/backend-core/config/const";
 import type { IConfigValidator } from "@/backend-core/config/interface";
 import type { IConfigValidation } from "@/backend-core/config/types";
 
 export class ConfigValidatorService implements IConfigValidator<IConfigValidation> {
-	public validateConfig(config: IAnyObject): IConfigValidation {
+	public validateConfig(config: unknown): IConfigValidation {
 		const { error, value }: ValidationResult<IConfigValidation> = this.createValidatorSchema().validate(config);
 
 		if (error) throw new BadRequestException(error.message);
@@ -30,6 +30,11 @@ export class ConfigValidatorService implements IConfigValidator<IConfigValidatio
 				[ConfigConst.DB_USER]: joi.string().required(),
 				[ConfigConst.DB_PASS]: joi.string().default(""),
 				[ConfigConst.DB_TOKEN]: joi.string().required(),
+
+				[ConfigConst.STORAGE_DRIVER]: joi
+					.string()
+					.required()
+					.valid(...Object.values(StorageDriver)),
 
 				[ConfigConst.GOOGLE_CLIENT_ID]: joi.string().required(),
 				[ConfigConst.FACEBOOK_CLIENT_ID]: joi.string().required(),

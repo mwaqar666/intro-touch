@@ -18,7 +18,7 @@ export class UserRouter implements IRouter {
 				routes: [
 					{
 						path: "/preview/{userUsername}",
-						method: RouteMethod.GET,
+						method: RouteMethod.Get,
 						handler: this.userController.publicPreview,
 					},
 					{
@@ -27,12 +27,12 @@ export class UserRouter implements IRouter {
 						routes: [
 							{
 								path: "/me",
-								method: RouteMethod.GET,
+								method: RouteMethod.Get,
 								handler: this.userController.me,
 							},
 							{
 								path: "/profiles",
-								method: RouteMethod.GET,
+								method: RouteMethod.Get,
 								handler: this.userProfileController.getAuthUserProfileDropdown,
 							},
 							{
@@ -40,17 +40,17 @@ export class UserRouter implements IRouter {
 								routes: [
 									{
 										path: "/{userProfileUuid}",
-										method: RouteMethod.GET,
+										method: RouteMethod.Get,
 										handler: this.userProfileController.getUserProfile,
 									},
 									{
 										path: "/create",
-										method: RouteMethod.POST,
+										method: RouteMethod.Post,
 										handler: this.userProfileController.createUserProfile,
 									},
 									{
 										path: "/update/{userProfileUuid}",
-										method: RouteMethod.PATCH,
+										method: RouteMethod.Patch,
 										handler: this.userProfileController.updateUserProfile,
 									},
 								],
