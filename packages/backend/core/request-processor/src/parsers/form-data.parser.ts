@@ -1,17 +1,17 @@
-import type { Key, Optional } from "@/stacks/types";
+import type { AnyObject, AnyObjectValues, Delegate, Optional, Primitives } from "@/stacks/types";
 import { getBoundary, parse } from "parse-multipart-data";
 import { useBody } from "sst/node/api";
+import { UploadedMedia } from "@/backend-core/request-processor/dto";
 import { BadRequestException } from "@/backend-core/request-processor/exceptions";
 import type { Request } from "@/backend-core/request-processor/handlers";
 import type { IBodyParser } from "@/backend-core/request-processor/interface";
 import type { IFormDataField, IFormDataRawField, IFormDataRawFileField } from "@/backend-core/request-processor/types";
 
-export class FormDataParser<T extends object = object> implements IBodyParser<T> {
-	public parse(request: Request<T>): T {
-		const parsedBody: T = {} as T;
+export class FormDataParser implements IBodyParser {
+	public parse(request: Request): AnyObject {
+		const parsedBody: AnyObject = {};
 
 		const requestBody: Optional<string> = useBody();
-
 		if (!requestBody) return parsedBody;
 
 		const requestBodyBuffer: Buffer = Buffer.from(requestBody, "utf-8");
@@ -21,34 +21,69 @@ export class FormDataParser<T extends object = object> implements IBodyParser<T>
 
 		const formDataFields: Array<IFormDataRawField> = parse(requestBodyBuffer, getBoundary(contentType)) as Array<IFormDataRawField>;
 
-		return formDataFields.reduce((parsed: T, formDataField: IFormDataRawField): T => {
-			const fieldName: Key<T> = formDataField.name as Key<T>;
+		for (const formDataField of formDataFields) {
+			const formDataFieldName: string = formDataField.name;
 
-			let formDataValue: IFormDataField;
+			const nestedKeys: Array<string> = formDataFieldName.split(/]\[|]|\[/);
 
-			if (!("type" in formDataField)) {
-				formDataValue = formDataField.data.toString("utf-8");
-			} else {
-				const { type, data, filename }: IFormDataRawFileField = formDataField;
+			const formDataValue: IFormDataField = this.transformFormData(formDataField);
 
-				formDataValue = { type, data, filename };
-			}
+			this.insertNestedDataAtKeys(formDataValue, parsedBody, nestedKeys);
+		}
 
-			const fieldValue: Optional<T[Key<T>]> = parsed[fieldName];
+		return parsedBody;
+	}
 
-			if (fieldValue) {
-				if (Array.isArray(fieldValue)) {
-					parsed[fieldName] = [...fieldValue, formDataValue] as T[Key<T>];
-				} else {
-					parsed[fieldName] = [fieldValue, formDataValue] as T[Key<T>];
-				}
+	private transformFormData(formDataField: IFormDataRawField): IFormDataField {
+		if ("type" in formDataField) {
+			const { type, data, filename }: IFormDataRawFileField = formDataField;
 
-				return parsed;
-			}
+			return new UploadedMedia(filename, type, data);
+		}
 
-			parsed[fieldName] = formDataValue as T[Key<T>];
+		return formDataField.data.toString("utf-8");
+	}
 
-			return parsed;
+	private insertNestedDataAtKeys(data: IFormDataField, parsedBody: AnyObject, nestedKeys: Array<string>): void {
+		const isLastIndex: Delegate<[number], boolean> = (index: number): boolean => index === nestedKeys.length - 1;
+		const isNumericKey: Delegate<[string], boolean> = (key: string): boolean => !isNaN(+key) && !isNaN(parseFloat(key));
+
+		nestedKeys.reduce((currentObject: Exclude<AnyObjectValues, Primitives>, key: string, currentIndex: number): Exclude<AnyObjectValues, Primitives> => {
+			if (isLastIndex(currentIndex)) return this.insertDataAtLeafNode(data, currentObject, key);
+
+			const pathNode: Optional<AnyObjectValues> = Array.isArray(currentObject) ? currentObject[+key] : currentObject[key];
+			if (pathNode) return (Array.isArray(currentObject) ? currentObject[+key] : currentObject[key]) as Exclude<AnyObjectValues, Primitives>;
+
+			const nextKey: Optional<string> = nestedKeys[currentIndex + 1];
+			if (!nextKey) return currentObject;
+
+			const nextNestedDataStructure: AnyObjectValues = isNumericKey(nextKey) ? [] : {};
+			Array.isArray(currentObject) ? (currentObject[+key] = nextNestedDataStructure) : (currentObject[key] = nextNestedDataStructure);
+
+			return nextNestedDataStructure;
 		}, parsedBody);
+	}
+
+	private insertDataAtLeafNode(data: IFormDataField, currentObject: Exclude<AnyObjectValues, Primitives>, key: string): Exclude<AnyObjectValues, Primitives> {
+		const leafNode: Optional<AnyObjectValues> = Array.isArray(currentObject) ? currentObject[+key] : currentObject[key];
+
+		if (leafNode) {
+			if (Array.isArray(leafNode)) {
+				const leafNodeData: AnyObjectValues = [...leafNode, data] as AnyObjectValues;
+				Array.isArray(currentObject) ? (currentObject[+key] = leafNodeData) : (currentObject[key] = leafNodeData);
+
+				return currentObject;
+			}
+
+			const leafNodeData: AnyObjectValues = [leafNode, data] as AnyObjectValues;
+			Array.isArray(currentObject) ? (currentObject[+key] = leafNodeData) : (currentObject[key] = leafNodeData);
+
+			return currentObject;
+		}
+
+		const leafNodeData: AnyObjectValues = data as AnyObjectValues;
+		Array.isArray(currentObject) ? (currentObject[+key] = leafNodeData) : (currentObject[key] = leafNodeData);
+
+		return currentObject;
 	}
 }

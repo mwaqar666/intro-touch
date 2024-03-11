@@ -45,7 +45,7 @@ export class GoogleAuthAdapter implements IAuthAdapter<IGoogleAdapter> {
 
 		return {
 			adapter: googleAdapter,
-			identifier: AuthAdapter.GOOGLE,
+			identifier: AuthAdapter.Google,
 		};
 	}
 }

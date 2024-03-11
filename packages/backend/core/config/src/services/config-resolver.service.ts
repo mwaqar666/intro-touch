@@ -1,41 +1,42 @@
 import type { Key } from "@/stacks/types";
 import { ConfigConst } from "@/backend-core/config/const";
-import { EnvExtractor } from "@/backend-core/config/helpers";
-import type { IConfigResolver } from "@/backend-core/config/interface";
-import type { IConfig, IConfigValidation } from "@/backend-core/config/types";
+import type { IAppConfigResolver, IConfig, IConfigValidation } from "@/backend-core/config/types";
 
-export class ConfigResolverService implements IConfigResolver<IConfig, IConfigValidation> {
+export class ConfigResolverService implements IAppConfigResolver {
 	private configCache: IConfig;
 
 	public buildConfig(schema: IConfigValidation): void {
 		this.configCache = {
 			app: {
-				env: EnvExtractor.env(schema, ConfigConst.NODE_ENV),
-				name: EnvExtractor.env(schema, ConfigConst.APP_NAME),
-				version: EnvExtractor.env(schema, ConfigConst.APP_VERSION),
-				region: EnvExtractor.env(schema, ConfigConst.APP_REGION),
-				key: EnvExtractor.env(schema, ConfigConst.APP_KEY),
+				env: schema[ConfigConst.NODE_ENV],
+				name: schema[ConfigConst.APP_NAME],
+				version: schema[ConfigConst.APP_VERSION],
+				region: schema[ConfigConst.APP_REGION],
+				key: schema[ConfigConst.APP_KEY],
 			},
 			auth: {
-				googleClientId: EnvExtractor.env(schema, ConfigConst.GOOGLE_CLIENT_ID),
-				facebookClientId: EnvExtractor.env(schema, ConfigConst.FACEBOOK_CLIENT_ID),
-				facebookClientSecret: EnvExtractor.env(schema, ConfigConst.FACEBOOK_CLIENT_SECRET),
-				redirectUrl: EnvExtractor.env(schema, ConfigConst.REDIRECT_URL),
-				tokenExpiry: EnvExtractor.env(schema, ConfigConst.TOKEN_EXPIRY),
+				googleClientId: schema[ConfigConst.GOOGLE_CLIENT_ID],
+				facebookClientId: schema[ConfigConst.FACEBOOK_CLIENT_ID],
+				facebookClientSecret: schema[ConfigConst.FACEBOOK_CLIENT_SECRET],
+				redirectUrl: schema[ConfigConst.REDIRECT_URL],
+				tokenExpiry: schema[ConfigConst.TOKEN_EXPIRY],
 			},
 			email: {
-				emailFrom: EnvExtractor.env(schema, ConfigConst.EMAIL_FROM),
+				emailFrom: schema[ConfigConst.EMAIL_FROM],
 			},
 			frontend: {
-				url: EnvExtractor.env(schema, ConfigConst.FRONTEND_URL),
+				url: schema[ConfigConst.FRONTEND_URL],
 			},
 			database: {
-				databaseName: EnvExtractor.env(schema, ConfigConst.DB_NAME),
-				databaseHost: EnvExtractor.env(schema, ConfigConst.DB_HOST),
-				databasePort: parseInt(EnvExtractor.env(schema, ConfigConst.DB_PORT)),
-				databaseUser: EnvExtractor.env(schema, ConfigConst.DB_USER),
-				databasePass: EnvExtractor.env(schema, ConfigConst.DB_PASS),
-				databaseToken: EnvExtractor.env(schema, ConfigConst.DB_TOKEN),
+				databaseName: schema[ConfigConst.DB_NAME],
+				databaseHost: schema[ConfigConst.DB_HOST],
+				databasePort: parseInt(schema[ConfigConst.DB_PORT]),
+				databaseUser: schema[ConfigConst.DB_USER],
+				databasePass: schema[ConfigConst.DB_PASS],
+				databaseToken: schema[ConfigConst.DB_TOKEN],
+			},
+			storage: {
+				driver: schema[ConfigConst.STORAGE_DRIVER],
 			},
 		};
 	}

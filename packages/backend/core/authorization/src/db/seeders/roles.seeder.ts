@@ -22,11 +22,11 @@ export class RolesSeeder implements ISeeder {
 				await this.roleRepository.createMany({
 					valuesToCreate: [
 						{
-							roleName: RolesEnum.ADMIN,
+							roleName: RolesEnum.Admin,
 						},
 						{
 							roleParentId: 1,
-							roleName: RolesEnum.CUSTOMER,
+							roleName: RolesEnum.Customer,
 						},
 					],
 					transaction,

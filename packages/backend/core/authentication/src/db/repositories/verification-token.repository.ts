@@ -5,14 +5,14 @@ import ms from "ms";
 import type { Transaction } from "sequelize";
 import { Op } from "sequelize";
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
-import type { TokenTypeEnum } from "@/backend-core/authentication/db/enums";
+import type { TokenType } from "@/backend-core/authentication/db/enums";
 
 export class VerificationTokenRepository extends BaseRepository<VerificationTokenEntity> {
 	public constructor() {
 		super(VerificationTokenEntity);
 	}
 
-	public async getVerificationTokens(userEntity: UserEntity, tokenType: TokenTypeEnum): Promise<Array<VerificationTokenEntity>> {
+	public async getVerificationTokens(userEntity: UserEntity, tokenType: TokenType): Promise<Array<VerificationTokenEntity>> {
 		return this.findAll({
 			findOptions: {
 				where: {
@@ -23,7 +23,7 @@ export class VerificationTokenRepository extends BaseRepository<VerificationToke
 		});
 	}
 
-	public async purgeExistingVerificationTokens(userEntity: UserEntity, tokenType: TokenTypeEnum, transaction: Transaction): Promise<void> {
+	public async purgeExistingVerificationTokens(userEntity: UserEntity, tokenType: TokenType, transaction: Transaction): Promise<void> {
 		await this.deleteMany({
 			findOptions: {
 				where: {
@@ -35,7 +35,7 @@ export class VerificationTokenRepository extends BaseRepository<VerificationToke
 		});
 	}
 
-	public async createVerificationToken(userEntity: UserEntity, tokenType: TokenTypeEnum, transaction: Transaction): Promise<VerificationTokenEntity> {
+	public async createVerificationToken(userEntity: UserEntity, tokenType: TokenType, transaction: Transaction): Promise<VerificationTokenEntity> {
 		const tokenExpiry: Date = new Date(Date.now() + ms("1d"));
 
 		return this.createOne({
@@ -48,7 +48,7 @@ export class VerificationTokenRepository extends BaseRepository<VerificationToke
 		});
 	}
 
-	public async findValidVerificationToken(userEntity: UserEntity, tokenIdentifier: string, tokenType: TokenTypeEnum): Promise<Nullable<VerificationTokenEntity>> {
+	public async findValidVerificationToken(userEntity: UserEntity, tokenIdentifier: string, tokenType: TokenType): Promise<Nullable<VerificationTokenEntity>> {
 		const currentTimestamp: Date = new Date();
 
 		return await this.findOne({

@@ -20,6 +20,12 @@ export class MailerService implements IMailer {
 		this.resetSendEmailParams();
 	}
 
+	public from(sender: string): IMailer {
+		this.sendEmailParams.Source = sender;
+
+		return this;
+	}
+
 	public to(...recipients: Array<string>): IMailer {
 		this.sendEmailParams.Destination.ToAddresses.push(...recipients);
 

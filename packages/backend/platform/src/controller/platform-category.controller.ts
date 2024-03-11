@@ -16,7 +16,7 @@ export class PlatformCategoryController {
 	) {}
 
 	public async getPlatformCategories(@Auth authEntity: UserEntity): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM_CATEGORY]);
+		await this.authorization.can(authEntity, [PermissionsEnum.ListPlatformCategory]);
 
 		return { platformCategories: await this.platformCategoryService.getPlatformCategories() };
 	}

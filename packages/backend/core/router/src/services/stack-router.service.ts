@@ -18,7 +18,7 @@ export class StackRouterService implements IStackRouter {
 		const stackRoutes: Array<IStackRoute> = [];
 
 		for (const builtRoute of builtRoutes) {
-			if (builtRoute.routeType === RouteType.APPLICATION) continue;
+			if (builtRoute.routeType === RouteType.Application) continue;
 
 			stackRoutes.push({
 				path: builtRoute.path,

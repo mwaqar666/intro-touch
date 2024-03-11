@@ -1,4 +1,6 @@
 export interface IMailer {
+	from(sender: string): IMailer;
+
 	to(...recipients: Array<string>): IMailer;
 
 	cc(...recipients: Array<string>): IMailer;

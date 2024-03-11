@@ -8,7 +8,7 @@ export class RouteBuilderConst {
 	public static readonly DefaultRouteGroup: IBuiltGroupRoute = {
 		prefix: "/",
 		guards: [],
-		routeType: RouteType.GLOBAL,
+		routeType: RouteType.Global,
 		requestInterceptors: [],
 		responseInterceptors: [],
 	};

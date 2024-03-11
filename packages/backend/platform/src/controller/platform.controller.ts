@@ -17,13 +17,13 @@ export class PlatformController {
 	) {}
 
 	public async getPlatformsByPlatformCategory(@Auth authEntity: UserEntity, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<{ platforms: Array<PlatformEntity> }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
+		await this.authorization.can(authEntity, [PermissionsEnum.ListPlatform]);
 
 		return { platforms: await this.platformService.getPlatformsByPlatformCategory(platformCategoryUuid) };
 	}
 
 	public async getUserOwnedPlatforms(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<UserOwnedPlatformsResponseDto> {
-		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
+		await this.authorization.can(authEntity, [PermissionsEnum.ListPlatform]);
 
 		return await this.platformService.getUserOwnedPlatforms(userProfileUuid, platformCategoryUuid);
 	}

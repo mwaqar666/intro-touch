@@ -4,7 +4,11 @@ export type Optional<T> = undefined | T;
 
 export type Nullable<T> = null | T;
 
-export type IAnyObject = Record<string, any>;
+export type Primitives = string | number | boolean | Buffer;
+
+export type AnyObjectValues = Primitives | AnyObject | Array<AnyObjectValues>;
+
+export type AnyObject = { [Key in string]: AnyObjectValues };
 
 export type PossiblePromise<T> = T | Promise<T>;
 
@@ -18,9 +22,7 @@ export type PartialOnly<T, K extends Key<T>> = Partial<Pick<T, K>> & Omit<T, K>;
 
 export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
-export type DeepReadonly<T> = {
-	readonly [P in keyof T]: DeepReadonly<T[P]>;
-};
+export type DeepReadonly<T> = { readonly [P in keyof T]: DeepReadonly<T[P]> };
 
 export type PositiveFilterCondition<T, P extends Key<T>, C> = T[P] extends C ? P : never;
 
