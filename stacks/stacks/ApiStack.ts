@@ -86,7 +86,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 
 	const api: Api = new Api(stack, ApiConst.ApiId(app.stage), apiRouteProps);
 
-	api.attachPermissions(["ses:*"]);
+	api.attachPermissions(["ses:*", "s3:*"]);
 
 	stack.addOutputs({
 		nodeEnvironment: app.stage,

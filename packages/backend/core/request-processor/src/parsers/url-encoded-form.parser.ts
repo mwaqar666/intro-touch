@@ -1,10 +1,10 @@
-import type { Key, Optional } from "@/stacks/types";
+import type { AnyObject, Optional } from "@/stacks/types";
 import { useBody } from "sst/node/api";
 import type { IBodyParser } from "@/backend-core/request-processor/interface";
 
-export class UrlEncodedFormParser<T extends object = object> implements IBodyParser<T> {
-	public parse(): T {
-		const parsedBody: T = {} as T;
+export class UrlEncodedFormParser implements IBodyParser {
+	public parse(): AnyObject {
+		const parsedBody: AnyObject = {};
 
 		const requestBody: Optional<string> = useBody();
 
@@ -12,12 +12,12 @@ export class UrlEncodedFormParser<T extends object = object> implements IBodyPar
 
 		const urlSearchParams: URLSearchParams = new URLSearchParams(requestBody);
 
-		return Array.from(urlSearchParams).reduce((parsed: T, [paramKey, paramValue]: [string, string]): T => {
-			if (!paramKey) return parsed;
+		for (const [paramKey, paramValue] of urlSearchParams) {
+			if (!paramKey) continue;
 
-			parsed[paramKey as Key<T>] = paramValue as T[Key<T>];
+			parsedBody[paramKey] = paramValue;
+		}
 
-			return parsed;
-		}, parsedBody);
+		return parsedBody;
 	}
 }

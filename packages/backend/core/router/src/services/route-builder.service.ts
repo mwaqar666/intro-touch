@@ -126,18 +126,20 @@ export class RouteBuilderService implements IRouteBuilder {
 	private prepareCorsRouteIfRequired(builtRoute: IBuiltRoute): Nullable<IBuiltRoute> {
 		if (builtRoute.method === RouteMethod.Get || builtRoute.method === RouteMethod.Head) return null;
 
-		const response: Response = App.container.resolve(Response);
-
-		response.setHeaders({
-			"Access-Control-Allow-Origin": "*",
-			"Access-Control-Allow-Methods": builtRoute.method,
-			"Access-Control-Allow-Headers": "*",
-		});
-
 		return {
 			path: builtRoute.path,
 			method: RouteMethod.Options,
-			handler: (): Response => response,
+			handler: (): Response => {
+				const response: Response = App.container.resolve(Response);
+
+				response.setHeaders({
+					"Access-Control-Allow-Origin": "*",
+					"Access-Control-Allow-Methods": builtRoute.method,
+					"Access-Control-Allow-Headers": "*",
+				});
+
+				return response;
+			},
 			guards: [],
 			routeType: RouteType.Application,
 			requestInterceptors: [],

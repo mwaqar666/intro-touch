@@ -18,9 +18,9 @@ export class S3StorageDriver implements IStorageDriver {
 		this.s3Client = this.prepareS3Client();
 	}
 
-	public async storeObject(key: string, value: string | Buffer): Promise<void> {
+	public async storeObject(directory: string, key: string, value: string | Buffer): Promise<void> {
 		const putObjectCommandInput: PutObjectCommandInput = {
-			Bucket: undefined,
+			Bucket: directory,
 			Key: key,
 			Body: value,
 		};
@@ -36,9 +36,9 @@ export class S3StorageDriver implements IStorageDriver {
 		}
 	}
 
-	public async getObject(key: string): Promise<Nullable<string>> {
+	public async getObject(directory: string, key: string): Promise<Nullable<string>> {
 		const getObjectCommandInput: GetObjectCommandInput = {
-			Bucket: undefined,
+			Bucket: directory,
 			Key: key,
 		};
 
@@ -57,9 +57,9 @@ export class S3StorageDriver implements IStorageDriver {
 		}
 	}
 
-	public async deleteObject(key: string): Promise<void> {
+	public async deleteObject(directory: string, key: string): Promise<void> {
 		const deleteObjectCommandInput: DeleteObjectCommandInput = {
-			Bucket: undefined,
+			Bucket: directory,
 			Key: key,
 		};
 

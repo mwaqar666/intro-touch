@@ -18,16 +18,16 @@ export class StorageService {
 		this.initializeStorage();
 	}
 
-	public async storeObject(key: string, value: string | Buffer): Promise<void> {
-		await this.storageDriver.storeObject(key, value);
+	public async storeObject(directory: string, key: string, value: string | Buffer): Promise<void> {
+		await this.storageDriver.storeObject(directory, key, value);
 	}
 
-	public async getObject(key: string): Promise<Nullable<string>> {
-		return this.storageDriver.getObject(key);
+	public async getObject(directory: string, key: string): Promise<Nullable<string>> {
+		return this.storageDriver.getObject(directory, key);
 	}
 
-	public async deleteObject(key: string): Promise<void> {
-		await this.storageDriver.deleteObject(key);
+	public async deleteObject(directory: string, key: string): Promise<void> {
+		await this.storageDriver.deleteObject(directory, key);
 	}
 
 	public useDriver(storageDriver: StorageDriver): StorageService {

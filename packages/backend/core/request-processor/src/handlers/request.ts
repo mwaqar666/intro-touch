@@ -57,9 +57,9 @@ export class Request<T extends object = object, P extends IPathParams = IPathPar
 	public getBody(): T {
 		if (this._body) return this._body;
 
-		const bodyParser: IBodyParser<T> = this.getRequestBodyParser();
+		const bodyParser: IBodyParser = this.getRequestBodyParser();
 
-		this._body = bodyParser.parse(this);
+		this._body = bodyParser.parse(this) as T;
 
 		return this._body;
 	}
@@ -86,14 +86,14 @@ export class Request<T extends object = object, P extends IPathParams = IPathPar
 		return useLambdaContext();
 	}
 
-	private getRequestBodyParser(): IBodyParser<T> {
+	private getRequestBodyParser(): IBodyParser {
 		const contentType: Optional<string> = this.getHeaders("Content-Type");
 
-		if (!contentType || contentType === "application/json") return App.container.resolve(JsonParser<T>);
+		if (!contentType || contentType.includes("application/json")) return App.container.resolve(JsonParser);
 
-		if (contentType === "application/x-www-form-urlencoded") return App.container.resolve(UrlEncodedFormParser<T>);
+		if (contentType.includes("application/x-www-form-urlencoded")) return App.container.resolve(UrlEncodedFormParser);
 
-		if (contentType.includes("multipart/form-data")) return App.container.resolve(FormDataParser<T>);
+		if (contentType.includes("multipart/form-data")) return App.container.resolve(FormDataParser);
 
 		throw new InternalServerException("Unknown body");
 	}
