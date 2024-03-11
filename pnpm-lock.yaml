@@ -224,6 +224,9 @@ importers:
 
   packages/backend/platform:
     dependencies:
+      class-validator:
+        specifier: ^0.14.1
+        version: 0.14.1
       iocc:
         specifier: ^2.2.2
         version: 2.2.2(reflect-metadata@0.2.1)
@@ -318,6 +321,9 @@ packages:
   /@aws-cdk/cloud-assembly-schema@2.124.0:
     resolution: {integrity: sha512-vVGGXVwqug0/oSRf2meLerqxu11aN/ULKjcVnBw339kiWLBfZYXktqxWYtgXoaAiZBS7eGSuhKrPYDE2Jx2kdA==}
     engines: {node: '>= 14.15.0'}
+    dependencies:
+      jsonschema: 1.4.1
+      semver: 7.5.4
     dev: true
     bundledDependencies:
       - jsonschema
@@ -343,6 +349,7 @@ packages:
       '@aws-cdk/cloud-assembly-schema': 2.124.0
     dependencies:
       '@aws-cdk/cloud-assembly-schema': 2.124.0
+      semver: 7.5.4
     dev: true
     bundledDependencies:
       - semver
@@ -6589,6 +6596,10 @@ packages:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
+    dev: true
+
+  /jsonschema@1.4.1:
+    resolution: {integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ==}
     dev: true
 
   /keyv@4.5.4:

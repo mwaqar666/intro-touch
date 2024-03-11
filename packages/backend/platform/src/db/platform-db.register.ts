@@ -8,7 +8,7 @@ import type { Constructable } from "@/stacks/types";
 import { CustomPlatformEntity, PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { CreateCustomPlatformsTable, CreatePlatformCategoriesTable, CreatePlatformProfilesTable, CreatePlatformsTable } from "@/backend/platform/db/migrations";
 import { CustomPlatformRepository, PlatformCategoryRepository, PlatformProfileRepository, PlatformRepository } from "@/backend/platform/db/repositories";
-import { PlatformsSeeder, PlatformUserProfileSeeder } from "@/backend/platform/db/seeders";
+import { CustomPlatformSeeder, PlatformsSeeder, PlatformUserProfileSeeder } from "@/backend/platform/db/seeders";
 
 export class PlatformDbRegister extends AbstractDbRegister {
 	public override registerEntities(): Array<IEntityType<any>> {
@@ -24,6 +24,6 @@ export class PlatformDbRegister extends AbstractDbRegister {
 	}
 
 	public override registerSeeders(): Array<Constructable<ISeeder, any>> {
-		return [PlatformsSeeder, PlatformUserProfileSeeder];
+		return [PlatformsSeeder, PlatformUserProfileSeeder, CustomPlatformSeeder];
 	}
 }
