@@ -16,7 +16,7 @@ export class UserOwnedPlatformResponseInterceptor implements IResponseIntercepto
 		const userBuiltInPlatforms: Array<UserBuiltInPlatform> = userOwnedPlatforms.platforms.map((platform: PlatformEntity): UserBuiltInPlatform => {
 			return {
 				platformType: "builtIn",
-				platformUuid: platform.platformUuid,
+				platformUuid: platform.platformPlatformProfile.platformProfileUuid,
 				platformName: platform.platformName,
 				platformIcon: platform.platformIcon,
 				platformIsActive: platform.platformIsActive,
