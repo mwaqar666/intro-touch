@@ -2,7 +2,7 @@ import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
-import { CustomPlatformController, PlatformCategoryController, PlatformController } from "@/backend/platform/controller";
+import { CustomPlatformController, PlatformCategoryController, PlatformController, PlatformProfileController } from "@/backend/platform/controller";
 import { UserOwnedPlatformResponseInterceptor } from "@/backend/platform/interceptors";
 
 export class PlatformRouter implements IRouter {
@@ -11,6 +11,7 @@ export class PlatformRouter implements IRouter {
 		@Inject(PlatformController) private readonly platformController: PlatformController,
 		@Inject(CustomPlatformController) private readonly customPlatformController: CustomPlatformController,
 		@Inject(PlatformCategoryController) private readonly platformCategoryController: PlatformCategoryController,
+		@Inject(PlatformProfileController) private readonly platformProfileController: PlatformProfileController,
 	) {}
 
 	public registerRoutes(): Array<IRoute> {
@@ -39,6 +40,16 @@ export class PlatformRouter implements IRouter {
 						method: RouteMethod.Get,
 						responseInterceptors: [UserOwnedPlatformResponseInterceptor],
 						handler: this.platformController.getUserOwnedPlatforms,
+					},
+					{
+						path: "/builtin/{platformProfileUuid}",
+						method: RouteMethod.PATCH,
+						handler: this.platformProfileController.updateBuiltInPlatform,
+					},
+					{
+						path: "/custom/{customPlatformUuid}",
+						method: RouteMethod.PATCH,
+						handler: this.customPlatformController.updateCustomPlatform,
 					},
 				],
 			},
