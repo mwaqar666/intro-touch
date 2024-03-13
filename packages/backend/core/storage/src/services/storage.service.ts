@@ -1,6 +1,8 @@
+import { randomUUID } from "crypto";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IStorageConfig } from "@/backend-core/config/types";
 import { App } from "@/backend-core/core/extensions";
+import type { UploadedFile } from "@/backend-core/request-processor/dto";
 import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import { S3StorageDriver } from "@/backend-core/storage/drivers";
@@ -18,16 +20,18 @@ export class StorageService {
 		this.initializeStorage();
 	}
 
-	public async storeObject(key: string, value: string | Buffer): Promise<void> {
-		await this.storageDriver.storeObject(key, value);
+	public async storeFile(directory: string, value: UploadedFile): Promise<string> {
+		const uniqueKey: string = `${randomUUID()}.${value.fileExtension}`;
+
+		return await this.storageDriver.storeFile(directory, uniqueKey, value);
 	}
 
-	public async getObject(key: string): Promise<Nullable<string>> {
-		return this.storageDriver.getObject(key);
+	public async getFile(directory: string, key: string): Promise<Nullable<string>> {
+		return await this.storageDriver.getFile(directory, key);
 	}
 
-	public async deleteObject(key: string): Promise<void> {
-		await this.storageDriver.deleteObject(key);
+	public async deleteFile(directory: string, key: string): Promise<void> {
+		await this.storageDriver.deleteFile(directory, key);
 	}
 
 	public useDriver(storageDriver: StorageDriver): StorageService {

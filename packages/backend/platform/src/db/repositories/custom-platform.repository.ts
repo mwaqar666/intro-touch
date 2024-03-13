@@ -1,6 +1,8 @@
 import { UserProfileEntity } from "@/backend/user/db/entities";
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
+import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
+import type { Transaction } from "sequelize";
 import { CustomPlatformEntity, PlatformCategoryEntity } from "@/backend/platform/db/entities";
 
 export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntity> {
@@ -43,6 +45,16 @@ export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntit
 				],
 			},
 			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
+		});
+	}
+
+	public updateCustomPlatform(customPlatformUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>>, transaction: Transaction): Promise<CustomPlatformEntity> {
+		return this.updateOne({
+			findOptions: {
+				where: { customPlatformUuid },
+			},
+			valuesToUpdate,
+			transaction,
 		});
 	}
 }

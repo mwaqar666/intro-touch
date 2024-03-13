@@ -1,10 +1,10 @@
-import type { Optional } from "@/stacks/types";
+import type { AnyObject, Optional } from "@/stacks/types";
 import { useBody } from "sst/node/api";
 import type { IBodyParser } from "@/backend-core/request-processor/interface";
 
-export class JsonParser<T extends object = object> implements IBodyParser<T> {
-	public parse(): T {
-		let parsedBody: T = {} as T;
+export class JsonParser implements IBodyParser {
+	public parse(): AnyObject {
+		let parsedBody: AnyObject = {};
 
 		const requestBody: Optional<string> = useBody();
 

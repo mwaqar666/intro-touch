@@ -1,30 +1,29 @@
-import type { NumberSchema, StringSchema } from "joi";
-import type { ConfigConst } from "@/backend-core/config/const";
 import type { StorageDriver } from "@/backend-core/storage/enums";
+import type { ConfigConst } from "@/backend-core/config/const";
 
 export interface IConfigValidation {
-	[ConfigConst.NODE_ENV]: StringSchema;
-	[ConfigConst.APP_NAME]: StringSchema;
-	[ConfigConst.APP_VERSION]: StringSchema;
-	[ConfigConst.APP_REGION]: StringSchema;
-	[ConfigConst.APP_KEY]: StringSchema;
+	[ConfigConst.NODE_ENV]: string;
+	[ConfigConst.APP_NAME]: string;
+	[ConfigConst.APP_VERSION]: string;
+	[ConfigConst.APP_REGION]: string;
+	[ConfigConst.APP_KEY]: string;
 
-	[ConfigConst.DB_NAME]: StringSchema;
-	[ConfigConst.DB_HOST]: StringSchema;
-	[ConfigConst.DB_PORT]: NumberSchema;
-	[ConfigConst.DB_USER]: StringSchema;
-	[ConfigConst.DB_PASS]: StringSchema;
-	[ConfigConst.DB_TOKEN]: StringSchema;
+	[ConfigConst.DB_NAME]: string;
+	[ConfigConst.DB_HOST]: string;
+	[ConfigConst.DB_PORT]: string;
+	[ConfigConst.DB_USER]: string;
+	[ConfigConst.DB_PASS]: string;
+	[ConfigConst.DB_TOKEN]: string;
 
-	[ConfigConst.STORAGE_DRIVER]: StringSchema<StorageDriver>;
+	[ConfigConst.STORAGE_DRIVER]: StorageDriver;
 
-	[ConfigConst.GOOGLE_CLIENT_ID]: StringSchema;
-	[ConfigConst.FACEBOOK_CLIENT_ID]: StringSchema;
-	[ConfigConst.FACEBOOK_CLIENT_SECRET]: StringSchema;
-	[ConfigConst.REDIRECT_URL]: StringSchema;
-	[ConfigConst.TOKEN_EXPIRY]: StringSchema;
+	[ConfigConst.GOOGLE_CLIENT_ID]: string;
+	[ConfigConst.FACEBOOK_CLIENT_ID]: string;
+	[ConfigConst.FACEBOOK_CLIENT_SECRET]: string;
+	[ConfigConst.REDIRECT_URL]: string;
+	[ConfigConst.TOKEN_EXPIRY]: string;
 
-	[ConfigConst.EMAIL_FROM]: StringSchema;
+	[ConfigConst.EMAIL_FROM]: string;
 
-	[ConfigConst.FRONTEND_URL]: StringSchema;
+	[ConfigConst.FRONTEND_URL]: string;
 }

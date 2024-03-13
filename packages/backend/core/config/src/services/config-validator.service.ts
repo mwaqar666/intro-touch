@@ -1,6 +1,5 @@
 import { BadRequestException } from "@/backend-core/request-processor/exceptions";
 import { StorageDriver } from "@/backend-core/storage/enums";
-import type { IAnyObject } from "@/stacks/types";
 import type { ObjectSchema, ValidationResult } from "joi";
 import joi from "joi";
 import { ConfigConst } from "@/backend-core/config/const";
@@ -8,7 +7,7 @@ import type { IConfigValidator } from "@/backend-core/config/interface";
 import type { IConfigValidation } from "@/backend-core/config/types";
 
 export class ConfigValidatorService implements IConfigValidator<IConfigValidation> {
-	public validateConfig(config: IAnyObject): IConfigValidation {
+	public validateConfig(config: unknown): IConfigValidation {
 		const { error, value }: ValidationResult<IConfigValidation> = this.createValidatorSchema().validate(config);
 
 		if (error) throw new BadRequestException(error.message);

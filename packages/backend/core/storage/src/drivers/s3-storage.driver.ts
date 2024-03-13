@@ -1,5 +1,6 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
+import type { UploadedFile } from "@/backend-core/request-processor/dto";
 import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { Nullable } from "@/stacks/types";
 import type { DeleteObjectCommandInput, GetObjectCommandInput, GetObjectCommandOutput, PutObjectCommandInput } from "@aws-sdk/client-s3";
@@ -18,17 +19,23 @@ export class S3StorageDriver implements IStorageDriver {
 		this.s3Client = this.prepareS3Client();
 	}
 
-	public async storeObject(key: string, value: string | Buffer): Promise<void> {
+	public async storeFile(directory: string, key: string, value: UploadedFile): Promise<string> {
 		const putObjectCommandInput: PutObjectCommandInput = {
-			Bucket: undefined,
+			Bucket: directory,
 			Key: key,
-			Body: value,
+			Body: value.fileData,
+			ACL: "public-read",
+			ContentType: value.fileType,
+			ContentLength: value.sizeInBytes(),
+			ContentEncoding: value.fileEncoding,
 		};
 
 		const putObjectCommand: PutObjectCommand = new PutObjectCommand(putObjectCommandInput);
 
 		try {
 			await this.s3Client.send(putObjectCommand);
+
+			return `https://${directory}.s3.amazonaws.com/${key}`;
 		} catch (error: unknown) {
 			const exception: Error = error as Error;
 
@@ -36,9 +43,9 @@ export class S3StorageDriver implements IStorageDriver {
 		}
 	}
 
-	public async getObject(key: string): Promise<Nullable<string>> {
+	public async getFile(directory: string, key: string): Promise<Nullable<string>> {
 		const getObjectCommandInput: GetObjectCommandInput = {
-			Bucket: undefined,
+			Bucket: directory,
 			Key: key,
 		};
 
@@ -57,9 +64,9 @@ export class S3StorageDriver implements IStorageDriver {
 		}
 	}
 
-	public async deleteObject(key: string): Promise<void> {
+	public async deleteFile(directory: string, key: string): Promise<void> {
 		const deleteObjectCommandInput: DeleteObjectCommandInput = {
-			Bucket: undefined,
+			Bucket: directory,
 			Key: key,
 		};
 

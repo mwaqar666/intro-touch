@@ -9,6 +9,10 @@ export class Response<T = unknown, C = unknown> {
 	private _error: Nullable<IError<C>> = null;
 	private _statusCode: HttpStatusCode = HttpStatusCode.Ok;
 
+	public constructor() {
+		this.addHeaders({ "Content-Type": "application/json" });
+	}
+
 	public setHeaders(headers: IHeaders): Response<T, C> {
 		this._headers = headers;
 

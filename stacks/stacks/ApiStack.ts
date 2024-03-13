@@ -67,6 +67,12 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 	const stackRoutes: Array<IStackRoute> = await routeRegisterHandler();
 
 	const apiRouteProps: ApiProps = {
+		cors: {
+			allowOrigins: ["*"], // Adjust according to your security requirements
+			allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Add any other methods your API uses
+			allowHeaders: ["Content-Type", "Authorization"], // Include any custom headers your client might send
+			maxAge: "1 day", // Optional: Define the max age for the preflight request cache
+		},
 		routes: Object.fromEntries(
 			stackRoutes.map((stackRoute: IStackRoute): [string, ApiFunctionRouteProps] => {
 				const methodAndPath = `${stackRoute.method} ${stackRoute.path}`;
@@ -86,7 +92,7 @@ export const ApiStack = async ({ app, stack }: StackContext): Promise<IApiStack>
 
 	const api: Api = new Api(stack, ApiConst.ApiId(app.stage), apiRouteProps);
 
-	api.attachPermissions(["ses:*"]);
+	api.attachPermissions(["ses:*", "s3:*"]);
 
 	stack.addOutputs({
 		nodeEnvironment: app.stage,
