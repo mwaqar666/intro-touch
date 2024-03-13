@@ -1,4 +1,5 @@
-import { IsUnique } from "@/backend-core/validation/validators";
+import type { UploadedFile } from "@/backend-core/request-processor/dto";
+import { IsUnique, IsValidFile } from "@/backend-core/validation/validators";
 import type { Optional } from "@/stacks/types";
 import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
@@ -14,10 +15,9 @@ export class CreateUserProfileRequestDto {
 	@IsNotEmpty()
 	public userProfileLastName: string;
 
-	@MaxLength(255)
-	@IsString()
+	@IsValidFile({ mimeType: "image/*" })
 	@IsNotEmpty()
-	public userProfilePicture: string;
+	public userProfilePicture: UploadedFile;
 
 	@IsUnique({ repository: UserProfileRepository })
 	@MaxLength(50)

@@ -43,7 +43,7 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 	private extractHandlerMeta(controllerMetaMap: IHandlerMetaMap, resolvedRoute: IResolvedRoute): Array<IHandlerMetaType> {
 		const methodName: string = this.guessHandlerName(resolvedRoute.handler.name);
 
-		const handlerMetaArray: Optional<Array<IHandlerMetaType>> = controllerMetaMap.get(methodName);
+		const handlerMetaArray: Optional<Array<IHandlerMetaType>> = controllerMetaMap.get(methodName) ?? [];
 
 		return handlerMetaArray ?? [];
 	}
@@ -57,7 +57,7 @@ export class HandlerMetaResolverService implements IHandlerMetaResolver {
 	private async resolveMetaData(request: Request, handlerMeta: IHandlerMetaType): Promise<unknown> {
 		switch (handlerMeta.type) {
 			case "body":
-				return await this.validator.validate(handlerMeta.schema, request.getBody());
+				return await this.validator.validate(handlerMeta.schema, await request.getBody());
 			case "auth":
 				return await request.auth();
 			case "path":
