@@ -54,12 +54,12 @@ export class Request<T extends object = object, P extends IPathParams = IPathPar
 		return queryParams[param];
 	}
 
-	public getBody(): T {
+	public async getBody(): Promise<T> {
 		if (this._body) return this._body;
 
 		const bodyParser: IBodyParser = this.getRequestBodyParser();
 
-		this._body = bodyParser.parse(this) as T;
+		this._body = (await bodyParser.parse(this)) as T;
 
 		return this._body;
 	}
@@ -84,6 +84,10 @@ export class Request<T extends object = object, P extends IPathParams = IPathPar
 
 	public context(): Context {
 		return useLambdaContext();
+	}
+
+	public getUnderlyingAwsRequest(): DeepReadonly<ApiRequest> {
+		return this.awsRequest;
 	}
 
 	private getRequestBodyParser(): IBodyParser {

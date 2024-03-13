@@ -1,9 +1,10 @@
+import type { UploadedFile } from "@/backend-core/request-processor/dto";
 import type { Nullable } from "@/stacks/types";
 
 export interface IStorageDriver {
-	storeObject(directory: string, key: string, value: string | Buffer): Promise<void>;
+	storeFile(directory: string, key: string, value: UploadedFile): Promise<string>;
 
-	getObject(directory: string, key: string): Promise<Nullable<string>>;
+	getFile(directory: string, key: string): Promise<Nullable<string>>;
 
-	deleteObject(directory: string, key: string): Promise<void>;
+	deleteFile(directory: string, key: string): Promise<void>;
 }
