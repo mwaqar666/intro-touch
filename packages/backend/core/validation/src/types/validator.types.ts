@@ -14,3 +14,9 @@ export interface IUniqueValidatorIgnoreOptions<T extends BaseEntity<T>, R extend
 }
 
 export type IUniqueValidatorOptions<T extends BaseEntity<T>, R extends BaseRepository<T>> = IUniqueValidatorNoIgnoreOptions<T, R> | IUniqueValidatorIgnoreOptions<T, R>;
+
+export interface IValidMediaValidatorOptions {
+	mimeType?: string;
+	existing?: boolean;
+	maxSizeInBytes?: number;
+}

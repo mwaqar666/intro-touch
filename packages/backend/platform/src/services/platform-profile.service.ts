@@ -22,7 +22,7 @@ export class PlatformProfileService {
 		});
 	}
 
-	public async createBuiltInPlatform(userProfileUuid: string, platformUuid: string, createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto): Promise<PlatformProfileEntity> {
+  public async createBuiltInPlatform(userProfileUuid: string, platformUuid: string, createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto): Promise<PlatformProfileEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<PlatformProfileEntity> => {
 				return await this.platformProfileRepository.createBuiltInPlatform(userProfileUuid, platformUuid, createBuiltinPlatformRequestDto, transaction);

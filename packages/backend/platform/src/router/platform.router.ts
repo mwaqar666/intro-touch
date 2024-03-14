@@ -43,12 +43,12 @@ export class PlatformRouter implements IRouter {
 					},
 					{
 						path: "/builtin/{platformProfileUuid}",
-						method: RouteMethod.PATCH,
+						method: RouteMethod.Patch,
 						handler: this.platformProfileController.updateBuiltInPlatform,
 					},
 					{
 						path: "/custom/{customPlatformUuid}",
-						method: RouteMethod.PATCH,
+						method: RouteMethod.Patch,
 						handler: this.customPlatformController.updateCustomPlatform,
 					},
 				],

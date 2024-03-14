@@ -2,7 +2,9 @@
   "name": "@intro-touch/backend-core-request-processor",
   "version": "0.0.0",
   "dependencies": {
+    "@types/busboy": "^1.5.3",
+    "busboy": "^1.6.0",
     "iocc": "^2.2.2",
-    "parse-multipart-data": "^1.5.0"
+    "mime": "^4.0.1"
   }
 }
