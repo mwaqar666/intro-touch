@@ -27,7 +27,7 @@ export class CustomPlatformController {
 		@Path("customPlatformUuid") customPlatformUuid: string,
 		@Body(UpdateCustomPlatformRequestDto) updateCustomPlatformRequestDto: UpdateCustomPlatformRequestDto,
 	): Promise<{ customPlatformEntity: CustomPlatformEntity }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.LIST_PLATFORM]);
+		await this.authorization.can(authEntity, [PermissionsEnum.UpdateCustomPlatform]);
 
 		return { customPlatformEntity: await this.customPlatformService.updateCustomPlatform(customPlatformUuid, updateCustomPlatformRequestDto) };
 	}

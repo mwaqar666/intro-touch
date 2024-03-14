@@ -243,11 +243,11 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1
       sequelize:
-        specifier: ^6.36.0
-        version: 6.36.0(pg-hstore@2.3.4)(pg@8.11.3)
+        specifier: ^6.37.1
+        version: 6.37.1
       sequelize-typescript:
         specifier: ^2.1.6
-        version: 2.1.6(@types/node@20.11.16)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.36.0)
+        version: 2.1.6(@types/node@20.11.16)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.37.1)
 
   packages/backend/user:
     dependencies:
@@ -265,10 +265,10 @@ importers:
         version: 0.2.1
       sequelize:
         specifier: ^6.36.0
-        version: 6.36.0(pg-hstore@2.3.4)(pg@8.11.3)
+        version: 6.37.1
       sequelize-typescript:
         specifier: ^2.1.6
-        version: 2.1.6(@types/node@20.11.16)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.36.0)
+        version: 2.1.6(@types/node@20.11.16)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.37.1)
     devDependencies:
       '@types/lodash.omit':
         specifier: ^4.5.9
@@ -8790,6 +8790,22 @@ packages:
       sequelize: 6.36.0(pg-hstore@2.3.4)(pg@8.11.3)
     dev: false
 
+  /sequelize-typescript@2.1.6(@types/node@20.11.16)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.37.1):
+    resolution: {integrity: sha512-Vc2N++3en346RsbGjL3h7tgAl2Y7V+2liYTAOZ8XL0KTw3ahFHsyAUzOwct51n+g70I1TOUDgs06Oh6+XGcFkQ==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      '@types/node': '*'
+      '@types/validator': '*'
+      reflect-metadata: '*'
+      sequelize: '>=6.20.1'
+    dependencies:
+      '@types/node': 20.11.16
+      '@types/validator': 13.11.9
+      glob: 7.2.0
+      reflect-metadata: 0.2.1
+      sequelize: 6.37.1
+    dev: false
+
   /sequelize@6.36.0(pg-hstore@2.3.4)(pg@8.11.3):
     resolution: {integrity: sha512-PqOa11EHwA/zLmGDU4aynbsavbHJUlgRvFuC/2cA4LhOuV6NHKcQ0IXB+hNdFrGT3rULmvc4kdIwnfCNsrECMQ==}
     engines: {node: '>=10.0.0'}
@@ -8834,6 +8850,59 @@ packages:
       pg: 8.11.3
       pg-connection-string: 2.6.2
       pg-hstore: 2.3.4
+      retry-as-promised: 7.0.4
+      semver: 7.5.4
+      sequelize-pool: 7.1.0
+      toposort-class: 1.0.1
+      uuid: 8.3.2
+      validator: 13.11.0
+      wkx: 0.5.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /sequelize@6.37.1:
+    resolution: {integrity: sha512-vIKKzQ9dGp2aBOxQRD1FmUYViuQiKXSJ8yah8TsaBx4U3BokJt+Y2A0qz2C4pj08uX59qpWxRqSLEfRmVOEgQw==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      ibm_db: '*'
+      mariadb: '*'
+      mysql2: '*'
+      oracledb: '*'
+      pg: '*'
+      pg-hstore: '*'
+      snowflake-sdk: '*'
+      sqlite3: '*'
+      tedious: '*'
+    peerDependenciesMeta:
+      ibm_db:
+        optional: true
+      mariadb:
+        optional: true
+      mysql2:
+        optional: true
+      oracledb:
+        optional: true
+      pg:
+        optional: true
+      pg-hstore:
+        optional: true
+      snowflake-sdk:
+        optional: true
+      sqlite3:
+        optional: true
+      tedious:
+        optional: true
+    dependencies:
+      '@types/debug': 4.1.12
+      '@types/validator': 13.11.9
+      debug: 4.3.4
+      dottie: 2.0.6
+      inflection: 1.13.4
+      lodash: 4.17.21
+      moment: 2.29.4
+      moment-timezone: 0.5.43
+      pg-connection-string: 2.6.2
       retry-as-promised: 7.0.4
       semver: 7.5.4
       sequelize-pool: 7.1.0

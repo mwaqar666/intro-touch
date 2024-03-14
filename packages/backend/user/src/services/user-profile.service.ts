@@ -19,7 +19,7 @@ export class UserProfileService {
 		return this.userProfileRepository.getUserProfileDropdown(authEntity);
 	}
 
-	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
+	public async getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
 		return this.userProfileRepository.getUserProfile(userProfileUuid);
 	}
 
