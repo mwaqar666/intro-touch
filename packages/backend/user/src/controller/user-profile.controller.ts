@@ -1,5 +1,5 @@
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
-import { PermissionsEnum } from "@/backend-core/authorization/enums";
+import { Permission } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
@@ -17,19 +17,19 @@ export class UserProfileController {
 	) {}
 
 	public async getAuthUserProfileDropdown(@Auth authEntity: UserEntity): Promise<{ userProfiles: Array<UserProfileEntity> }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.ListUserProfile]);
+		await this.authorization.can(authEntity, [Permission.ListUserProfile]);
 
 		return { userProfiles: await this.userProfileService.getAuthUserProfileDropdown(authEntity) };
 	}
 
 	public async getUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.ViewUserProfile]);
+		await this.authorization.can(authEntity, [Permission.ViewUserProfile]);
 
 		return { userProfile: await this.userProfileService.getUserProfile(userProfileUuid) };
 	}
 
 	public async createUserProfile(@Auth authEntity: UserEntity, @Body(CreateUserProfileRequestDto) createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<{ userProfile: UserProfileEntity }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.CreateUserProfile]);
+		await this.authorization.can(authEntity, [Permission.CreateUserProfile]);
 
 		return { userProfile: await this.userProfileService.createUserProfile(authEntity, createUserProfileRequestDto) };
 	}
@@ -39,7 +39,7 @@ export class UserProfileController {
 		@Path("userProfileUuid") userProfileUuid: string,
 		@Body(UpdateUserProfileRequestDto) updateUserProfileRequestDto: UpdateUserProfileRequestDto,
 	): Promise<{ userProfile: UserProfileEntity }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.UpdateUserProfile]);
+		await this.authorization.can(authEntity, [Permission.UpdateUserProfile]);
 
 		return { userProfile: await this.userProfileService.updateUserProfile(userProfileUuid, updateUserProfileRequestDto) };
 	}

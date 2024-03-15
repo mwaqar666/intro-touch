@@ -19,7 +19,7 @@ export class PlatformDbRegister extends AbstractDbRegister {
 		return [CreatePlatformsTable, CreatePlatformCategoriesTable, CreatePlatformProfilesTable, CreateCustomPlatformsTable];
 	}
 
-	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
 		return [PlatformCategoryRepository, PlatformRepository, PlatformProfileRepository, CustomPlatformRepository];
 	}
 

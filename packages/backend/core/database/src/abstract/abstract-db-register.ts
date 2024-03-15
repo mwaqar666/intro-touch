@@ -15,7 +15,7 @@ export abstract class AbstractDbRegister implements IDbRegister {
 		return [];
 	}
 
-	public registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
+	public registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
 		return [];
 	}
 

@@ -18,7 +18,7 @@ export class PlatformProfileRepository extends BaseRepository<PlatformProfileEnt
 		super(PlatformProfileEntity);
 	}
 
-  public updateBuiltInPlatform(platformProfileUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<PlatformProfileEntity>>, transaction: Transaction): Promise<PlatformProfileEntity> {
+	public updateBuiltInPlatform(platformProfileUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<PlatformProfileEntity>>, transaction: Transaction): Promise<PlatformProfileEntity> {
 		return this.updateOne({
 			findOptions: {
 				where: { platformProfileUuid },
@@ -30,7 +30,9 @@ export class PlatformProfileRepository extends BaseRepository<PlatformProfileEnt
 
 	public async createBuiltInPlatform(userProfileUuid: string, platformUuid: string, createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto, transaction: Transaction): Promise<PlatformProfileEntity> {
 		const userProfile: UserProfileEntity = await this.userProfileService.getUserProfile(userProfileUuid);
+
 		const platform: PlatformEntity = await this.platformService.fetchPlatform(platformUuid);
+
 		return this.createOne({
 			valuesToCreate: {
 				...createBuiltinPlatformRequestDto,

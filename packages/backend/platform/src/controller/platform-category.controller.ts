@@ -1,6 +1,6 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
-import { PermissionsEnum } from "@/backend-core/authorization/enums";
+import { Permission } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Controller } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
@@ -16,7 +16,7 @@ export class PlatformCategoryController {
 	) {}
 
 	public async getPlatformCategories(@Auth authEntity: UserEntity): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.ListPlatformCategory]);
+		await this.authorization.can(authEntity, [Permission.ListPlatformCategory]);
 
 		return { platformCategories: await this.platformCategoryService.getPlatformCategories() };
 	}

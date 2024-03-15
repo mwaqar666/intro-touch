@@ -33,7 +33,7 @@ export class AuthenticationModule extends AbstractModule {
 		this.container.registerSingleton(TokenUtilService);
 
 		// Hashing and Encryption Services
-		this.container.registerSingleton(AuthenticationTokenConst.HashToken, HashService);
+		this.container.registerSingleton(HashService);
 
 		// Resolver Services
 		this.container.registerScoped(AuthenticationTokenConst.AuthEntityResolverToken, AuthEntityResolver);

@@ -19,7 +19,7 @@ export class AuthorizationDbRegister extends AbstractDbRegister {
 		return [CreateRolesTable, CreatePermissionsTable, CreateRolePermissionsTable, CreateUserRolesTable];
 	}
 
-	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
 		return [RoleRepository, PermissionRepository, RolePermissionRepository, UserRoleRepository];
 	}
 

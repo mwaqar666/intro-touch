@@ -5,7 +5,7 @@ import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-
 import { Inject } from "iocc";
 import type { PermissionEntity } from "@/backend-core/authorization/db/entities";
 import { PermissionRepository } from "@/backend-core/authorization/db/repositories";
-import { PermissionsEnum } from "@/backend-core/authorization/enums";
+import { Permission } from "@/backend-core/authorization/enums";
 
 export class PermissionsSeeder implements ISeeder {
 	public timestamp = 1688973720123;
@@ -20,9 +20,9 @@ export class PermissionsSeeder implements ISeeder {
 	public async seed(): Promise<void> {
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
-				const permissionNames: Array<PermissionsEnum> = Object.values(PermissionsEnum);
+				const permissionNames: Array<Permission> = Object.values(Permission);
 
-				const permissionEntries: Array<Partial<IEntityTableColumnProperties<PermissionEntity>>> = permissionNames.map((permissionName: PermissionsEnum): Partial<IEntityTableColumnProperties<PermissionEntity>> => {
+				const permissionEntries: Array<Partial<IEntityTableColumnProperties<PermissionEntity>>> = permissionNames.map((permissionName: Permission): Partial<IEntityTableColumnProperties<PermissionEntity>> => {
 					return {
 						permissionName,
 					};

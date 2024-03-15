@@ -1,4 +1,4 @@
-export enum PermissionsEnum {
+export enum Permission {
 	// User
 	ListUser = "LIST_USER",
 	ViewUser = "VIEW_USER",

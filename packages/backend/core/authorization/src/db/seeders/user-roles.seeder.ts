@@ -8,7 +8,7 @@ import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { RoleEntity, UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { RoleRepository, UserRoleRepository } from "@/backend-core/authorization/db/repositories";
-import { RolesEnum } from "@/backend-core/authorization/enums";
+import { Role } from "@/backend-core/authorization/enums";
 
 export class UserRolesSeeder implements ISeeder {
 	public timestamp = 1688976110323;
@@ -32,7 +32,7 @@ export class UserRolesSeeder implements ISeeder {
 
 				const adminRole: Nullable<RoleEntity> = await this.roleRepository.findOne({
 					findOptions: {
-						where: { roleName: RolesEnum.Admin },
+						where: { roleName: Role.Admin },
 					},
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});

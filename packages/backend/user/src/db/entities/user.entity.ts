@@ -1,14 +1,15 @@
 import { randomUUID } from "crypto";
-import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
+import { HashService } from "@/backend-core/authentication/crypt";
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
-import type { IHash } from "@/backend-core/authentication/interface";
+import type { IAuthenticatable } from "@/backend-core/authentication/interface";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { App } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
-import type { Nullable } from "@/stacks/types";
+import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
+import type { Key, Nullable } from "@/stacks/types";
 import { AllowNull, BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
@@ -16,7 +17,7 @@ import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entit
 	...ScopeFactory.commonScopes(() => UserEntity),
 }))
 @Table({ tableName: "users" })
-export class UserEntity extends BaseEntity<UserEntity> {
+export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatable<UserEntity> {
 	public static override readonly hiddenKeys: Array<string> = ["userPassword"];
 
 	@PrimaryKeyColumn
@@ -117,7 +118,7 @@ export class UserEntity extends BaseEntity<UserEntity> {
 		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
 			if (!instance.userPassword || !instance.changed("userPassword")) return;
 
-			const hashService: IHash = App.container.resolve(AuthenticationTokenConst.HashToken);
+			const hashService: HashService = App.container.resolve(HashService);
 			instance.userPassword = await hashService.hash(instance.userPassword);
 		});
 	}
@@ -137,7 +138,23 @@ export class UserEntity extends BaseEntity<UserEntity> {
 	public async verifyPassword(plainPassword: string): Promise<boolean> {
 		if (!this.userPassword) throw new PasswordMissingException();
 
-		const hashService: IHash = App.container.resolve(AuthenticationTokenConst.HashToken);
+		const hashService: HashService = App.container.resolve(HashService);
 		return await hashService.compare(plainPassword, this.userPassword);
+	}
+
+	public getAuthIdentifierName(): Key<IEntityTableColumnProperties<UserEntity>> {
+		return "userId";
+	}
+
+	public getAuthIdentifier(): number {
+		return this.userId;
+	}
+
+	public getAuthPasswordName(): Key<IEntityTableColumnProperties<UserEntity>> {
+		return "userPassword";
+	}
+
+	public getAuthPassword(): Nullable<string> {
+		return this.userPassword;
 	}
 }

@@ -8,7 +8,6 @@ export class CreateRolesTable extends AbstractMigration {
 		await this.queryInterface.createTable("roles", {
 			roleId: this.createPrimaryKeyProps(),
 			roleUuid: this.createUuidKeyProps(),
-			roleParentId: this.createForeignKeyProps(true),
 			roleName: {
 				allowNull: false,
 				type: DataType.STRING(100),
@@ -18,13 +17,9 @@ export class CreateRolesTable extends AbstractMigration {
 			roleUpdatedAt: this.createUpdatedAtKeyProps(),
 			roleDeletedAt: this.createDeletedAtKeyProps(),
 		});
-
-		await this.createForeignKeyConstraint("roles", "roleParentId", "roles", "roleId");
 	}
 
 	public override async down(): Promise<void> {
-		await this.dropForeignKeyConstraint("roles", "roleParentId");
-
 		await this.queryInterface.dropTable("roles");
 	}
 }

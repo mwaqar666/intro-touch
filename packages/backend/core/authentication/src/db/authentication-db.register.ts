@@ -17,7 +17,7 @@ export class AuthenticationDbRegister extends AbstractDbRegister {
 		return [CreateVerificationTokensTable];
 	}
 
-	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
 		return [VerificationTokenRepository];
 	}
 }

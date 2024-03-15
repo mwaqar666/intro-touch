@@ -19,7 +19,7 @@ export class UserDbRegister extends AbstractDbRegister {
 		return [CreateUsersTable, CreateUserProfilesTable];
 	}
 
-	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
 		return [UserRepository, UserProfileRepository];
 	}
 

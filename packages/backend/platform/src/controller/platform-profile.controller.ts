@@ -1,6 +1,6 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
-import { PermissionsEnum } from "@/backend-core/authorization/enums";
+import { Permission } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
@@ -21,7 +21,7 @@ export class PlatformProfileController {
 		@Path("platformProfileUuid") platformProfileUuid: string,
 		@Body(UpdateBuiltinPlatformRequestDto) updateBuiltinPlatformRequestDto: UpdateBuiltinPlatformRequestDto,
 	): Promise<{ platformProfile: PlatformProfileEntity }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.UpdatePlatformProfile]);
+		await this.authorization.can(authEntity, [Permission.UpdatePlatformProfile]);
 
 		return { platformProfile: await this.platformProfileService.updateBuiltInPlatform(platformProfileUuid, updateBuiltinPlatformRequestDto) };
 	}
@@ -33,7 +33,7 @@ export class PlatformProfileController {
 		@Body(CreateBuiltinPlatformRequestDto)
 		createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto,
 	): Promise<{ platformProfile: PlatformProfileEntity }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.CreateUserProfile]);
+		await this.authorization.can(authEntity, [Permission.CreateUserProfile]);
 
 		return { platformProfile: await this.platformProfileService.createBuiltInPlatform(userProfileUuid, platformUuid, createBuiltinPlatformRequestDto) };
 	}

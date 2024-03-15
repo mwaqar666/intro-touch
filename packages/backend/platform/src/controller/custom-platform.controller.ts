@@ -1,6 +1,6 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
-import { PermissionsEnum } from "@/backend-core/authorization/enums";
+import { Permission } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
@@ -17,7 +17,7 @@ export class CustomPlatformController {
 	) {}
 
 	public async getCustomPlatformsByPlatformCategory(@Auth authEntity: UserEntity, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<{ customPlatforms: Array<CustomPlatformEntity> }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.ListPlatform]);
+		await this.authorization.can(authEntity, [Permission.ListPlatform]);
 
 		return { customPlatforms: await this.customPlatformService.getCustomPlatformsByPlatformCategory(platformCategoryUuid) };
 	}
@@ -27,7 +27,7 @@ export class CustomPlatformController {
 		@Path("customPlatformUuid") customPlatformUuid: string,
 		@Body(UpdateCustomPlatformRequestDto) updateCustomPlatformRequestDto: UpdateCustomPlatformRequestDto,
 	): Promise<{ customPlatformEntity: CustomPlatformEntity }> {
-		await this.authorization.can(authEntity, [PermissionsEnum.UpdateCustomPlatform]);
+		await this.authorization.can(authEntity, [Permission.UpdateCustomPlatform]);
 
 		return { customPlatformEntity: await this.customPlatformService.updateCustomPlatform(customPlatformUuid, updateCustomPlatformRequestDto) };
 	}

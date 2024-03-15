@@ -6,7 +6,6 @@ import { SequelizeStorage, Umzug } from "umzug";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { IDbConnector, IDbManager } from "@/backend-core/database/interface/db";
 import type { IMigration, IMigrationRunner } from "@/backend-core/database/interface/migration";
-import type { IMigrationRevertOptions } from "@/backend-core/database/types";
 
 export class MigrationRunnerService implements IMigrationRunner {
 	private umzug: Umzug<QueryInterface>;
@@ -25,10 +24,10 @@ export class MigrationRunnerService implements IMigrationRunner {
 		return migrationsRan.map(({ name }: MigrationMeta): string => name);
 	}
 
-	public async revertMigrations(revertMigrationOptions: IMigrationRevertOptions): Promise<Array<string>> {
+	public async revertMigrations(): Promise<Array<string>> {
 		this.checkUmzugConnection();
 
-		const migrationsReverted: Array<MigrationMeta> = await this.umzug.down({ step: revertMigrationOptions.step });
+		const migrationsReverted: Array<MigrationMeta> = await this.umzug.down();
 
 		return migrationsReverted.map(({ name }: MigrationMeta): string => name);
 	}
