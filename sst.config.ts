@@ -5,7 +5,7 @@ import { expand } from "dotenv-expand";
 import type { App } from "sst/constructs";
 import type { ConfigOptions, SSTConfig } from "sst/project";
 import { Config } from "@/stacks/config";
-import { ApiStack, AuthStack, DatabaseStack, EmailStack, VpcStack } from "@/stacks/stacks";
+import { ApiStack, AuthStack, BucketStack, DatabaseStack, EmailStack, VpcStack } from "@/stacks/stacks";
 
 export default {
 	config({ stage }): ConfigOptions {
@@ -30,6 +30,7 @@ export default {
 		app.stack(DatabaseStack);
 
 		await app.stack(EmailStack);
+		app.stack(BucketStack);
 		await app.stack(ApiStack);
 
 		app.stack(AuthStack);

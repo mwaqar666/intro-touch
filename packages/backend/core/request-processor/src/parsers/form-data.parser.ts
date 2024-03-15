@@ -1,47 +1,63 @@
-import type { AnyObject, AnyObjectValues, Delegate, Optional, Primitives } from "@/stacks/types";
-import { getBoundary, parse } from "parse-multipart-data";
-import { useBody } from "sst/node/api";
-import { UploadedMedia } from "@/backend-core/request-processor/dto";
-import { BadRequestException } from "@/backend-core/request-processor/exceptions";
+import type { Readable } from "stream";
+import type { Action, AnyObject, AnyObjectValues, ApiRequest, DeepReadonly, Delegate, Optional, Primitives } from "@/stacks/types";
+import type { Busboy, FileInfo } from "busboy";
+import busboyParser from "busboy";
+import mime from "mime";
+import type { BufferEncoding } from "typescript";
+import { UploadedFile } from "@/backend-core/request-processor/dto";
 import type { Request } from "@/backend-core/request-processor/handlers";
 import type { IBodyParser } from "@/backend-core/request-processor/interface";
-import type { IFormDataField, IFormDataRawField, IFormDataRawFileField } from "@/backend-core/request-processor/types";
+import type { IFormDataField } from "@/backend-core/request-processor/types";
 
 export class FormDataParser implements IBodyParser {
-	public parse(request: Request): AnyObject {
+	public async parse(request: Request): Promise<AnyObject> {
 		const parsedBody: AnyObject = {};
 
-		const requestBody: Optional<string> = useBody();
-		if (!requestBody) return parsedBody;
+		const formDataFields: Record<string, IFormDataField> = await this.parseRequestBody(request);
 
-		const requestBodyBuffer: Buffer = Buffer.from(requestBody, "utf-8");
-		const contentType: Optional<string> = request.getHeaders("Content-Type");
+		for (const [fieldName, formDataField] of Object.entries(formDataFields)) {
+			const nestedKeys: Array<string> = fieldName.split(/]\[|]|\[/);
 
-		if (!contentType) throw new BadRequestException("Missing boundary on multipart/formdata");
-
-		const formDataFields: Array<IFormDataRawField> = parse(requestBodyBuffer, getBoundary(contentType)) as Array<IFormDataRawField>;
-
-		for (const formDataField of formDataFields) {
-			const formDataFieldName: string = formDataField.name;
-
-			const nestedKeys: Array<string> = formDataFieldName.split(/]\[|]|\[/);
-
-			const formDataValue: IFormDataField = this.transformFormData(formDataField);
-
-			this.insertNestedDataAtKeys(formDataValue, parsedBody, nestedKeys);
+			this.insertNestedDataAtKeys(formDataField, parsedBody, nestedKeys);
 		}
 
 		return parsedBody;
 	}
 
-	private transformFormData(formDataField: IFormDataRawField): IFormDataField {
-		if ("type" in formDataField) {
-			const { type, data, filename }: IFormDataRawFileField = formDataField;
+	private parseRequestBody(request: Request): Promise<Record<string, IFormDataField>> {
+		return new Promise<Record<string, IFormDataField>>((resolve: Action<[Record<string, IFormDataField>]>, reject: Action<[unknown]>): void => {
+			const parsedBody: Record<string, IFormDataField> = {};
 
-			return new UploadedMedia(filename, type, data);
-		}
+			const busboy: Busboy = busboyParser({ headers: request.getHeaders() });
 
-		return formDataField.data.toString("utf-8");
+			busboy.on("file", (fieldName: string, fileStream: Readable, { filename, mimeType, encoding }: FileInfo): void => {
+				let fileData: Buffer;
+
+				fileStream.on("data", (data: Buffer): void => {
+					fileData = data;
+				});
+
+				fileStream.on("end", (): void => {
+					const fileExtension: string = mime.getExtension(mimeType) ?? "";
+
+					parsedBody[fieldName] = new UploadedFile(filename, mimeType, fileData, encoding, fileExtension);
+				});
+			});
+
+			busboy.on("field", (name: string, value: string): void => {
+				parsedBody[name] = value;
+			});
+
+			busboy.on("error", (error: unknown): void => reject(error));
+			busboy.on("close", (): void => resolve(parsedBody));
+
+			const awsUnderlyingRequest: DeepReadonly<ApiRequest> = request.getUnderlyingAwsRequest();
+			const bufferEncoding: BufferEncoding = awsUnderlyingRequest.isBase64Encoded ? "base64" : "binary";
+
+			busboy.write(awsUnderlyingRequest.body, bufferEncoding);
+
+			busboy.end();
+		});
 	}
 
 	private insertNestedDataAtKeys(data: IFormDataField, parsedBody: AnyObject, nestedKeys: Array<string>): void {

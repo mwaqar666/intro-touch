@@ -18,7 +18,7 @@ export class PlatformProfileRepository extends BaseRepository<PlatformProfileEnt
 		super(PlatformProfileEntity);
 	}
 
-	public updateBuiltInPlatform(platformProfileUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<PlatformProfileEntity>>, transaction: Transaction): Promise<PlatformProfileEntity> {
+  public updateBuiltInPlatform(platformProfileUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<PlatformProfileEntity>>, transaction: Transaction): Promise<PlatformProfileEntity> {
 		return this.updateOne({
 			findOptions: {
 				where: { platformProfileUuid },
