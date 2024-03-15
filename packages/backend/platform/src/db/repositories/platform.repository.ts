@@ -8,6 +8,16 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 		super(PlatformEntity);
 	}
 
+	public fetchPlatform(platformUuid: string): Promise<PlatformEntity> {
+		return this.findOneOrFail({
+			findOptions: {
+				where: {
+					platformUuid,
+				},
+			},
+		});
+	}
+
 	public getPlatformsByPlatformCategory(platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
 		return this.findAll({
 			findOptions: {

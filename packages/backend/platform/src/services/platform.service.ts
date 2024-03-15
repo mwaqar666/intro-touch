@@ -11,6 +11,10 @@ export class PlatformService {
 		@Inject(CustomPlatformRepository) private readonly customPlatformRepository: CustomPlatformRepository,
 	) {}
 
+	public async fetchPlatform(platformUuid: string): Promise<PlatformEntity> {
+		return this.platformRepository.fetchPlatform(platformUuid);
+	}
+
 	public getPlatformsByPlatformCategory(platformCategoryUuid: string): Promise<Array<PlatformEntity>> {
 		return this.platformRepository.getPlatformsByPlatformCategory(platformCategoryUuid);
 	}

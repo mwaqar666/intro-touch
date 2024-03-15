@@ -26,7 +26,7 @@ export class UserProfileService {
 	}
 
 	public async getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
-		return await this.userProfileRepository.getUserProfile(userProfileUuid);
+		return this.userProfileRepository.getUserProfile(userProfileUuid);
 	}
 
 	public async createUserProfile(userEntity: UserEntity, createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<UserProfileEntity> {

@@ -13,6 +13,13 @@ export enum PermissionsEnum {
 	UpdatePlatformCategory = "UPDATE_PLATFORM_CATEGORY",
 	DeletePlatformCategory = "DELETE_PLATFORM_CATEGORY",
 
+	// Platform Profiles
+	ListPlatformProfile = "LIST_PLATFORM_PROFILE",
+	ViewPlatformProfile = "VIEW_PLATFORM_PROFILE",
+	CreatePlatformProfile = "CREATE_PLATFORM_PROFILE",
+	UpdatePlatformProfile = "UPDATE_PLATFORM_PROFILE",
+	DeletePlatformProfile = "DELETE_PLATFORM_PROFILE",
+
 	// Platform
 	ListPlatform = "LIST_PLATFORM",
 	ViewPlatform = "VIEW_PLATFORM",
