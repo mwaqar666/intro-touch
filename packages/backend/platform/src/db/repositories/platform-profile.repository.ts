@@ -1,20 +1,11 @@
-import type { UserProfileEntity } from "@/backend/user/db/entities";
-import { UserProfileService } from "@/backend/user/services";
 import { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
-import { Inject } from "iocc";
 import type { Transaction } from "sequelize";
-import { type PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
+import { PlatformProfileEntity } from "@/backend/platform/db/entities";
 import type { CreateBuiltinPlatformRequestDto } from "@/backend/platform/dto/update-builtin-platform";
-import { PlatformService } from "@/backend/platform/services";
 
 export class PlatformProfileRepository extends BaseRepository<PlatformProfileEntity> {
-	public constructor(
-		// Dependencies
-
-		@Inject(PlatformService) private readonly platformService: PlatformService,
-		@Inject(UserProfileService) private readonly userProfileService: UserProfileService,
-	) {
+	public constructor() {
 		super(PlatformProfileEntity);
 	}
 
@@ -28,16 +19,12 @@ export class PlatformProfileRepository extends BaseRepository<PlatformProfileEnt
 		});
 	}
 
-	public async createBuiltInPlatform(userProfileUuid: string, platformUuid: string, createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto, transaction: Transaction): Promise<PlatformProfileEntity> {
-		const userProfile: UserProfileEntity = await this.userProfileService.getUserProfile(userProfileUuid);
-
-		const platform: PlatformEntity = await this.platformService.fetchPlatform(platformUuid);
-
+	public async createBuiltInPlatform(userProfileId: number, platformId: number, createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto, transaction: Transaction): Promise<PlatformProfileEntity> {
 		return this.createOne({
 			valuesToCreate: {
 				...createBuiltinPlatformRequestDto,
-				platformProfileProfileId: userProfile.userProfileId,
-				platformProfilePlatformId: platform.platformId,
+				platformProfileProfileId: userProfileId,
+				platformProfilePlatformId: platformId,
 			},
 			transaction,
 		});

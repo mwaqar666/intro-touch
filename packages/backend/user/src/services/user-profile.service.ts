@@ -1,3 +1,5 @@
+import { ConfigTokenConst } from "@/backend-core/config/const";
+import type { IAppConfigResolver } from "@/backend-core/config/types";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
@@ -19,6 +21,7 @@ export class UserProfileService {
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
+		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
 	public getAuthUserProfileDropdown(authEntity: UserEntity): Promise<Array<UserProfileEntity>> {
@@ -33,8 +36,8 @@ export class UserProfileService {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
 				const { userProfilePicture: uploadedPicture, ...userProfileFields }: CreateUserProfileRequestDto = createUserProfileRequestDto;
-
-				const profilePictureBucket: string = S3BucketConst.BucketName(S3Bucket.ProfilePictures);
+				const appConfigStage = this.configResolver.resolveConfig("app").env;
+				const profilePictureBucket: string = S3BucketConst.BucketName(S3Bucket.ProfilePictures, appConfigStage);
 				const userProfilePicture: string = await this.storageService.storeFile(profilePictureBucket, uploadedPicture);
 
 				const userProfileTableColumnProperties: Partial<IEntityTableColumnProperties<UserProfileEntity>> = {

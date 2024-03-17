@@ -1,6 +1,10 @@
+import { DbTokenConst } from "@/backend-core/database/const";
+import type { ITransactionManager } from "@/backend-core/database/interface";
+import type { ITransactionStore } from "@/backend-core/database/types";
 import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
+import type { ResetPasswordRequestDto } from "@/backend/user/dto/reset-password";
 
 export class UserService {
 	public constructor(
@@ -8,6 +12,7 @@ export class UserService {
 
 		@Inject(UserRepository) private readonly userRepository: UserRepository,
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
+		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
 	public async getUserWithLiveProfile(userEntity: string): Promise<UserEntity>;
@@ -22,5 +27,13 @@ export class UserService {
 		userEntity.setDataValue("userLiveUserProfile", userLiveProfile);
 
 		return userEntity;
+	}
+
+	public async resetPassword(userId: number, resetPasswordRequestDto: ResetPasswordRequestDto): Promise<UserEntity> {
+		return this.transactionManager.executeTransaction({
+			operation: async ({ transaction }: ITransactionStore): Promise<ResetPasswordRequestDto> => {
+				return this.userRepository.resetPassword(userId, resetPasswordRequestDto, transaction);
+			},
+		});
 	}
 }
