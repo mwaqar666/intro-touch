@@ -18,22 +18,11 @@ export class PlatformRouter implements IRouter {
 		return [
 			{
 				prefix: "/platform",
-				guards: [AuthRequestGuard],
 				routes: [
 					{
 						path: "/category",
 						method: RouteMethod.Get,
 						handler: this.platformCategoryController.getPlatformCategories,
-					},
-					{
-						path: "/builtin/{platformCategoryUuid}",
-						method: RouteMethod.Get,
-						handler: this.platformController.getPlatformsByPlatformCategory,
-					},
-					{
-						path: "/custom/{platformCategoryUuid}",
-						method: RouteMethod.Get,
-						handler: this.customPlatformController.getCustomPlatformsByPlatformCategory,
 					},
 					{
 						path: "/owned/{userProfileUuid}/{platformCategoryUuid}",
@@ -42,24 +31,62 @@ export class PlatformRouter implements IRouter {
 						handler: this.platformController.getUserOwnedPlatforms,
 					},
 					{
-						path: "/builtin/{platformProfileUuid}",
-						method: RouteMethod.Patch,
-						handler: this.platformProfileController.updateBuiltInPlatform,
-					},
-					{
-						path: "/custom/{customPlatformUuid}",
-						method: RouteMethod.Patch,
-						handler: this.customPlatformController.updateCustomPlatform,
-					},
-					{
-						path: "/builtin",
-						method: RouteMethod.Post,
-						handler: this.platformProfileController.createBuiltInPlatform,
-					},
-					{
-						path: "custom",
-						method: RouteMethod.Post,
-						handler: this.customPlatformController.createCustomPlatform,
+						prefix: "/",
+						guards: [AuthRequestGuard],
+						routes: [
+							{
+								prefix: "/custom",
+								routes: [
+									{
+										path: "/{platformCategoryUuid}",
+										method: RouteMethod.Get,
+										handler: this.customPlatformController.getCustomPlatformsByPlatformCategory,
+									},
+
+									{
+										path: "/{customPlatformUuid}",
+										method: RouteMethod.Patch,
+										handler: this.customPlatformController.updateCustomPlatform,
+									},
+
+									{
+										path: "/{userProfileUuid}/{platformCategoryUuid}",
+										method: RouteMethod.Post,
+										handler: this.customPlatformController.createCustomPlatform,
+									},
+									{
+										path: "/delete/{customPlatformUuid}",
+										method: RouteMethod.Delete,
+										handler: this.customPlatformController.deleteCustomPlatform,
+									},
+								],
+							},
+							{
+								prefix: "/builtin",
+								routes: [
+									{
+										path: "/{platformCategoryUuid}",
+										method: RouteMethod.Get,
+										handler: this.platformController.getPlatformsByPlatformCategory,
+									},
+									{
+										path: "/{platformProfileUuid}",
+										method: RouteMethod.Patch,
+										handler: this.platformProfileController.updateBuiltInPlatform,
+									},
+									{
+										path: "/{userProfileUuid}",
+										method: RouteMethod.Post,
+										handler: this.platformProfileController.createBuiltInPlatform,
+									},
+									{
+										path: "/delete/{platformProfileUuid}",
+										method: RouteMethod.Delete,
+										handler: this.platformProfileController.deleteBuiltInPlatform,
+									},
+								],
+							},
+						],
 					},
 				],
 			},

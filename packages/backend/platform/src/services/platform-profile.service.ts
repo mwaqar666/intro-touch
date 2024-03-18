@@ -36,4 +36,12 @@ export class PlatformProfileService {
 			},
 		});
 	}
+
+	public async deleteBuiltInPlatform(platformProfileUuid: string): Promise<boolean> {
+		return this.transactionManager.executeTransaction({
+			operation: async ({ transaction }: ITransactionStore): Promise<PlatformProfileEntity> => {
+				return this.platformProfileRepository.deleteBuiltInPlatform(platformProfileUuid, transaction);
+			},
+		});
+	}
 }
