@@ -51,6 +51,16 @@ export class PlatformRouter implements IRouter {
 						method: RouteMethod.Patch,
 						handler: this.customPlatformController.updateCustomPlatform,
 					},
+					{
+						path: "/builtin",
+						method: RouteMethod.Post,
+						handler: this.platformProfileController.createBuiltInPlatform,
+					},
+					{
+						path: "custom",
+						method: RouteMethod.Post,
+						handler: this.customPlatformController.createCustomPlatform,
+					},
 				],
 			},
 		];

@@ -4,7 +4,8 @@ import { Permission } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
-import type { CustomPlatformEntity } from "@/backend/platform/db/entities";
+import type { CustomPlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
+import { CreateBuiltinPlatformRequestDto } from "@/backend/platform/dto/update-builtin-platform";
 import { UpdateCustomPlatformRequestDto } from "@/backend/platform/dto/update-custom-platform";
 import { CustomPlatformService } from "@/backend/platform/services";
 
@@ -30,5 +31,17 @@ export class CustomPlatformController {
 		await this.authorization.can(authEntity, [Permission.UpdateCustomPlatform]);
 
 		return { customPlatformEntity: await this.customPlatformService.updateCustomPlatform(customPlatformUuid, updateCustomPlatformRequestDto) };
+	}
+
+	public async createCustomPlatform(
+		@Auth authEntity: UserEntity,
+		@Path("userProfileUuid") userProfileUuid: string,
+		@Path("platformUuid") platformUuid: string,
+		@Body(CreateBuiltinPlatformRequestDto)
+		createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto,
+	): Promise<{ platformProfile: PlatformProfileEntity }> {
+		await this.authorization.can(authEntity, [Permission.CreateUserProfile]);
+
+		return { platformProfile: await this.customPlatformService.createCustomPlatform(userProfileUuid, platformUuid, createBuiltinPlatformRequestDto) };
 	}
 }

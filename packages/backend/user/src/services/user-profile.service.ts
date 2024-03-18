@@ -56,7 +56,8 @@ export class UserProfileService {
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
 				const { userProfilePicture: uploadedPicture, ...userProfileFields }: UpdateUserProfileRequestDto = updateUserProfileRequestDto;
 
-				const profilePictureBucket: string = S3BucketConst.BucketName(S3Bucket.ProfilePictures);
+				const appConfigStage = this.configResolver.resolveConfig("app").env;
+				const profilePictureBucket: string = S3BucketConst.BucketName(S3Bucket.ProfilePictures, appConfigStage);
 				const userProfilePicture: Optional<string> = uploadedPicture instanceof UploadedFile ? await this.storageService.storeFile(profilePictureBucket, uploadedPicture) : uploadedPicture;
 
 				const userProfileTableColumnProperties: Partial<IEntityTableColumnProperties<UserProfileEntity>> = {
