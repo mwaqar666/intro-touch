@@ -1,6 +1,8 @@
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
+import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Nullable } from "@/stacks/types";
+import type { Transaction } from "sequelize";
 import { UserEntity } from "@/backend/user/db/entities";
 
 export class UserRepository extends BaseRepository<UserEntity> {
@@ -32,6 +34,16 @@ export class UserRepository extends BaseRepository<UserEntity> {
 				where: { userUuid },
 			},
 			scopes: [EntityScopeConst.isActive],
+		});
+	}
+
+	public resetPassword(userId: number, valuesToUpdate: Partial<IEntityTableColumnProperties<UserEntity>>, transaction: Transaction): Promise<UserEntity> {
+		return this.updateOne({
+			findOptions: {
+				where: { userId },
+			},
+			valuesToUpdate,
+			transaction,
 		});
 	}
 }

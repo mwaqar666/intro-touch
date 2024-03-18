@@ -1,7 +1,8 @@
 import { UserProfileEntity } from "@/backend/user/db/entities";
-import { CreatedAtColumn, ForeignKeyColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
+import type { Nullable } from "@/stacks/types";
 import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
 import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 
@@ -31,6 +32,9 @@ export class PlatformProfileEntity extends BaseEntity<PlatformProfileEntity> {
 
 	@UpdatedAtColumn
 	public platformProfileUpdatedAt: Date;
+
+	@DeletedAtColumn
+	public platformProfileDeletedAt: Nullable<Date>;
 
 	@BelongsTo(() => PlatformEntity, {
 		as: "platformProfilePlatform",
