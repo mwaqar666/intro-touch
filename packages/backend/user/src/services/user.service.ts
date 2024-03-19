@@ -36,4 +36,8 @@ export class UserService {
 			},
 		});
 	}
+
+	public async fetchUser(userUuid: string): Promise<UserEntity> {
+		return this.userRepository.fetchUser(userUuid);
+	}
 }

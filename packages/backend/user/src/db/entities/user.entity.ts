@@ -11,6 +11,7 @@ import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Key, Nullable } from "@/stacks/types";
 import { AllowNull, BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
+import { UserContactEntity } from "@/backend/user/db/entities/user-contact.entity";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
 @Scopes(() => ({
@@ -80,6 +81,13 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 		foreignKey: "userProfileUserId",
 	})
 	public userLiveUserProfile: UserProfileEntity;
+
+	@HasMany(() => UserContactEntity, {
+		as: "userUserContacts",
+		sourceKey: "userId",
+		foreignKey: "userContactUuid",
+	})
+	public userUserContacts: Array<UserContactEntity>;
 
 	@HasMany(() => VerificationTokenEntity, {
 		as: "userTokens",

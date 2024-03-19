@@ -46,4 +46,14 @@ export class UserRepository extends BaseRepository<UserEntity> {
 			transaction,
 		});
 	}
+
+	public fetchUser(userUuid: string): Promise<UserEntity> {
+		return this.findOneOrFail({
+			findOptions: {
+				where: {
+					userUuid,
+				},
+			},
+		});
+	}
 }

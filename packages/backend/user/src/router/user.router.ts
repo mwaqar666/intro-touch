@@ -2,13 +2,14 @@ import { AuthRequestGuard } from "@/backend-core/authentication/guards";
 import { RouteMethod } from "@/backend-core/router/enum";
 import type { IRoute, IRouter } from "@/backend-core/router/interface";
 import { Inject } from "iocc";
-import { UserController, UserProfileController } from "@/backend/user/controller";
+import { UserContactController, UserController, UserProfileController } from "@/backend/user/controller";
 
 export class UserRouter implements IRouter {
 	public constructor(
 		// Dependencies
 		@Inject(UserController) private readonly userController: UserController,
 		@Inject(UserProfileController) private readonly userProfileController: UserProfileController,
+		@Inject(UserContactController) private readonly userContactController: UserContactController,
 	) {}
 
 	public registerRoutes(): Array<IRoute> {
@@ -22,6 +23,11 @@ export class UserRouter implements IRouter {
 						handler: this.userController.publicPreview,
 					},
 					{
+						path: "/contact/create/{userUuid}",
+						method: RouteMethod.Post,
+						handler: this.userContactController.createUserContact,
+					},
+					{
 						prefix: "/",
 						guards: [AuthRequestGuard],
 						routes: [
@@ -29,6 +35,11 @@ export class UserRouter implements IRouter {
 								path: "/me",
 								method: RouteMethod.Get,
 								handler: this.userController.me,
+							},
+							{
+								path: "/contacts",
+								method: RouteMethod.Get,
+								handler: this.userContactController.getUserContacts,
 							},
 							{
 								path: "/reset-password",
