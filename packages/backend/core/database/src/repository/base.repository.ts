@@ -18,7 +18,7 @@ import type {
 	IUpdateOptions,
 } from "@/backend-core/database/types";
 
-export abstract class BaseRepository<TEntity extends BaseEntity<TEntity>> {
+export abstract class BaseRepository<TEntity extends BaseEntity<TEntity> = BaseEntity> {
 	protected constructor(protected readonly concreteEntity: IEntityType<TEntity>) {}
 
 	public async findOne(findOptions: IScopedFinderOptions<TEntity>): Promise<Nullable<TEntity>> {

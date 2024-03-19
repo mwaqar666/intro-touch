@@ -5,7 +5,7 @@ import type { ModelStatic } from "sequelize";
 import { BeforeBulkCreate, BeforeCreate, BeforeValidate, Model } from "sequelize-typescript";
 import type { IEntityScope, IEntityType } from "@/backend-core/database/types";
 
-export abstract class BaseEntity<TEntity extends BaseEntity<TEntity>> extends Model<TEntity> {
+export abstract class BaseEntity<TEntity extends BaseEntity<TEntity> = any> extends Model<TEntity> {
 	// Table & Column Name Information
 	public static uuidColumnName: string;
 	public static isActiveColumnName: string;

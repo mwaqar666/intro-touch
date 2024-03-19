@@ -1,5 +1,4 @@
 import { AbstractDbRegister } from "@/backend-core/database/abstract";
-import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { BaseRepository } from "@/backend-core/database/repository";
@@ -11,7 +10,7 @@ import { CustomPlatformRepository, PlatformCategoryRepository, PlatformProfileRe
 import { CustomPlatformSeeder, PlatformsSeeder, PlatformUserProfileSeeder } from "@/backend/platform/db/seeders";
 
 export class PlatformDbRegister extends AbstractDbRegister {
-	public override registerEntities(): Array<IEntityType<any>> {
+	public override registerEntities(): Array<IEntityType> {
 		return [PlatformCategoryEntity, PlatformEntity, PlatformProfileEntity, CustomPlatformEntity];
 	}
 
@@ -19,11 +18,11 @@ export class PlatformDbRegister extends AbstractDbRegister {
 		return [CreatePlatformsTable, CreatePlatformCategoriesTable, CreatePlatformProfilesTable, CreateCustomPlatformsTable];
 	}
 
-	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository>> {
 		return [PlatformCategoryRepository, PlatformRepository, PlatformProfileRepository, CustomPlatformRepository];
 	}
 
-	public override registerSeeders(): Array<Constructable<ISeeder, any>> {
+	public override registerSeeders(): Array<Constructable<ISeeder>> {
 		return [PlatformsSeeder, PlatformUserProfileSeeder, CustomPlatformSeeder];
 	}
 }

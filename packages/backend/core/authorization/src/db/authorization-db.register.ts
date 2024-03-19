@@ -1,5 +1,4 @@
 import { AbstractDbRegister } from "@/backend-core/database/abstract";
-import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { BaseRepository } from "@/backend-core/database/repository";
@@ -11,7 +10,7 @@ import { PermissionRepository, RolePermissionRepository, RoleRepository, UserRol
 import { PermissionsSeeder, RolePermissionsSeeder, RolesSeeder, UserRolesSeeder } from "@/backend-core/authorization/db/seeders";
 
 export class AuthorizationDbRegister extends AbstractDbRegister {
-	public override registerEntities(): Array<IEntityType<any>> {
+	public override registerEntities(): Array<IEntityType> {
 		return [RoleEntity, PermissionEntity, RolePermissionEntity, UserRoleEntity];
 	}
 
@@ -19,11 +18,11 @@ export class AuthorizationDbRegister extends AbstractDbRegister {
 		return [CreateRolesTable, CreatePermissionsTable, CreateRolePermissionsTable, CreateUserRolesTable];
 	}
 
-	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository>> {
 		return [RoleRepository, PermissionRepository, RolePermissionRepository, UserRoleRepository];
 	}
 
-	public override registerSeeders(): Array<Constructable<ISeeder, any>> {
+	public override registerSeeders(): Array<Constructable<ISeeder>> {
 		return [RolesSeeder, PermissionsSeeder, RolePermissionsSeeder, UserRolesSeeder];
 	}
 }

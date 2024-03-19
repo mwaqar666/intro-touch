@@ -12,17 +12,17 @@ export interface IScoped {
 	scopes: IEntityScope;
 }
 
-export interface IFinderOptions<TEntity extends BaseEntity<TEntity>> {
+export interface IFindOptions<TEntity extends BaseEntity<TEntity>> {
 	findOptions: FindOptions<TEntity>;
 }
 
-export type IScopedFinderOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & IFinderOptions<TEntity>;
+export type IScopedFinderOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & IFindOptions<TEntity>;
 
 export interface IResolverOptions<TEntity extends BaseEntity<TEntity>> {
 	entity: IEntityResolution<TEntity>;
 }
 
-export type IScopedFinderOrResolverOption<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & (IFinderOptions<TEntity> | IResolverOptions<TEntity>);
+export type IScopedFinderOrResolverOption<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & (IFindOptions<TEntity> | IResolverOptions<TEntity>);
 
 export interface ICreateOneOptions<TEntity extends BaseEntity<TEntity>> extends ITransactional {
 	valuesToCreate: Partial<IEntityTableColumnProperties<TEntity>>;
