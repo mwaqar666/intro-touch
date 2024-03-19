@@ -2,7 +2,7 @@
   "name": "@intro-touch/backend-core-storage",
   "version": "0.0.0",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.529.1",
+    "@aws-sdk/client-s3": "^3.536.0",
     "iocc": "^2.2.2"
   }
 }

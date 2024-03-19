@@ -3,7 +3,7 @@ import type { Request, Response } from "@/backend-core/request-processor/handler
 import type { IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface/interceptor";
 
 export interface IInterceptorResolver {
-	runRequestInterceptors(request: Request, interceptors: Array<Constructable<IRequestInterceptor, Array<unknown>>>): Promise<Request>;
+	runRequestInterceptors(request: Request, interceptors: Array<Constructable<IRequestInterceptor>>): Promise<Request>;
 
-	runResponseInterceptors(request: Request, response: Response, interceptors: Array<Constructable<IResponseInterceptor, Array<unknown>>>): Promise<Response>;
+	runResponseInterceptors(request: Request, response: Response, interceptors: Array<Constructable<IResponseInterceptor>>): Promise<Response>;
 }

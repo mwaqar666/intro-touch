@@ -16,7 +16,7 @@ export type Delegate<TArgs extends Array<unknown> = Array<void>, TReturn = void>
 
 export type Action<TArgs extends Array<unknown> = Array<void>> = Delegate<TArgs>;
 
-export type Constructable<T, TArgs extends Array<unknown> = Array<void>> = new (...args: TArgs) => T;
+export type Constructable<T> = new (...args: any) => T;
 
 export type PartialOnly<T, K extends Key<T>> = Partial<Pick<T, K>> & Omit<T, K>;
 

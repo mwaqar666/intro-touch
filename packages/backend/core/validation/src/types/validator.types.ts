@@ -4,7 +4,7 @@ import type { IEntityTableColumnProperties } from "@/backend-core/database/types
 import type { Constructable, Key, Optional } from "@/stacks/types";
 
 export interface IUniqueValidatorNoIgnoreOptions<T extends BaseEntity<T>, R extends BaseRepository<T>> {
-	repository: Constructable<R, Array<any>>;
+	repository: Constructable<R>;
 	column?: Optional<Key<IEntityTableColumnProperties<T>>>;
 }
 
