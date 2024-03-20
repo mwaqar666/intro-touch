@@ -6,7 +6,7 @@ import { BadRequestException } from "@/backend-core/request-processor/exceptions
 import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
-import type { ResetPasswordRequestDto } from "@/backend/user/dto/reset-password";
+import type { ChangePasswordRequestDto } from "@/backend/user/dto/reset-password";
 
 export class UserService {
 	public constructor(
@@ -32,7 +32,7 @@ export class UserService {
 		return userEntity;
 	}
 
-	public async resetPassword(userEntity: UserEntity, resetPasswordRequestDto: ResetPasswordRequestDto): Promise<UserEntity> {
+	public async resetPassword(userEntity: UserEntity, resetPasswordRequestDto: ChangePasswordRequestDto): Promise<UserEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserEntity> => {
 				if (!userEntity.userPassword) throw new BadRequestException("Social login must set password first");

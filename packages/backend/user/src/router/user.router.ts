@@ -31,9 +31,9 @@ export class UserRouter implements IRouter {
 								handler: this.userController.me,
 							},
 							{
-								path: "/reset-password",
+								path: "/change-password",
 								method: RouteMethod.Post,
-								handler: this.userController.resetPassword,
+								handler: this.userController.changePassword,
 							},
 							{
 								path: "/profiles",

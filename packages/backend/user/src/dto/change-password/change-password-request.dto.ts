@@ -1,7 +1,7 @@
 import { IsSameAsField } from "@/backend-core/validation/validators";
 import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
-export class ResetPasswordRequestDto {
+export class ChangePasswordRequestDto {
 	@MaxLength(50)
 	@MinLength(8)
 	@IsString()
