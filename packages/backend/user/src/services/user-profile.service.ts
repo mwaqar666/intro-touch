@@ -1,5 +1,5 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
-import type { IAppConfigResolver } from "@/backend-core/config/types";
+import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
@@ -36,8 +36,10 @@ export class UserProfileService {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
 				const { userProfilePicture: uploadedPicture, ...userProfileFields }: CreateUserProfileRequestDto = createUserProfileRequestDto;
-				const appConfigStage = this.configResolver.resolveConfig("app").env;
-				const profilePictureBucket: string = S3BucketConst.BucketName(S3Bucket.ProfilePictures, appConfigStage);
+
+				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
+				const profilePictureBucket: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.ProfilePictures);
+
 				const userProfilePicture: string = await this.storageService.storeFile(profilePictureBucket, uploadedPicture);
 
 				const userProfileTableColumnProperties: Partial<IEntityTableColumnProperties<UserProfileEntity>> = {
@@ -56,8 +58,9 @@ export class UserProfileService {
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
 				const { userProfilePicture: uploadedPicture, ...userProfileFields }: UpdateUserProfileRequestDto = updateUserProfileRequestDto;
 
-				const appConfigStage = this.configResolver.resolveConfig("app").env;
-				const profilePictureBucket: string = S3BucketConst.BucketName(S3Bucket.ProfilePictures, appConfigStage);
+				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
+				const profilePictureBucket: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.ProfilePictures);
+
 				const userProfilePicture: Optional<string> = uploadedPicture instanceof UploadedFile ? await this.storageService.storeFile(profilePictureBucket, uploadedPicture) : uploadedPicture;
 
 				const userProfileTableColumnProperties: Partial<IEntityTableColumnProperties<UserProfileEntity>> = {

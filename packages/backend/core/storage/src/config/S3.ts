@@ -3,5 +3,5 @@ export enum S3Bucket {
 }
 
 export class S3BucketConst {
-	public static readonly BucketName = (bucket: S3Bucket, stage: string): string => `introtouch-bucket-${stage}-${bucket}`;
+	public static readonly BucketName = (stage: string, bucket: S3Bucket): string => `introtouch-bucket-${stage}-${bucket}`;
 }

@@ -47,7 +47,7 @@ export class PlatformRepository extends BaseRepository<PlatformEntity> {
 					{
 						required: true,
 						model: PlatformProfileEntity.scope([EntityScopeConst.withoutTimestamps]),
-						as: "platformPlatformProfile",
+						as: "platformPlatformProfiles",
 						include: [
 							{
 								required: true,
