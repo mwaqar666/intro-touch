@@ -52,4 +52,11 @@ export enum Permission {
 	CreateUserProfile = "CREATE_USER_PROFILE",
 	UpdateUserProfile = "UPDATE_USER_PROFILE",
 	DeleteUserProfile = "DELETE_USER_PROFILE",
+
+	// Contacts
+	ListUserContact = "LIST_USER_CONTACT",
+	ViewUserContact = "VIEW_USER_CONTACT",
+	CreateUserContact = "CREATE_USER_CONTACT",
+	UpdateUserContact = "UPDATE_USER_CONTACT",
+	DeleteUserContact = "DELETE_USER_CONTACT",
 }

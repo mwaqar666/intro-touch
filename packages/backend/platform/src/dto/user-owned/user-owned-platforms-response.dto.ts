@@ -7,21 +7,25 @@ export class UserOwnedPlatformsResponseDto {
 }
 
 export class UserOwnedPlatformsTransformedResponseDto {
-	public platforms: Array<UserBuiltInPlatform | UserCustomPlatform>;
+	public platforms: Array<UserPlatform>;
 }
 
-export class UserPlatform {
+export class UserBasePlatform {
 	public platformUuid: string;
 	public platformName: string;
 	public platformIcon: string;
-	public platformIdentity: string;
 	public platformIsActive: boolean;
+	public platformProfileUuid: string;
+	public platformProfileIdentity: string;
+	public platformProfileIsActive: boolean;
 }
 
-export class UserBuiltInPlatform extends UserPlatform {
+export class UserBuiltInPlatform extends UserBasePlatform {
 	public platformType: "builtIn";
 }
 
-export class UserCustomPlatform extends UserPlatform {
+export class UserCustomPlatform extends UserBasePlatform {
 	public platformType: "custom";
 }
+
+export type UserPlatform = UserBuiltInPlatform | UserCustomPlatform;

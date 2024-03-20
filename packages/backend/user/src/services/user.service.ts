@@ -6,7 +6,7 @@ import { BadRequestException } from "@/backend-core/request-processor/exceptions
 import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
-import type { ChangePasswordRequestDto } from "@/backend/user/dto/reset-password";
+import type { ChangePasswordRequestDto } from "@/backend/user/dto/change-password";
 
 export class UserService {
 	public constructor(
