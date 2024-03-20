@@ -12,12 +12,6 @@ export class ChangePasswordRequestDto {
 	@MinLength(8)
 	@IsString()
 	@IsNotEmpty()
-	public userOldPassword: string;
-
-	@MaxLength(50)
-	@MinLength(8)
-	@IsString()
-	@IsNotEmpty()
 	public userPassword: string;
 
 	@MaxLength(50)
