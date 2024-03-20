@@ -15,6 +15,12 @@ export class UserController {
 		@Inject(AuthorizationTokenConst.Authorization) private readonly authorization: IAuthorization,
 	) {}
 
+	public async getUserList(@Auth userEntity: UserEntity): Promise<{ users: Array<UserEntity> }> {
+		await this.authorization.can(userEntity, [Permission.ListUser]);
+
+		return { users: await this.userService.getUserList() };
+	}
+
 	public async me(@Auth userEntity: UserEntity): Promise<{ user: UserEntity }> {
 		return { user: await this.userService.getUserWithLiveProfile(userEntity) };
 	}

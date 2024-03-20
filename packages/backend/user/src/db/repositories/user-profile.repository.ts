@@ -33,12 +33,7 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 	}
 
 	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
-		return this.findOneOrFail({
-			findOptions: {
-				where: { userProfileUuid },
-			},
-			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
-		});
+		return this.resolveOneOrFail(userProfileUuid, [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps]);
 	}
 
 	public createUserProfile(valuesToCreate: Partial<IEntityTableColumnProperties<UserProfileEntity>>, transaction: Transaction): Promise<UserProfileEntity> {

@@ -32,17 +32,21 @@ export class UserService {
 		return userEntity;
 	}
 
-	public async resetPassword(userEntity: UserEntity, resetPasswordRequestDto: ChangePasswordRequestDto): Promise<UserEntity> {
+	public async getUserList(): Promise<Array<UserEntity>> {
+		return this.userRepository.getUserList();
+	}
+
+	public async resetPassword(userEntity: UserEntity, changePasswordRequestDto: ChangePasswordRequestDto): Promise<UserEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserEntity> => {
 				if (!userEntity.userPassword) throw new BadRequestException("Social login must set password first");
 
-				const oldPasswordVerified: boolean = await this.hashService.compare(resetPasswordRequestDto.userOldPassword, userEntity.userPassword);
+				const oldPasswordVerified: boolean = await this.hashService.compare(changePasswordRequestDto.userOldPassword, userEntity.userPassword);
 
 				if (!oldPasswordVerified) throw new BadRequestException("Invalid old password");
 
 				const updatePasswordFields: Partial<IEntityTableColumnProperties<UserEntity>> = {
-					userPassword: resetPasswordRequestDto.userPassword,
+					userPassword: changePasswordRequestDto.userPassword,
 				};
 
 				return this.userRepository.resetPassword(userEntity, updatePasswordFields, transaction);
