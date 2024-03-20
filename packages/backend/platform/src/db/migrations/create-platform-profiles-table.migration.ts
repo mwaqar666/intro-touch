@@ -14,6 +14,7 @@ export class CreatePlatformProfilesTable extends AbstractMigration {
 				allowNull: false,
 				type: DataType.STRING(255),
 			},
+			platformProfileIsActive: this.createIsActiveKeyProps(),
 			platformProfileCreatedAt: this.createCreatedAtKeyProps(),
 			platformProfileUpdatedAt: this.createUpdatedAtKeyProps(),
 			platformProfileDeletedAt: this.createDeletedAtKeyProps(),

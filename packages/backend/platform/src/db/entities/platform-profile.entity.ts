@@ -1,5 +1,5 @@
 import { UserProfileEntity } from "@/backend/user/db/entities";
-import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
@@ -26,6 +26,9 @@ export class PlatformProfileEntity extends BaseEntity<PlatformProfileEntity> {
 	@AllowNull(false)
 	@Column({ type: DataType.STRING(255) })
 	public platformProfileIdentity: string;
+
+	@IsActiveColumn
+	public platformProfileIsActive: boolean;
 
 	@CreatedAtColumn
 	public platformProfileCreatedAt: Date;

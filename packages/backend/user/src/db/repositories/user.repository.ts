@@ -10,6 +10,13 @@ export class UserRepository extends BaseRepository<UserEntity> {
 		super(UserEntity);
 	}
 
+	public async getUserList(): Promise<Array<UserEntity>> {
+		return this.findAll({
+			findOptions: {},
+			scopes: [EntityScopeConst.isActive],
+		});
+	}
+
 	public async findOrFailActiveUserByUsername(userUsername: string): Promise<UserEntity> {
 		return this.findOneOrFail({
 			findOptions: {
@@ -29,12 +36,7 @@ export class UserRepository extends BaseRepository<UserEntity> {
 	}
 
 	public async findActiveUserByUuid(userUuid: string): Promise<Nullable<UserEntity>> {
-		return this.findOne({
-			findOptions: {
-				where: { userUuid },
-			},
-			scopes: [EntityScopeConst.isActive],
-		});
+		return this.resolveOne(userUuid, [EntityScopeConst.isActive]);
 	}
 
 	public resetPassword(userEntity: UserEntity, valuesToUpdate: Partial<IEntityTableColumnProperties<UserEntity>>, transaction: Transaction): Promise<UserEntity> {

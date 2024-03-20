@@ -32,6 +32,11 @@ export class UserRouter implements IRouter {
 						guards: [AuthRequestGuard],
 						routes: [
 							{
+								path: "/list",
+								method: RouteMethod.Get,
+								handler: this.userController.getUserList,
+							},
+							{
 								path: "/me",
 								method: RouteMethod.Get,
 								handler: this.userController.me,
