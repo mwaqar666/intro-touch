@@ -1,5 +1,4 @@
 import { AbstractDbRegister } from "@/backend-core/database/abstract";
-import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { BaseRepository } from "@/backend-core/database/repository";
@@ -23,7 +22,7 @@ export class UserDbRegister extends AbstractDbRegister {
 		return [UserRepository, UserProfileRepository, UserContactRepository];
 	}
 
-	public override registerSeeders(): Array<Constructable<ISeeder, any>> {
+	public override registerSeeders(): Array<Constructable<ISeeder>> {
 		return [UsersSeeder];
 	}
 }

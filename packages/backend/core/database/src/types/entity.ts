@@ -6,7 +6,7 @@ import type { BaseEntity } from "@/backend-core/database/entity";
 
 export type IEntityScope = Array<string | ScopeOptions>;
 
-export type IEntityRelationshipPropertyTypes = Nullable<BaseEntity<any>> | BaseEntity<any> | Array<BaseEntity<any>>;
+export type IEntityRelationshipPropertyTypes = Nullable<BaseEntity> | BaseEntity | Array<BaseEntity>;
 
 export type IEntityKeyValues<TEntity extends BaseEntity<TEntity>> = { [TProp in Key<TEntity>]: TEntity[TProp] };
 
@@ -24,4 +24,4 @@ export type IEntityScopes<T> = { [K in Key<T>]: ScopesOptions };
 
 export type IAvailableScopes = IEntityScopes<typeof EntityScopeConst>;
 
-export type IEntityType<TEntity extends BaseEntity<TEntity>> = Constructable<TEntity, any> & typeof BaseEntity<TEntity>;
+export type IEntityType<TEntity extends BaseEntity<TEntity> = BaseEntity> = Constructable<TEntity> & typeof BaseEntity<TEntity>;

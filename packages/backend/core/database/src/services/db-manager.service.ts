@@ -1,6 +1,5 @@
 import { App } from "@/backend-core/core/extensions";
 import type { Constructable } from "@/stacks/types";
-import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IDbManager, IDbRegister } from "@/backend-core/database/interface/db";
 import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
@@ -10,8 +9,8 @@ import type { IEntityType } from "@/backend-core/database/types";
 export class DbManagerService implements IDbManager {
 	private readonly _entityRegister: Array<IEntityType<any>> = [];
 	private readonly _migrationRegister: Array<Constructable<IMigration>> = [];
-	private readonly _repositoryRegister: Array<Constructable<BaseRepository<BaseEntity<any>>>> = [];
-	private readonly _seederRegister: Array<Constructable<ISeeder, any>> = [];
+	private readonly _repositoryRegister: Array<Constructable<BaseRepository>> = [];
+	private readonly _seederRegister: Array<Constructable<ISeeder>> = [];
 
 	public registerModuleDb(dbRegister: IDbRegister): void {
 		this._entityRegister.push(...dbRegister.registerEntities());
@@ -33,14 +32,14 @@ export class DbManagerService implements IDbManager {
 		});
 	}
 
-	public resolveRepositories(): Array<BaseRepository<BaseEntity<any>>> {
-		return this._repositoryRegister.map((repositoryClass: Constructable<BaseRepository<BaseEntity<any>>>): BaseRepository<BaseEntity<any>> => {
+	public resolveRepositories(): Array<BaseRepository> {
+		return this._repositoryRegister.map((repositoryClass: Constructable<BaseRepository>): BaseRepository => {
 			return App.container.resolve(repositoryClass);
 		});
 	}
 
 	public resolveSeeders(): Array<ISeeder> {
-		return this._seederRegister.map((seederClass: Constructable<ISeeder, any>): ISeeder => {
+		return this._seederRegister.map((seederClass: Constructable<ISeeder>): ISeeder => {
 			return App.container.resolve(seederClass);
 		});
 	}
@@ -55,19 +54,19 @@ export class DbManagerService implements IDbManager {
 	}
 
 	private registerRepositories(dbRegister: IDbRegister): void {
-		const repositoryClasses: Array<Constructable<BaseRepository<BaseEntity<any>>>> = dbRegister.registerRepositories();
+		const repositoryClasses: Array<Constructable<BaseRepository>> = dbRegister.registerRepositories();
 		this._repositoryRegister.push(...repositoryClasses);
 
-		repositoryClasses.forEach((repositoryClass: Constructable<BaseRepository<BaseEntity<any>>>): void => {
+		repositoryClasses.forEach((repositoryClass: Constructable<BaseRepository>): void => {
 			App.container.registerSingleton(repositoryClass);
 		});
 	}
 
 	private registerSeeders(dbRegister: IDbRegister): void {
-		const seederClasses: Array<Constructable<ISeeder, any>> = dbRegister.registerSeeders();
+		const seederClasses: Array<Constructable<ISeeder>> = dbRegister.registerSeeders();
 		this._seederRegister.push(...seederClasses);
 
-		seederClasses.forEach((seederClass: Constructable<ISeeder, any>): void => {
+		seederClasses.forEach((seederClass: Constructable<ISeeder>): void => {
 			App.container.registerSingleton(seederClass);
 		});
 	}

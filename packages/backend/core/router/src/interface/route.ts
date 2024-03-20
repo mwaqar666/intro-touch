@@ -17,7 +17,7 @@ export interface IGroupedRoute {
 	/**
 	 * Guards to apply to this group of routes
 	 */
-	guards?: Array<Constructable<IGuard, Array<any>>>;
+	guards?: Array<Constructable<IGuard>>;
 
 	/**
 	 * Route type, this denotes where this route will be registered. Default is RouteType.GLOBAL
@@ -27,12 +27,12 @@ export interface IGroupedRoute {
 	/**
 	 * Request interceptors to apply to this group of routes
 	 */
-	requestInterceptors?: Array<Constructable<IRequestInterceptor, Array<any>>>;
+	requestInterceptors?: Array<Constructable<IRequestInterceptor>>;
 
 	/**
 	 * Response interceptors to apply to this group of routes
 	 */
-	responseInterceptors?: Array<Constructable<IResponseInterceptor, Array<any>>>;
+	responseInterceptors?: Array<Constructable<IResponseInterceptor>>;
 }
 
 export interface ISimpleRoute {
@@ -54,7 +54,7 @@ export interface ISimpleRoute {
 	/**
 	 * Guards to apply to this route
 	 */
-	guards?: Array<Constructable<IGuard, Array<any>>>;
+	guards?: Array<Constructable<IGuard>>;
 
 	/**
 	 * Route type, this denotes where this route will be registered. Default is RouteType.GLOBAL
@@ -64,12 +64,12 @@ export interface ISimpleRoute {
 	/**
 	 * Request interceptors to apply to this route
 	 */
-	requestInterceptors?: Array<Constructable<IRequestInterceptor, Array<any>>>;
+	requestInterceptors?: Array<Constructable<IRequestInterceptor>>;
 
 	/**
 	 * Response interceptors to apply to this route
 	 */
-	responseInterceptors?: Array<Constructable<IResponseInterceptor, Array<any>>>;
+	responseInterceptors?: Array<Constructable<IResponseInterceptor>>;
 }
 
 export interface IStackRoute {

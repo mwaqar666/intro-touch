@@ -44,7 +44,7 @@ export class CustomPlatformService {
 
 	public async deleteCustomPlatform(customPlatformUuid: string): Promise<boolean> {
 		return this.transactionManager.executeTransaction({
-			operation: async ({ transaction }: ITransactionStore): Promise<CustomPlatformEntity> => {
+			operation: async ({ transaction }: ITransactionStore): Promise<boolean> => {
 				return this.customPlatformRepository.deleteCustomPlatform(customPlatformUuid, transaction);
 			},
 		});

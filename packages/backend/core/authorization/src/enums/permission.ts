@@ -5,6 +5,7 @@ export enum Permission {
 	CreateUser = "CREATE_USER",
 	UpdateUser = "UPDATE_USER",
 	DeleteUser = "DELETE_USER",
+	ResetPassword = "RESET_PASSWORD",
 
 	// Platform Categories
 	ListPlatformCategory = "LIST_PLATFORM_CATEGORY",
