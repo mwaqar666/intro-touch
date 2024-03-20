@@ -2,7 +2,6 @@
   "name": "@intro-touch/backend-core-ignition",
   "version": "1.0.0",
   "dependencies": {
-    "pg": "^8.11.3",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {

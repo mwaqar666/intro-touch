@@ -22,9 +22,7 @@ export class PlatformController {
 		return { platforms: await this.platformService.getPlatformsByPlatformCategory(platformCategoryUuid) };
 	}
 
-	public async getUserOwnedPlatforms(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<UserOwnedPlatformsResponseDto> {
-		await this.authorization.can(authEntity, [Permission.ListPlatform]);
-
+	public async getUserOwnedPlatforms(@Path("userProfileUuid") userProfileUuid: string, @Path("platformCategoryUuid") platformCategoryUuid: string): Promise<UserOwnedPlatformsResponseDto> {
 		return await this.platformService.getUserOwnedPlatforms(userProfileUuid, platformCategoryUuid);
 	}
 }

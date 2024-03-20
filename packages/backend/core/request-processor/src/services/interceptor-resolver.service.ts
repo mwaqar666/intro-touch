@@ -4,7 +4,7 @@ import type { Request, Response } from "@/backend-core/request-processor/handler
 import type { IInterceptorResolver, IRequestInterceptor, IResponseInterceptor } from "@/backend-core/request-processor/interface";
 
 export class InterceptorResolverService implements IInterceptorResolver {
-	public async runRequestInterceptors(request: Request, interceptors: Array<Constructable<IRequestInterceptor, Array<unknown>>>): Promise<Request> {
+	public async runRequestInterceptors(request: Request, interceptors: Array<Constructable<IRequestInterceptor>>): Promise<Request> {
 		for (const interceptor of interceptors) {
 			const requestInterceptor: IRequestInterceptor = App.container.resolve(interceptor);
 
@@ -14,7 +14,7 @@ export class InterceptorResolverService implements IInterceptorResolver {
 		return request;
 	}
 
-	public async runResponseInterceptors(request: Request, response: Response, interceptors: Array<Constructable<IResponseInterceptor, Array<unknown>>>): Promise<Response> {
+	public async runResponseInterceptors(request: Request, response: Response, interceptors: Array<Constructable<IResponseInterceptor>>): Promise<Response> {
 		for (const interceptor of interceptors) {
 			const responseInterceptor: IResponseInterceptor = App.container.resolve(interceptor);
 

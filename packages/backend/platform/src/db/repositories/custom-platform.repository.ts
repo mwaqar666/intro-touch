@@ -4,6 +4,7 @@ import { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Transaction } from "sequelize";
 import { CustomPlatformEntity, PlatformCategoryEntity } from "@/backend/platform/db/entities";
+import type { CreateCustomPlatformRequestDto } from "@/backend/platform/dto/create-custom-platform";
 
 export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntity> {
 	public constructor() {
@@ -55,6 +56,27 @@ export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntit
 			},
 			valuesToUpdate,
 			transaction,
+		});
+	}
+
+	public async createCustomPlatform(userProfileId: number, platformCategoryId: number, createCustomPlatformRequestDto: CreateCustomPlatformRequestDto, transaction: Transaction): Promise<CustomPlatformEntity> {
+		return this.createOne({
+			valuesToCreate: {
+				...createCustomPlatformRequestDto,
+				customPlatformUserProfileId: userProfileId,
+				customPlatformPlatformCategoryId: platformCategoryId,
+			},
+			transaction,
+		});
+	}
+
+	public deleteCustomPlatform(customPlatformUuid: string, transaction: Transaction): Promise<boolean> {
+		return this.deleteOne({
+			findOptions: {
+				where: { customPlatformUuid },
+			},
+			transaction,
+			force: false,
 		});
 	}
 }

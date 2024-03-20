@@ -1,9 +1,10 @@
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
+import { Permission } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { UserEntity } from "@/backend/user/db/entities";
-import { ResetPasswordRequestDto } from "@/backend/user/dto/reset-password";
+import { ChangePasswordRequestDto } from "@/backend/user/dto/change-password";
 import { UserService } from "@/backend/user/services";
 
 @Controller
@@ -22,9 +23,9 @@ export class UserController {
 		return { user: await this.userService.getUserWithLiveProfile(userUsername) };
 	}
 
-	public async resetPassword(@Auth authEntity: UserEntity, @Body(ResetPasswordRequestDto) resetPasswordRequestDto: ResetPasswordRequestDto): Promise<{ user: UserEntity }> {
-		// await this.authorization.can(authEntity, [Permission.RESET_PASSWORD]);
+	public async changePassword(@Auth userEntity: UserEntity, @Body(ChangePasswordRequestDto) resetPasswordRequestDto: ChangePasswordRequestDto): Promise<{ user: UserEntity }> {
+		await this.authorization.can(userEntity, [Permission.ResetPassword]);
 
-		return { user: await this.userService.resetPassword(authEntity.userId, resetPasswordRequestDto) };
+		return { user: await this.userService.resetPassword(userEntity, resetPasswordRequestDto) };
 	}
 }

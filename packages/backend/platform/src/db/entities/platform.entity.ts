@@ -2,7 +2,7 @@ import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, Pri
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, BelongsTo, Column, DataType, HasMany, HasOne, Scopes, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
 import { PlatformCategoryEntity } from "@/backend/platform/db/entities/platform-category.entity";
 import { PlatformProfileEntity } from "@/backend/platform/db/entities/platform-profile.entity";
 
@@ -52,11 +52,5 @@ export class PlatformEntity extends BaseEntity<PlatformEntity> {
 		sourceKey: "platformId",
 		foreignKey: "platformProfilePlatformId",
 	})
-	@HasOne(() => PlatformProfileEntity, {
-		as: "platformPlatformProfile",
-		sourceKey: "platformId",
-		foreignKey: "platformProfilePlatformId",
-	})
-	public platformPlatformProfile: PlatformProfileEntity;
 	public platformPlatformProfiles: Array<PlatformProfileEntity>;
 }

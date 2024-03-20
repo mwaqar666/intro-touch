@@ -15,7 +15,10 @@ export class CreateUserProfileRequestDto {
 	@IsNotEmpty()
 	public userProfileLastName: string;
 
-	@IsValidFile({ mimeType: "image/*" })
+	@IsValidFile({
+		mimeType: "image/*",
+		maxSizeInBytes: 5 * 1024 * 1024,
+	})
 	@IsNotEmpty()
 	public userProfilePicture: UploadedFile;
 

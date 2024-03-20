@@ -13,4 +13,14 @@ export class PlatformCategoryRepository extends BaseRepository<PlatformCategoryE
 			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});
 	}
+
+	public fetchPlatformCategory(platformCategoryUuid: string): Promise<PlatformCategoryEntity> {
+		return this.findOneOrFail({
+			findOptions: {
+				where: {
+					platformCategoryUuid,
+				},
+			},
+		});
+	}
 }

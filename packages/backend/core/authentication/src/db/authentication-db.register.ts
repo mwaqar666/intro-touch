@@ -1,6 +1,6 @@
 import { AbstractDbRegister } from "@/backend-core/database/abstract";
-import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IMigration } from "@/backend-core/database/interface/migration";
+import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityType } from "@/backend-core/database/types";
 import type { Constructable } from "@/stacks/types";
@@ -9,7 +9,7 @@ import { CreateVerificationTokensTable } from "@/backend-core/authentication/db/
 import { VerificationTokenRepository } from "@/backend-core/authentication/db/repositories";
 
 export class AuthenticationDbRegister extends AbstractDbRegister {
-	public override registerEntities(): Array<IEntityType<any>> {
+	public override registerEntities(): Array<IEntityType> {
 		return [VerificationTokenEntity];
 	}
 
@@ -17,7 +17,11 @@ export class AuthenticationDbRegister extends AbstractDbRegister {
 		return [CreateVerificationTokensTable];
 	}
 
-	public override registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>, Array<any>>> {
+	public override registerRepositories(): Array<Constructable<BaseRepository>> {
 		return [VerificationTokenRepository];
+	}
+
+	public override registerSeeders(): Array<Constructable<ISeeder>> {
+		return [];
 	}
 }

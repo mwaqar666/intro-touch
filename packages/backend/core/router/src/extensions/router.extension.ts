@@ -4,7 +4,7 @@ import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IRouteBuilder, IRouter } from "@/backend-core/router/interface";
 
 export class RouterExtension {
-	public static addRouter(router: Constructable<IRouter, Array<any>>): void {
+	public static addRouter(router: Constructable<IRouter>): void {
 		App.container.registerSingleton(router);
 
 		const resolvedRouter: IRouter = App.container.resolve(router);

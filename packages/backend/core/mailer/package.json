@@ -2,7 +2,7 @@
   "name": "@intro-touch/backend-core-mailer",
   "version": "0.0.0",
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.509.0",
+    "@aws-sdk/client-ses": "^3.535.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "iocc": "^2.2.2"

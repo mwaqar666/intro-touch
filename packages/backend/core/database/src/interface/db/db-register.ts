@@ -1,5 +1,4 @@
 import type { Constructable } from "@/stacks/types";
-import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { BaseRepository } from "@/backend-core/database/repository";
@@ -10,7 +9,7 @@ export interface IDbRegister {
 
 	registerMigrations(): Array<Constructable<IMigration>>;
 
-	registerRepositories(): Array<Constructable<BaseRepository<BaseEntity<any>>>>;
+	registerRepositories(): Array<Constructable<BaseRepository>>;
 
-	registerSeeders(): Array<Constructable<ISeeder, any>>;
+	registerSeeders(): Array<Constructable<ISeeder>>;
 }

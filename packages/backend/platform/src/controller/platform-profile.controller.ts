@@ -29,12 +29,19 @@ export class PlatformProfileController {
 	public async createBuiltInPlatform(
 		@Auth authEntity: UserEntity,
 		@Path("userProfileUuid") userProfileUuid: string,
-		@Path("platformUuid") platformUuid: string,
 		@Body(CreateBuiltinPlatformRequestDto)
 		createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto,
 	): Promise<{ platformProfile: PlatformProfileEntity }> {
 		await this.authorization.can(authEntity, [Permission.CreateUserProfile]);
 
+		const { platformUuid } = createBuiltinPlatformRequestDto;
+
 		return { platformProfile: await this.platformProfileService.createBuiltInPlatform(userProfileUuid, platformUuid, createBuiltinPlatformRequestDto) };
+	}
+
+	public async deleteBuiltInPlatform(@Auth authEntity: UserEntity, @Path("platformProfileUuid") platformProfileUuid: string): Promise<{ platformProfile: boolean }> {
+		await this.authorization.can(authEntity, [Permission.DeletePlatformProfile]);
+
+		return { platformProfile: await this.platformProfileService.deleteBuiltInPlatform(platformProfileUuid) };
 	}
 }

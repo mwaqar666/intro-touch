@@ -29,4 +29,14 @@ export class PlatformProfileRepository extends BaseRepository<PlatformProfileEnt
 			transaction,
 		});
 	}
+
+	public deleteBuiltInPlatform(platformProfileUuid: string, transaction: Transaction): Promise<boolean> {
+		return this.deleteOne({
+			findOptions: {
+				where: { platformProfileUuid },
+			},
+			transaction,
+			force: false,
+		});
+	}
 }

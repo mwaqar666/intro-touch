@@ -15,7 +15,11 @@ export class UpdateUserProfileRequestDto {
 	@IsOptional()
 	public userProfileLastName: Optional<string>;
 
-	@IsValidFile({ mimeType: "image/*", existing: true })
+	@IsValidFile({
+		existing: true,
+		mimeType: "image/*",
+		maxSizeInBytes: 5 * 1024 * 1024,
+	})
 	@IsOptional()
 	public userProfilePicture: Optional<string | UploadedFile>;
 

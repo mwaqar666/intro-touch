@@ -37,10 +37,10 @@ export class UserRepository extends BaseRepository<UserEntity> {
 		});
 	}
 
-	public resetPassword(userId: number, valuesToUpdate: Partial<IEntityTableColumnProperties<UserEntity>>, transaction: Transaction): Promise<UserEntity> {
+	public resetPassword(userEntity: UserEntity, valuesToUpdate: Partial<IEntityTableColumnProperties<UserEntity>>, transaction: Transaction): Promise<UserEntity> {
 		return this.updateOne({
 			findOptions: {
-				where: { userId },
+				where: { userId: userEntity.userId },
 			},
 			valuesToUpdate,
 			transaction,

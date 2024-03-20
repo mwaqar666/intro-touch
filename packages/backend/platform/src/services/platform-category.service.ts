@@ -12,4 +12,8 @@ export class PlatformCategoryService {
 	public getPlatformCategories(): Promise<Array<PlatformCategoryEntity>> {
 		return this.platformCategoryRepository.getPlatformCategories();
 	}
+
+	public async fetchPlatformCategory(platformCategoryUuid: string): Promise<PlatformCategoryEntity> {
+		return this.platformCategoryRepository.fetchPlatformCategory(platformCategoryUuid);
+	}
 }

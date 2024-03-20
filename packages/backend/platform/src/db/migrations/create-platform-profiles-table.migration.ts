@@ -16,6 +16,7 @@ export class CreatePlatformProfilesTable extends AbstractMigration {
 			},
 			platformProfileCreatedAt: this.createCreatedAtKeyProps(),
 			platformProfileUpdatedAt: this.createUpdatedAtKeyProps(),
+			platformProfileDeletedAt: this.createDeletedAtKeyProps(),
 		});
 
 		await this.createForeignKeyConstraint("platformProfiles", "platformProfileProfileId", "userProfiles", "userProfileId");
