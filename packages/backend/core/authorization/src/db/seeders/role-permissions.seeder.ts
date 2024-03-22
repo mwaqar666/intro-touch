@@ -6,7 +6,7 @@ import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { PermissionEntity, RoleEntity, RolePermissionEntity } from "@/backend-core/authorization/db/entities";
 import { PermissionRepository, RolePermissionRepository, RoleRepository } from "@/backend-core/authorization/db/repositories";
-import { Permission, Role } from "@/backend-core/authorization/enums";
+import { Role } from "@/backend-core/authorization/enums";
 
 export class RolePermissionsSeeder implements ISeeder {
 	public timestamp = 1688974088333;
@@ -35,7 +35,7 @@ export class RolePermissionsSeeder implements ISeeder {
 					scopes: [EntityScopeConst.primaryKeyOnly],
 				});
 
-				if (customer) await this.seedCustomerPermissions(customer);
+				if (customer) await this.seedAdminPermissions(customer);
 			},
 		});
 	}
@@ -51,41 +51,6 @@ export class RolePermissionsSeeder implements ISeeder {
 				const rolePermissionEntries: Array<Partial<IEntityTableColumnProperties<RolePermissionEntity>>> = permissions.map((permission: PermissionEntity): Partial<IEntityTableColumnProperties<RolePermissionEntity>> => {
 					return {
 						rolePermissionRoleId: adminRole.roleId,
-						rolePermissionPermissionId: permission.permissionId,
-					};
-				});
-
-				await this.rolePermissionRepository.createMany({
-					valuesToCreate: rolePermissionEntries,
-					transaction,
-				});
-			},
-		});
-	}
-
-	private async seedCustomerPermissions(customerRole: RoleEntity): Promise<void> {
-		await this.transactionManager.executeTransaction({
-			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
-				const customerPermissions: Array<Permission> = [
-					Permission.ListPlatformCategory,
-					Permission.ViewPlatformCategory,
-					Permission.ListPlatform,
-					Permission.ViewPlatform,
-					Permission.ListCustomPlatform,
-					Permission.ViewCustomPlatform,
-					Permission.CreateCustomPlatform,
-					Permission.UpdateCustomPlatform,
-					Permission.DeleteCustomPlatform,
-				];
-
-				const permissions: Array<PermissionEntity> = await this.permissionRepository.findAll({
-					findOptions: { where: { permissionName: customerPermissions } },
-					scopes: [EntityScopeConst.primaryKeyOnly],
-				});
-
-				const rolePermissionEntries: Array<Partial<IEntityTableColumnProperties<RolePermissionEntity>>> = permissions.map((permission: PermissionEntity): Partial<IEntityTableColumnProperties<RolePermissionEntity>> => {
-					return {
-						rolePermissionRoleId: customerRole.roleId,
 						rolePermissionPermissionId: permission.permissionId,
 					};
 				});

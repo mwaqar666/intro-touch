@@ -1,3 +1,5 @@
+import type { RoleEntity } from "@/backend-core/authorization/db/entities";
+import { RoleRepository, UserRoleRepository } from "@/backend-core/authorization/db/repositories";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ITransactionStore } from "@/backend-core/database/types";
@@ -12,6 +14,8 @@ export class UserAuthService {
 		// Dependencies
 
 		@Inject(UserRepository) private readonly userRepository: UserRepository,
+		@Inject(RoleRepository) private readonly roleRepository: RoleRepository,
+		@Inject(UserRoleRepository) private readonly userRoleRepository: UserRoleRepository,
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
@@ -26,10 +30,10 @@ export class UserAuthService {
 
 	public createNewUserWithProfile(userProperties: IFindOrCreateUserProps): Promise<UserEntity> {
 		return this.transactionManager.executeTransaction({
-			operation: async (runningTransaction: ITransactionStore): Promise<UserEntity> => {
+			operation: async ({ transaction }: ITransactionStore): Promise<UserEntity> => {
 				const user: UserEntity = await this.userRepository.createOne({
 					valuesToCreate: userProperties,
-					transaction: runningTransaction.transaction,
+					transaction,
 				});
 
 				await this.userProfileRepository.createOne({
@@ -41,8 +45,12 @@ export class UserAuthService {
 						userProfileLastName: userProperties.userLastName,
 						userProfileIsLive: true,
 					},
-					transaction: runningTransaction.transaction,
+					transaction,
 				});
+
+				const admin: RoleEntity = await this.roleRepository.getAdminRole();
+
+				await this.userRoleRepository.attachRoleToUser(user, admin, transaction);
 
 				return user;
 			},
