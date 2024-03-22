@@ -4,17 +4,22 @@ import { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Transaction } from "sequelize";
 import { CustomPlatformEntity, PlatformCategoryEntity } from "@/backend/platform/db/entities";
-import type { CreateCustomPlatformRequestDto } from "@/backend/platform/dto/create-custom-platform";
 
 export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntity> {
 	public constructor() {
 		super(CustomPlatformEntity);
 	}
 
-	public getCustomPlatformsByPlatformCategory(platformCategoryUuid: string): Promise<Array<CustomPlatformEntity>> {
+	public getCustomPlatformList(userProfileUuid: string, platformCategoryUuid: string): Promise<Array<CustomPlatformEntity>> {
 		return this.findAll({
 			findOptions: {
 				include: [
+					{
+						required: true,
+						as: "customPlatformUserProfile",
+						model: UserProfileEntity.scope([EntityScopeConst.isActive, EntityScopeConst.withoutSelection]),
+						where: { userProfileUuid },
+					},
 					{
 						required: true,
 						as: "customPlatformPlatformCategory",
@@ -23,7 +28,33 @@ export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntit
 					},
 				],
 			},
-			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
+			scopes: [EntityScopeConst.withoutTimestamps],
+		});
+	}
+
+	public getCustomPlatform(customPlatformUuid: string): Promise<CustomPlatformEntity> {
+		return this.resolveOneOrFail(customPlatformUuid, [EntityScopeConst.withoutTimestamps]);
+	}
+
+	public async createCustomPlatform(valuesToCreate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>>, transaction: Transaction): Promise<CustomPlatformEntity> {
+		return this.createOne({
+			valuesToCreate,
+			transaction,
+		});
+	}
+
+	public updateCustomPlatform(customPlatformUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>>, transaction: Transaction): Promise<CustomPlatformEntity> {
+		return this.updateOne({
+			entity: customPlatformUuid,
+			valuesToUpdate,
+			transaction,
+		});
+	}
+
+	public deleteCustomPlatform(customPlatformUuid: string, transaction: Transaction): Promise<boolean> {
+		return this.deleteOne({
+			entity: customPlatformUuid,
+			transaction,
 		});
 	}
 
@@ -46,37 +77,6 @@ export class CustomPlatformRepository extends BaseRepository<CustomPlatformEntit
 				],
 			},
 			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
-		});
-	}
-
-	public updateCustomPlatform(customPlatformUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>>, transaction: Transaction): Promise<CustomPlatformEntity> {
-		return this.updateOne({
-			findOptions: {
-				where: { customPlatformUuid },
-			},
-			valuesToUpdate,
-			transaction,
-		});
-	}
-
-	public async createCustomPlatform(userProfileId: number, platformCategoryId: number, createCustomPlatformRequestDto: CreateCustomPlatformRequestDto, transaction: Transaction): Promise<CustomPlatformEntity> {
-		return this.createOne({
-			valuesToCreate: {
-				...createCustomPlatformRequestDto,
-				customPlatformUserProfileId: userProfileId,
-				customPlatformPlatformCategoryId: platformCategoryId,
-			},
-			transaction,
-		});
-	}
-
-	public deleteCustomPlatform(customPlatformUuid: string, transaction: Transaction): Promise<boolean> {
-		return this.deleteOne({
-			findOptions: {
-				where: { customPlatformUuid },
-			},
-			transaction,
-			force: false,
 		});
 	}
 }

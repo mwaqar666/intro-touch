@@ -18,12 +18,8 @@ export class UserService {
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
-	public async getUserWithLiveProfile(userEntity: string): Promise<UserEntity>;
-	public async getUserWithLiveProfile(userEntity: UserEntity): Promise<UserEntity>;
-	public async getUserWithLiveProfile(userEntity: string | UserEntity): Promise<UserEntity> {
-		if (typeof userEntity === "string") {
-			userEntity = await this.userRepository.findOrFailActiveUserByUsername(userEntity);
-		}
+	public async getUserWithLiveProfile(userUsername: string): Promise<UserEntity> {
+		const userEntity: UserEntity = await this.userRepository.findOrFailActiveUserByUsername(userUsername);
 
 		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(userEntity);
 

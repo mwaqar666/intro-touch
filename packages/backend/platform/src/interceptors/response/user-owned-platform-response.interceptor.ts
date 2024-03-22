@@ -5,11 +5,11 @@ import { Response } from "@/backend-core/request-processor/handlers";
 import type { IResponseInterceptor } from "@/backend-core/request-processor/interface";
 import type { Nullable, PossiblePromise } from "@/stacks/types";
 import type { CustomPlatformEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
-import type { UserBuiltInPlatform, UserCustomPlatform, UserOwnedPlatformsResponseDto, UserOwnedPlatformsTransformedResponseDto, UserPlatform } from "@/backend/platform/dto/user-owned";
+import type { UserBuiltInPlatform, UserCustomPlatform, UserOwnedPlatformResponseDto, UserOwnedPlatformTransformedResponseDto, UserPlatform } from "@/backend/platform/dto/user-owned";
 
-export class UserOwnedPlatformResponseInterceptor implements IResponseInterceptor<Request, Response<UserOwnedPlatformsResponseDto>, Response<UserOwnedPlatformsTransformedResponseDto>> {
-	public intercept(_request: Request, response: Response<UserOwnedPlatformsResponseDto>): PossiblePromise<Response<UserOwnedPlatformsTransformedResponseDto>> {
-		const userOwnedPlatforms: Nullable<UserOwnedPlatformsResponseDto> = response.getData();
+export class UserOwnedPlatformResponseInterceptor implements IResponseInterceptor<Request, Response<UserOwnedPlatformResponseDto>, Response<UserOwnedPlatformTransformedResponseDto>> {
+	public intercept(_request: Request, response: Response<UserOwnedPlatformResponseDto>): PossiblePromise<Response<UserOwnedPlatformTransformedResponseDto>> {
+		const userOwnedPlatforms: Nullable<UserOwnedPlatformResponseDto> = response.getData();
 
 		if (!userOwnedPlatforms) throw new InternalServerException();
 
@@ -23,7 +23,7 @@ export class UserOwnedPlatformResponseInterceptor implements IResponseIntercepto
 					platformIsActive: platform.platformIsActive,
 					platformProfileUuid: platformProfile.platformProfileUuid,
 					platformProfileIdentity: platformProfile.platformProfileIdentity,
-					platformProfileIsActive: true,
+					platformProfileIsActive: platformProfile.platformProfileIsActive,
 				};
 			});
 		});
@@ -43,7 +43,7 @@ export class UserOwnedPlatformResponseInterceptor implements IResponseIntercepto
 
 		const platforms: Array<UserPlatform> = [...userBuiltInPlatforms, ...userCustomPlatforms];
 
-		const transformedResponse: Response<UserOwnedPlatformsTransformedResponseDto> = App.container.resolve(Response<UserOwnedPlatformsTransformedResponseDto>);
+		const transformedResponse: Response<UserOwnedPlatformTransformedResponseDto> = App.container.resolve(Response<UserOwnedPlatformTransformedResponseDto>);
 
 		return transformedResponse.handle(response).setData({ platforms });
 	}

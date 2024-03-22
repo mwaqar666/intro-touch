@@ -1,1 +1,2 @@
-export * from "./user-owned-platforms-response.dto";
+export * from "./user-owned-platform-request.dto";
+export * from "./user-owned-platform-response.dto";

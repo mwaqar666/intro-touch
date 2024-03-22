@@ -1,1 +1,1 @@
-export * from "./UpdateCustomPlatformRequest.dto";
+export * from "./update-custom-platform-request.dto";

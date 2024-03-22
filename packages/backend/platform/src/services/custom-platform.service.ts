@@ -1,43 +1,74 @@
-import { UserProfileService } from "@/backend/user/services";
+import type { UserProfileEntity } from "@/backend/user/db/entities";
+import { UserProfileRepository } from "@/backend/user/db/repositories";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
-import type { ITransactionStore } from "@/backend-core/database/types";
+import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
+import { UploadedFile } from "@/backend-core/request-processor/dto";
+import { S3Bucket } from "@/backend-core/storage/config";
+import { StorageTokenConst } from "@/backend-core/storage/const";
+import type { StorageService } from "@/backend-core/storage/services";
+import type { Optional } from "@/stacks/types";
 import { Inject } from "iocc";
-import type { CustomPlatformEntity } from "@/backend/platform/db/entities";
-import { CustomPlatformRepository } from "@/backend/platform/db/repositories";
-import type { CreateCustomPlatformRequestDto } from "@/backend/platform/dto/create-custom-platform";
+import type { CustomPlatformEntity, PlatformCategoryEntity } from "@/backend/platform/db/entities";
+import { CustomPlatformRepository, PlatformCategoryRepository } from "@/backend/platform/db/repositories";
+import type { CreateCustomPlatformRequestBodyDto, CreateCustomPlatformRequestPathDto } from "@/backend/platform/dto/create-custom-platform";
+import type { ListCustomPlatformRequestDto } from "@/backend/platform/dto/list-custom-platform";
 import type { UpdateCustomPlatformRequestDto } from "@/backend/platform/dto/update-custom-platform";
-import { PlatformCategoryService } from "@/backend/platform/services/platform-category.service";
 
 export class CustomPlatformService {
 	public constructor(
 		// Dependencies
 
+		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
+		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(CustomPlatformRepository) private readonly customPlatformRepository: CustomPlatformRepository,
+		@Inject(PlatformCategoryRepository) private readonly platformCategoryRepository: PlatformCategoryRepository,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
-		@Inject(UserProfileService) private readonly userProfileService: UserProfileService,
-		@Inject(PlatformCategoryService) private readonly platformCategoryService: PlatformCategoryService,
 	) {}
 
-	public getCustomPlatformsByPlatformCategory(platformCategoryUuid: string): Promise<Array<CustomPlatformEntity>> {
-		return this.customPlatformRepository.getCustomPlatformsByPlatformCategory(platformCategoryUuid);
+	public getCustomPlatformList({ userProfileUuid, platformCategoryUuid }: ListCustomPlatformRequestDto): Promise<Array<CustomPlatformEntity>> {
+		return this.customPlatformRepository.getCustomPlatformList(userProfileUuid, platformCategoryUuid);
 	}
 
-	public async updateCustomPlatform(customPlatformUuid: string, updateCustomPlatformRequestDto: UpdateCustomPlatformRequestDto): Promise<CustomPlatformEntity> {
+	public getCustomPlatform(customPlatformUuid: string): Promise<CustomPlatformEntity> {
+		return this.customPlatformRepository.getCustomPlatform(customPlatformUuid);
+	}
+
+	public createCustomPlatform({ userProfileUuid, platformCategoryUuid }: CreateCustomPlatformRequestPathDto, createCustomPlatformRequestBodyDto: CreateCustomPlatformRequestBodyDto): Promise<CustomPlatformEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<CustomPlatformEntity> => {
-				return this.customPlatformRepository.updateCustomPlatform(customPlatformUuid, updateCustomPlatformRequestDto, transaction);
+				const userProfile: UserProfileEntity = await this.userProfileRepository.getUserProfile(userProfileUuid);
+				const platformCategory: PlatformCategoryEntity = await this.platformCategoryRepository.getPlatformCategory(platformCategoryUuid);
+
+				const { customPlatformIcon: customPlatformIconFile, ...customPlatformValues }: CreateCustomPlatformRequestBodyDto = createCustomPlatformRequestBodyDto;
+
+				const customPlatformIcon: string = await this.storageService.storeFile(S3Bucket.CustomPlatformIcons, customPlatformIconFile);
+
+				const valuesToCreate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>> = {
+					...customPlatformValues,
+					customPlatformIcon,
+					customPlatformUserProfileId: userProfile.userProfileId,
+					customPlatformPlatformCategoryId: platformCategory.platformCategoryId,
+				};
+
+				return await this.customPlatformRepository.createCustomPlatform(valuesToCreate, transaction);
 			},
 		});
 	}
 
-	public async createCustomPlatform(userProfileUuid: string, platformCategoryUuid: string, createCustomPlatformRequestDto: CreateCustomPlatformRequestDto): Promise<CustomPlatformEntity> {
-		const userProfileId: number = (await this.userProfileService.getUserProfile(userProfileUuid)).userProfileId;
-		const platformCategoryId: number = (await this.platformCategoryService.fetchPlatformCategory(platformCategoryUuid)).platformCategoryId;
-
+	public updateCustomPlatform(customPlatformUuid: string, updateCustomPlatformRequestDto: UpdateCustomPlatformRequestDto): Promise<CustomPlatformEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<CustomPlatformEntity> => {
-				return await this.customPlatformRepository.createCustomPlatform(userProfileId, platformCategoryId, createCustomPlatformRequestDto, transaction);
+				const { customPlatformIcon: customPlatformIconFile, ...customPlatformValues }: UpdateCustomPlatformRequestDto = updateCustomPlatformRequestDto;
+
+				const customPlatformIcon: Optional<string> = customPlatformIconFile instanceof UploadedFile ? await this.storageService.storeFile(S3Bucket.CustomPlatformIcons, customPlatformIconFile) : customPlatformIconFile;
+
+				const valuesToUpdate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>> = {
+					...customPlatformValues,
+					customPlatformIcon,
+				};
+
+				return this.customPlatformRepository.updateCustomPlatform(customPlatformUuid, valuesToUpdate, transaction);
 			},
 		});
 	}

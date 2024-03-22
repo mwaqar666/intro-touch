@@ -21,17 +21,13 @@ export class UserController {
 		return { users: await this.userService.getUserList() };
 	}
 
-	public async me(@Auth userEntity: UserEntity): Promise<{ user: UserEntity }> {
-		return { user: await this.userService.getUserWithLiveProfile(userEntity) };
-	}
-
 	public async publicPreview(@Path("userUsername") userUsername: string): Promise<{ user: UserEntity }> {
 		return { user: await this.userService.getUserWithLiveProfile(userUsername) };
 	}
 
-	public async changePassword(@Auth userEntity: UserEntity, @Body(ChangePasswordRequestDto) resetPasswordRequestDto: ChangePasswordRequestDto): Promise<{ user: UserEntity }> {
-		await this.authorization.can(userEntity, [Permission.ResetPassword]);
+	public async changePassword(@Auth userEntity: UserEntity, @Body(ChangePasswordRequestDto) changePasswordRequestDto: ChangePasswordRequestDto): Promise<{ user: UserEntity }> {
+		await this.authorization.can(userEntity, [Permission.ChangePassword]);
 
-		return { user: await this.userService.resetPassword(userEntity, resetPasswordRequestDto) };
+		return { user: await this.userService.resetPassword(userEntity, changePasswordRequestDto) };
 	}
 }

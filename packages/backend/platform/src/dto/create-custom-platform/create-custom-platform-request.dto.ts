@@ -1,19 +1,34 @@
-import type { Optional } from "@/stacks/types";
-import { IsOptional, IsString, MaxLength } from "class-validator";
+import type { UploadedFile } from "@/backend-core/request-processor/dto";
+import { IsValidFile } from "@/backend-core/validation/validators";
+import { IsNotEmpty, IsString, IsUUID, MaxLength } from "class-validator";
 
-export class CreateCustomPlatformRequestDto {
-	@MaxLength(50)
+export class CreateCustomPlatformRequestPathDto {
+	@IsUUID()
 	@IsString()
-	@IsOptional()
-	public customPlatformName: Optional<string>;
+	@IsNotEmpty()
+	public userProfileUuid: string;
+
+	@IsUUID()
+	@IsString()
+	@IsNotEmpty()
+	public platformCategoryUuid: string;
+}
+
+export class CreateCustomPlatformRequestBodyDto {
+	@MaxLength(100)
+	@IsString()
+	@IsNotEmpty()
+	public customPlatformName: string;
+
+	@IsValidFile({
+		mimeType: "image/*",
+		maxSizeInBytes: 5 * 1024 * 1024,
+	})
+	@IsNotEmpty()
+	public customPlatformIcon: UploadedFile;
 
 	@MaxLength(255)
 	@IsString()
-	@IsOptional()
-	public customPlatformIcon: Optional<string>;
-
-	@MaxLength(255)
-	@IsString()
-	@IsOptional()
-	public customPlatformIdentity: Optional<string>;
+	@IsNotEmpty()
+	public customPlatformIdentity: string;
 }

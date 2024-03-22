@@ -9,8 +9,8 @@ export class RequestProcessorModule extends AbstractModule {
 		this.container.registerScoped(Request);
 		this.container.registerScoped(Response);
 
-		this.container.registerSingleton(FormDataParser);
 		this.container.registerSingleton(JsonParser);
+		this.container.registerSingleton(FormDataParser);
 		this.container.registerSingleton(UrlEncodedFormParser);
 
 		this.container.registerSingleton(RequestProcessorTokenConst.RequestProcessorToken, RequestProcessorService);

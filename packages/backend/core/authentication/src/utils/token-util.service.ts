@@ -25,6 +25,7 @@ export class TokenUtilService {
 	private createAuthPayload(authEntity: UserEntity): IAuthPayload {
 		return {
 			userUuid: authEntity.userUuid,
+			userUsername: authEntity.userUsername,
 			userFirstName: authEntity.userFirstName,
 			userLastName: authEntity.userLastName,
 			userEmail: authEntity.userEmail,

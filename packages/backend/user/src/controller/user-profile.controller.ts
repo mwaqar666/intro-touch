@@ -16,10 +16,10 @@ export class UserProfileController {
 		@Inject(AuthorizationTokenConst.Authorization) private readonly authorization: IAuthorization,
 	) {}
 
-	public async getAuthUserProfileDropdown(@Auth authEntity: UserEntity): Promise<{ userProfiles: Array<UserProfileEntity> }> {
+	public async getUserProfileList(@Auth authEntity: UserEntity): Promise<{ userProfiles: Array<UserProfileEntity> }> {
 		await this.authorization.can(authEntity, [Permission.ListUserProfile]);
 
-		return { userProfiles: await this.userProfileService.getAuthUserProfileDropdown(authEntity) };
+		return { userProfiles: await this.userProfileService.getUserProfileList(authEntity) };
 	}
 
 	public async getUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {
@@ -42,5 +42,11 @@ export class UserProfileController {
 		await this.authorization.can(authEntity, [Permission.UpdateUserProfile]);
 
 		return { userProfile: await this.userProfileService.updateUserProfile(userProfileUuid, updateUserProfileRequestDto) };
+	}
+
+	public async deleteUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ deleted: boolean }> {
+		await this.authorization.can(authEntity, [Permission.DeleteUserProfile]);
+
+		return { deleted: await this.userProfileService.deleteUserProfile(userProfileUuid) };
 	}
 }

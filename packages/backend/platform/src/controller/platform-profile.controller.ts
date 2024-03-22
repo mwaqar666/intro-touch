@@ -5,7 +5,10 @@ import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { PlatformProfileEntity } from "@/backend/platform/db/entities";
-import { CreateBuiltinPlatformRequestDto, UpdateBuiltinPlatformRequestDto } from "@/backend/platform/dto/update-builtin-platform";
+import { CreatePlatformProfileRequestBodyDto, CreatePlatformProfileRequestPathDto } from "@/backend/platform/dto/create-platform-profile";
+import { UpdatePlatformProfileRequestDto } from "@/backend/platform/dto/update-platform-profile";
+import type { UserOwnedPlatformResponseDto } from "@/backend/platform/dto/user-owned";
+import { UserOwnedPlatformRequestDto } from "@/backend/platform/dto/user-owned";
 import { PlatformProfileService } from "@/backend/platform/services";
 
 @Controller
@@ -16,32 +19,33 @@ export class PlatformProfileController {
 		@Inject(AuthorizationTokenConst.Authorization) private readonly authorization: IAuthorization,
 	) {}
 
-	public async updateBuiltInPlatform(
-		@Auth authEntity: UserEntity,
+	public getUserOwnedPlatforms(@Path(UserOwnedPlatformRequestDto) userOwnedPlatformRequestDto: UserOwnedPlatformRequestDto): Promise<UserOwnedPlatformResponseDto> {
+		return this.platformProfileService.getUserOwnedPlatforms(userOwnedPlatformRequestDto);
+	}
+
+	public async createPlatformProfile(
+		@Auth userEntity: UserEntity,
+		@Path(CreatePlatformProfileRequestPathDto) createPlatformProfileRequestPathDto: CreatePlatformProfileRequestPathDto,
+		@Path(CreatePlatformProfileRequestBodyDto) createPlatformProfileRequestBodyDto: CreatePlatformProfileRequestBodyDto,
+	): Promise<{ platformProfile: PlatformProfileEntity }> {
+		await this.authorization.can(userEntity, [Permission.CreatePlatformProfile]);
+
+		return { platformProfile: await this.platformProfileService.createPlatformProfile(createPlatformProfileRequestPathDto, createPlatformProfileRequestBodyDto) };
+	}
+
+	public async updatePlatformProfile(
+		@Auth userEntity: UserEntity,
 		@Path("platformProfileUuid") platformProfileUuid: string,
-		@Body(UpdateBuiltinPlatformRequestDto) updateBuiltinPlatformRequestDto: UpdateBuiltinPlatformRequestDto,
+		@Body(UpdatePlatformProfileRequestDto) updatePlatformProfileRequestDto: UpdatePlatformProfileRequestDto,
 	): Promise<{ platformProfile: PlatformProfileEntity }> {
-		await this.authorization.can(authEntity, [Permission.UpdatePlatformProfile]);
+		await this.authorization.can(userEntity, [Permission.UpdatePlatformProfile]);
 
-		return { platformProfile: await this.platformProfileService.updateBuiltInPlatform(platformProfileUuid, updateBuiltinPlatformRequestDto) };
+		return { platformProfile: await this.platformProfileService.updatePlatformProfile(platformProfileUuid, updatePlatformProfileRequestDto) };
 	}
 
-	public async createBuiltInPlatform(
-		@Auth authEntity: UserEntity,
-		@Path("userProfileUuid") userProfileUuid: string,
-		@Body(CreateBuiltinPlatformRequestDto)
-		createBuiltinPlatformRequestDto: CreateBuiltinPlatformRequestDto,
-	): Promise<{ platformProfile: PlatformProfileEntity }> {
-		await this.authorization.can(authEntity, [Permission.CreateUserProfile]);
+	public async deletePlatformProfile(@Auth userEntity: UserEntity, @Path("platformProfileUuid") platformProfileUuid: string): Promise<{ platformProfile: boolean }> {
+		await this.authorization.can(userEntity, [Permission.DeletePlatformProfile]);
 
-		const { platformUuid } = createBuiltinPlatformRequestDto;
-
-		return { platformProfile: await this.platformProfileService.createBuiltInPlatform(userProfileUuid, platformUuid, createBuiltinPlatformRequestDto) };
-	}
-
-	public async deleteBuiltInPlatform(@Auth authEntity: UserEntity, @Path("platformProfileUuid") platformProfileUuid: string): Promise<{ platformProfile: boolean }> {
-		await this.authorization.can(authEntity, [Permission.DeletePlatformProfile]);
-
-		return { platformProfile: await this.platformProfileService.deleteBuiltInPlatform(platformProfileUuid) };
+		return { platformProfile: await this.platformProfileService.deletePlatformProfile(platformProfileUuid) };
 	}
 }

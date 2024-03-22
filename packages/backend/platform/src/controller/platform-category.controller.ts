@@ -1,4 +1,4 @@
-import { Controller } from "@/backend-core/request-processor/decorators";
+import { Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { PlatformCategoryEntity } from "@/backend/platform/db/entities";
 import { PlatformCategoryService } from "@/backend/platform/services";
@@ -10,7 +10,11 @@ export class PlatformCategoryController {
 		@Inject(PlatformCategoryService) private readonly platformCategoryService: PlatformCategoryService,
 	) {}
 
-	public async getPlatformCategories(): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
+	public async getPlatformCategoryList(): Promise<{ platformCategories: Array<PlatformCategoryEntity> }> {
 		return { platformCategories: await this.platformCategoryService.getPlatformCategories() };
+	}
+
+	public async getPlatformCategory(@Path("platformCategoryUuid") platformCategoryUuid: string): Promise<{ platformCategory: PlatformCategoryEntity }> {
+		return { platformCategory: await this.platformCategoryService.getPlatformCategory(platformCategoryUuid) };
 	}
 }

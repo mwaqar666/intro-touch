@@ -1,12 +1,12 @@
 import type { CustomPlatformEntity, PlatformEntity } from "@/backend/platform/db/entities";
 
-export class UserOwnedPlatformsResponseDto {
+export class UserOwnedPlatformResponseDto {
 	public platforms: Array<PlatformEntity>;
 
 	public customPlatforms: Array<CustomPlatformEntity>;
 }
 
-export class UserOwnedPlatformsTransformedResponseDto {
+export class UserOwnedPlatformTransformedResponseDto {
 	public platforms: Array<UserPlatform>;
 }
 

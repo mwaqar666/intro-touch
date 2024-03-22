@@ -14,7 +14,7 @@ export class PlatformCategoryRepository extends BaseRepository<PlatformCategoryE
 		});
 	}
 
-	public fetchPlatformCategory(platformCategoryUuid: string): Promise<PlatformCategoryEntity> {
+	public getPlatformCategory(platformCategoryUuid: string): Promise<PlatformCategoryEntity> {
 		return this.findOneOrFail({
 			findOptions: {
 				where: {

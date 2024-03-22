@@ -8,6 +8,7 @@ import { UserAuthService, UserContactService, UserProfileService, UserService } 
 
 export class UserModule extends AbstractModule {
 	public override async register(): Promise<void> {
+		// Controllers
 		this.container.registerSingleton(UserController);
 		this.container.registerSingleton(UserContactController);
 		this.container.registerSingleton(UserProfileController);

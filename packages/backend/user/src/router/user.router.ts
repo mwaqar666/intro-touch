@@ -37,11 +37,6 @@ export class UserRouter implements IRouter {
 								handler: this.userController.getUserList,
 							},
 							{
-								path: "/me",
-								method: RouteMethod.Get,
-								handler: this.userController.me,
-							},
-							{
 								path: "/contacts",
 								method: RouteMethod.Get,
 								handler: this.userContactController.getUserContacts,
@@ -52,15 +47,15 @@ export class UserRouter implements IRouter {
 								handler: this.userController.changePassword,
 							},
 							{
-								path: "/profiles",
-								method: RouteMethod.Get,
-								handler: this.userProfileController.getAuthUserProfileDropdown,
-							},
-							{
 								prefix: "/profile",
 								routes: [
 									{
-										path: "/{userProfileUuid}",
+										path: "/list",
+										method: RouteMethod.Get,
+										handler: this.userProfileController.getUserProfileList,
+									},
+									{
+										path: "/view/{userProfileUuid}",
 										method: RouteMethod.Get,
 										handler: this.userProfileController.getUserProfile,
 									},
@@ -73,6 +68,11 @@ export class UserRouter implements IRouter {
 										path: "/update/{userProfileUuid}",
 										method: RouteMethod.Patch,
 										handler: this.userProfileController.updateUserProfile,
+									},
+									{
+										path: "/delete/{userProfileUuid}",
+										method: RouteMethod.Delete,
+										handler: this.userProfileController.deleteUserProfile,
 									},
 								],
 							},

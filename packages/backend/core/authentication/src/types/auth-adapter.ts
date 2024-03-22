@@ -10,6 +10,7 @@ declare module "sst/node/auth" {
 
 export interface IAuthPayload {
 	userUuid: string;
+	userUsername: string;
 	userFirstName: string;
 	userLastName: string;
 	userEmail: string;

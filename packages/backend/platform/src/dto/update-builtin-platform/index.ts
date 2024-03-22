@@ -1,2 +1,1 @@
-export * from "./UpdateBuiltinPlatformRequest.dto";
-export * from "./CreateBuiltinPlatformRequest.dto";
+export * from "./update-builtin-platform-request.dto";

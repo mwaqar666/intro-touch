@@ -10,8 +10,8 @@ export class PlatformRouter implements IRouter {
 		// Dependencies
 		@Inject(PlatformController) private readonly platformController: PlatformController,
 		@Inject(CustomPlatformController) private readonly customPlatformController: CustomPlatformController,
-		@Inject(PlatformCategoryController) private readonly platformCategoryController: PlatformCategoryController,
 		@Inject(PlatformProfileController) private readonly platformProfileController: PlatformProfileController,
+		@Inject(PlatformCategoryController) private readonly platformCategoryController: PlatformCategoryController,
 	) {}
 
 	public registerRoutes(): Array<IRoute> {
@@ -20,39 +20,52 @@ export class PlatformRouter implements IRouter {
 				prefix: "/platform",
 				routes: [
 					{
-						path: "/category",
-						method: RouteMethod.Get,
-						handler: this.platformCategoryController.getPlatformCategories,
-					},
-					{
 						path: "/owned/{userProfileUuid}/{platformCategoryUuid}",
 						method: RouteMethod.Get,
 						responseInterceptors: [UserOwnedPlatformResponseInterceptor],
-						handler: this.platformController.getUserOwnedPlatforms,
+						handler: this.platformProfileController.getUserOwnedPlatforms,
 					},
 					{
 						prefix: "/",
 						guards: [AuthRequestGuard],
 						routes: [
 							{
+								prefix: "/category",
+								routes: [
+									{
+										path: "/list",
+										method: RouteMethod.Get,
+										handler: this.platformCategoryController.getPlatformCategoryList,
+									},
+									{
+										path: "/view/{platformCategoryUuid}",
+										method: RouteMethod.Get,
+										handler: this.platformCategoryController.getPlatformCategory,
+									},
+								],
+							},
+							{
 								prefix: "/custom",
 								routes: [
 									{
-										path: "/{platformCategoryUuid}",
+										path: "/list/{userProfileUuid}/{platformCategoryUuid}",
 										method: RouteMethod.Get,
-										handler: this.customPlatformController.getCustomPlatformsByPlatformCategory,
+										handler: this.customPlatformController.getCustomPlatformList,
 									},
-
 									{
-										path: "/{customPlatformUuid}",
-										method: RouteMethod.Patch,
-										handler: this.customPlatformController.updateCustomPlatform,
+										path: "/view/{customPlatformUuid}",
+										method: RouteMethod.Get,
+										handler: this.customPlatformController.getCustomPlatform,
 									},
-
 									{
-										path: "/{userProfileUuid}/{platformCategoryUuid}",
+										path: "/create/{userProfileUuid}/{platformCategoryUuid}",
 										method: RouteMethod.Post,
 										handler: this.customPlatformController.createCustomPlatform,
+									},
+									{
+										path: "/update/{customPlatformUuid}",
+										method: RouteMethod.Patch,
+										handler: this.customPlatformController.updateCustomPlatform,
 									},
 									{
 										path: "/delete/{customPlatformUuid}",
@@ -65,24 +78,49 @@ export class PlatformRouter implements IRouter {
 								prefix: "/builtin",
 								routes: [
 									{
-										path: "/{platformCategoryUuid}",
+										path: "/list/{platformCategoryUuid}",
 										method: RouteMethod.Get,
-										handler: this.platformController.getPlatformsByPlatformCategory,
+										handler: this.platformController.getPlatformList,
 									},
 									{
-										path: "/{platformProfileUuid}",
-										method: RouteMethod.Patch,
-										handler: this.platformProfileController.updateBuiltInPlatform,
+										path: "/view/{platformUuid}",
+										method: RouteMethod.Get,
+										handler: this.platformController.getPlatform,
 									},
 									{
-										path: "/{userProfileUuid}",
+										path: "/create/{platformCategoryUuid}",
 										method: RouteMethod.Post,
-										handler: this.platformProfileController.createBuiltInPlatform,
+										handler: this.platformController.createBuiltInPlatform,
 									},
 									{
-										path: "/delete/{platformProfileUuid}",
+										path: "/update/{platformUuid}",
+										method: RouteMethod.Patch,
+										handler: this.platformController.updateBuiltInPlatform,
+									},
+									{
+										path: "/delete/{platformUuid}",
 										method: RouteMethod.Delete,
-										handler: this.platformProfileController.deleteBuiltInPlatform,
+										handler: this.platformController.deleteBuiltInPlatform,
+									},
+									{
+										prefix: "/profile",
+										routes: [
+											{
+												path: "/create/{userProfileUuid}/{platformUuid}",
+												method: RouteMethod.Post,
+												handler: this.platformProfileController.createPlatformProfile,
+											},
+											{
+												path: "/update/{platformProfileUuid}",
+												method: RouteMethod.Patch,
+												handler: this.platformProfileController.updatePlatformProfile,
+											},
+											{
+												path: "/delete/{platformProfileUuid}",
+												method: RouteMethod.Delete,
+												handler: this.platformProfileController.deletePlatformProfile,
+											},
+										],
 									},
 								],
 							},

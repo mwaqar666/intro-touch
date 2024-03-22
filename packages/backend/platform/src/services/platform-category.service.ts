@@ -13,7 +13,7 @@ export class PlatformCategoryService {
 		return this.platformCategoryRepository.getPlatformCategories();
 	}
 
-	public async fetchPlatformCategory(platformCategoryUuid: string): Promise<PlatformCategoryEntity> {
-		return this.platformCategoryRepository.fetchPlatformCategory(platformCategoryUuid);
+	public getPlatformCategory(platformCategoryUuid: string): Promise<PlatformCategoryEntity> {
+		return this.platformCategoryRepository.getPlatformCategory(platformCategoryUuid);
 	}
 }

@@ -20,19 +20,19 @@ export class UserProfileService {
 
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
-		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
+		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
-	public getAuthUserProfileDropdown(authEntity: UserEntity): Promise<Array<UserProfileEntity>> {
-		return this.userProfileRepository.getUserProfileDropdown(authEntity);
+	public getUserProfileList(authEntity: UserEntity): Promise<Array<UserProfileEntity>> {
+		return this.userProfileRepository.getUserProfileList(authEntity);
 	}
 
-	public async getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
+	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
 		return this.userProfileRepository.getUserProfile(userProfileUuid);
 	}
 
-	public async createUserProfile(userEntity: UserEntity, createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<UserProfileEntity> {
+	public createUserProfile(userEntity: UserEntity, createUserProfileRequestDto: CreateUserProfileRequestDto): Promise<UserProfileEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
 				const { userProfilePicture: uploadedPicture, ...userProfileFields }: CreateUserProfileRequestDto = createUserProfileRequestDto;
@@ -53,7 +53,7 @@ export class UserProfileService {
 		});
 	}
 
-	public async updateUserProfile(userProfileUuid: string, updateUserProfileRequestDto: UpdateUserProfileRequestDto): Promise<UserProfileEntity> {
+	public updateUserProfile(userProfileUuid: string, updateUserProfileRequestDto: UpdateUserProfileRequestDto): Promise<UserProfileEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
 				const { userProfilePicture: uploadedPicture, ...userProfileFields }: UpdateUserProfileRequestDto = updateUserProfileRequestDto;
@@ -69,6 +69,14 @@ export class UserProfileService {
 				};
 
 				return this.userProfileRepository.updateUserProfile(userProfileUuid, userProfileTableColumnProperties, transaction);
+			},
+		});
+	}
+
+	public deleteUserProfile(userProfileUuid: string): Promise<boolean> {
+		return this.transactionManager.executeTransaction({
+			operation: async ({ transaction }: ITransactionStore): Promise<boolean> => {
+				return this.userProfileRepository.deleteUserProfile(userProfileUuid, transaction);
 			},
 		});
 	}

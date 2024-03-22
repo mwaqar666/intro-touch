@@ -10,13 +10,12 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		super(UserProfileEntity);
 	}
 
-	public getUserProfileDropdown(userEntity: UserEntity): Promise<Array<UserProfileEntity>> {
+	public getUserProfileList(userEntity: UserEntity): Promise<Array<UserProfileEntity>> {
 		return this.findAll({
 			findOptions: {
-				attributes: ["userProfileFirstName", "userProfileLastName", "userProfilePicture", "userProfileEmail"],
 				where: { userProfileUserId: userEntity.userId },
 			},
-			scopes: [EntityScopeConst.isActive, EntityScopeConst.primaryKeyAndUuidOnly],
+			scopes: [EntityScopeConst.withoutTimestamps],
 		});
 	}
 
@@ -45,10 +44,15 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 
 	public updateUserProfile(userProfileUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<UserProfileEntity>>, transaction: Transaction): Promise<UserProfileEntity> {
 		return this.updateOne({
-			findOptions: {
-				where: { userProfileUuid },
-			},
+			entity: userProfileUuid,
 			valuesToUpdate,
+			transaction,
+		});
+	}
+
+	public deleteUserProfile(userProfileUuid: string, transaction: Transaction): Promise<boolean> {
+		return this.deleteOne({
+			entity: userProfileUuid,
 			transaction,
 		});
 	}
