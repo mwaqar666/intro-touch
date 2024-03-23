@@ -26,24 +26,24 @@ export class PlatformRouter implements IRouter {
 						handler: this.platformProfileController.getUserOwnedPlatforms,
 					},
 					{
+						prefix: "/category",
+						routes: [
+							{
+								path: "/list",
+								method: RouteMethod.Get,
+								handler: this.platformCategoryController.getPlatformCategoryList,
+							},
+							{
+								path: "/view/{platformCategoryUuid}",
+								method: RouteMethod.Get,
+								handler: this.platformCategoryController.getPlatformCategory,
+							},
+						],
+					},
+					{
 						prefix: "/",
 						guards: [AuthRequestGuard],
 						routes: [
-							{
-								prefix: "/category",
-								routes: [
-									{
-										path: "/list",
-										method: RouteMethod.Get,
-										handler: this.platformCategoryController.getPlatformCategoryList,
-									},
-									{
-										path: "/view/{platformCategoryUuid}",
-										method: RouteMethod.Get,
-										handler: this.platformCategoryController.getPlatformCategory,
-									},
-								],
-							},
 							{
 								prefix: "/custom",
 								routes: [
