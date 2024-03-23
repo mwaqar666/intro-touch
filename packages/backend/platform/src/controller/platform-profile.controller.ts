@@ -26,7 +26,7 @@ export class PlatformProfileController {
 	public async createPlatformProfile(
 		@Auth userEntity: UserEntity,
 		@Path(CreatePlatformProfileRequestPathDto) createPlatformProfileRequestPathDto: CreatePlatformProfileRequestPathDto,
-		@Path(CreatePlatformProfileRequestBodyDto) createPlatformProfileRequestBodyDto: CreatePlatformProfileRequestBodyDto,
+		@Body(CreatePlatformProfileRequestBodyDto) createPlatformProfileRequestBodyDto: CreatePlatformProfileRequestBodyDto,
 	): Promise<{ platformProfile: PlatformProfileEntity }> {
 		await this.authorization.can(userEntity, [Permission.CreatePlatformProfile]);
 
