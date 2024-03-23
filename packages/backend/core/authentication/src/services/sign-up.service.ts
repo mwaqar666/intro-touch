@@ -1,7 +1,9 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserAuthService } from "@/backend/user/services";
 import type { IFindOrCreateUserProps } from "@/backend/user/types";
-import { S3Bucket } from "@/backend-core/storage/config";
+import { ConfigTokenConst } from "@/backend-core/config/const";
+import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
+import { S3Bucket, S3BucketConst } from "@/backend-core/storage/config";
 import { StorageTokenConst } from "@/backend-core/storage/const";
 import type { StorageService } from "@/backend-core/storage/services";
 import { Inject } from "iocc";
@@ -12,14 +14,19 @@ export class SignUpService {
 		// Dependencies
 		@Inject(UserAuthService) private readonly userAuthService: UserAuthService,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
+		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 		// @Inject(EmailUtilService) private readonly emailUtilService: EmailUtilService,
 		// @Inject(VerificationTokenService) private readonly verificationTokenService: VerificationTokenService,
 	) {}
 
 	public async basicRegister(registerRequestDto: RegisterRequestDto): Promise<boolean> {
+		const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
+
+		const userPictureBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.ProfilePictures);
+
 		const findOrCreateUserProps: IFindOrCreateUserProps = {
 			...registerRequestDto,
-			userPicture: await this.storageService.storeFile(S3Bucket.ProfilePictures, registerRequestDto.userPicture),
+			userPicture: await this.storageService.storeFile(userPictureBucketName, registerRequestDto.userPicture),
 			userParentId: 1,
 		};
 

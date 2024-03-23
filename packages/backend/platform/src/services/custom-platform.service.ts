@@ -1,10 +1,12 @@
 import type { UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
+import { ConfigTokenConst } from "@/backend-core/config/const";
+import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
 import { UploadedFile } from "@/backend-core/request-processor/dto";
-import { S3Bucket } from "@/backend-core/storage/config";
+import { S3Bucket, S3BucketConst } from "@/backend-core/storage/config";
 import { StorageTokenConst } from "@/backend-core/storage/const";
 import type { StorageService } from "@/backend-core/storage/services";
 import type { Optional } from "@/stacks/types";
@@ -23,6 +25,7 @@ export class CustomPlatformService {
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(CustomPlatformRepository) private readonly customPlatformRepository: CustomPlatformRepository,
 		@Inject(PlatformCategoryRepository) private readonly platformCategoryRepository: PlatformCategoryRepository,
+		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
@@ -42,7 +45,10 @@ export class CustomPlatformService {
 
 				const { customPlatformIcon: customPlatformIconFile, ...customPlatformValues }: CreateCustomPlatformRequestBodyDto = createCustomPlatformRequestBodyDto;
 
-				const customPlatformIcon: string = await this.storageService.storeFile(S3Bucket.CustomPlatformIcons, customPlatformIconFile);
+				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
+				const customPlatformIconBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.CustomPlatformIcons);
+
+				const customPlatformIcon: string = await this.storageService.storeFile(customPlatformIconBucketName, customPlatformIconFile);
 
 				const valuesToCreate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>> = {
 					...customPlatformValues,
@@ -61,7 +67,10 @@ export class CustomPlatformService {
 			operation: async ({ transaction }: ITransactionStore): Promise<CustomPlatformEntity> => {
 				const { customPlatformIcon: customPlatformIconFile, ...customPlatformValues }: UpdateCustomPlatformRequestDto = updateCustomPlatformRequestDto;
 
-				const customPlatformIcon: Optional<string> = customPlatformIconFile instanceof UploadedFile ? await this.storageService.storeFile(S3Bucket.CustomPlatformIcons, customPlatformIconFile) : customPlatformIconFile;
+				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
+				const customPlatformIconBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.CustomPlatformIcons);
+
+				const customPlatformIcon: Optional<string> = customPlatformIconFile instanceof UploadedFile ? await this.storageService.storeFile(customPlatformIconBucketName, customPlatformIconFile) : customPlatformIconFile;
 
 				const valuesToUpdate: Partial<IEntityTableColumnProperties<CustomPlatformEntity>> = {
 					...customPlatformValues,

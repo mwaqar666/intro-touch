@@ -1,8 +1,10 @@
+import { ConfigTokenConst } from "@/backend-core/config/const";
+import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
 import { UploadedFile } from "@/backend-core/request-processor/dto";
-import { S3Bucket } from "@/backend-core/storage/config";
+import { S3Bucket, S3BucketConst } from "@/backend-core/storage/config";
 import { StorageTokenConst } from "@/backend-core/storage/const";
 import type { StorageService } from "@/backend-core/storage/services";
 import type { Optional } from "@/stacks/types";
@@ -19,6 +21,7 @@ export class PlatformService {
 		@Inject(PlatformRepository) private readonly platformRepository: PlatformRepository,
 		@Inject(PlatformCategoryRepository) private readonly platformCategoryRepository: PlatformCategoryRepository,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
+		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
@@ -37,7 +40,10 @@ export class PlatformService {
 
 				const { platformName, platformIcon: platformIconFile }: CreateBuiltinPlatformRequestDto = createBuiltinPlatformRequestDto;
 
-				const platformIcon: string = await this.storageService.storeFile(S3Bucket.BuiltinPlatformIcons, platformIconFile);
+				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
+				const builtinPlatformIconBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.BuiltinPlatformIcons);
+
+				const platformIcon: string = await this.storageService.storeFile(builtinPlatformIconBucketName, platformIconFile);
 
 				const valuesToCreate: Partial<IEntityTableColumnProperties<PlatformEntity>> = {
 					platformName,
@@ -55,7 +61,10 @@ export class PlatformService {
 			operation: async ({ transaction }: ITransactionStore): Promise<PlatformEntity> => {
 				const { platformName, platformIcon: platformIconFile }: UpdateBuiltinPlatformRequestDto = updateBuiltinPlatformRequestDto;
 
-				const platformIcon: Optional<string> = platformIconFile instanceof UploadedFile ? await this.storageService.storeFile(S3Bucket.BuiltinPlatformIcons, platformIconFile) : platformIconFile;
+				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
+				const builtinPlatformIconBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.BuiltinPlatformIcons);
+
+				const platformIcon: Optional<string> = platformIconFile instanceof UploadedFile ? await this.storageService.storeFile(builtinPlatformIconBucketName, platformIconFile) : platformIconFile;
 
 				const valuesToUpdate: Partial<IEntityTableColumnProperties<PlatformEntity>> = {
 					platformName,
