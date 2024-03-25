@@ -7,7 +7,9 @@ import { AuthenticationController } from "@/backend-core/authentication/controll
 import { HashService } from "@/backend-core/authentication/crypt";
 import { VerificationTokenService } from "@/backend-core/authentication/dal";
 import { AuthenticationDbRegister } from "@/backend-core/authentication/db";
-import type { IAuthAdapter, IAuthAdapterResolver } from "@/backend-core/authentication/interface";
+import { AuthDriver } from "@/backend-core/authentication/enums";
+import type { IAuthAdapter, IAuthAdapterResolver, IAuthProvider } from "@/backend-core/authentication/interface";
+import { AuthProvider } from "@/backend-core/authentication/providers";
 import { AuthAdapterResolver, AuthEntityResolver, GuardResolver } from "@/backend-core/authentication/resolvers";
 import { AuthenticationRouter } from "@/backend-core/authentication/router";
 import { SignInService, SignUpService, SocialAuthService, VerificationService } from "@/backend-core/authentication/services";
@@ -40,6 +42,9 @@ export class AuthenticationModule extends AbstractModule {
 		this.container.registerSingleton(AuthenticationTokenConst.GuardResolverToken, GuardResolver);
 		this.container.registerSingleton(AuthenticationTokenConst.AuthAdapterResolverToken, AuthAdapterResolver);
 
+		// Authentication Providers
+		this.container.registerSingleton(AuthenticationTokenConst.AuthProviderToken, AuthProvider);
+
 		// Authentication Adapters
 		this.container.registerSingleton(AuthenticationTokenConst.SelfAdapterToken, SelfAuthAdapter);
 		this.container.registerSingleton(AuthenticationTokenConst.GoogleAdapterToken, GoogleAuthAdapter);
@@ -52,6 +57,10 @@ export class AuthenticationModule extends AbstractModule {
 	public override async boot(): Promise<void> {
 		// Routing
 		RouterExtension.addRouter(AuthenticationRouter);
+
+		// Configuring Authentication Provider
+		const authProvider: IAuthProvider = this.container.resolve(AuthenticationTokenConst.AuthProviderToken);
+		await authProvider.useAuthDriver(AuthDriver.DEFAULT);
 	}
 
 	public override async postBoot(): Promise<void> {

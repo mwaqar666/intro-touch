@@ -1,3 +1,4 @@
+import { AuthDriver } from "@/backend-core/authentication/enums";
 import type { Key } from "@/stacks/types";
 import { ConfigConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IConfig, IConfigValidation } from "@/backend-core/config/types";
@@ -20,6 +21,11 @@ export class ConfigResolverService implements IAppConfigResolver {
 				facebookClientSecret: schema[ConfigConst.FACEBOOK_CLIENT_SECRET],
 				redirectUrl: schema[ConfigConst.REDIRECT_URL],
 				tokenExpiry: schema[ConfigConst.TOKEN_EXPIRY],
+				authDrivers: {
+					[AuthDriver.DEFAULT]: {
+						repository: import("@/backend/user/db/repositories").then((repositories) => repositories.UserRepository),
+					},
+				},
 			},
 			email: {
 				emailFrom: schema[ConfigConst.EMAIL_FROM],
