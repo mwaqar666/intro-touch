@@ -1,7 +1,8 @@
 export enum S3Bucket {
 	ProfilePictures = "profile-pictures",
-	BuiltinPlatformIcons = "builtin-platform-icons",
+	ContactPictures = "contact-pictures",
 	CustomPlatformIcons = "custom-platform-icons",
+	BuiltinPlatformIcons = "builtin-platform-icons",
 }
 
 export class S3BucketConst {

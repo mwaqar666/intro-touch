@@ -35,13 +35,19 @@ export class UserProfileController {
 	}
 
 	public async updateUserProfile(
-		@Auth authEntity: UserEntity,
+		@Auth userEntity: UserEntity,
 		@Path("userProfileUuid") userProfileUuid: string,
 		@Body(UpdateUserProfileRequestDto) updateUserProfileRequestDto: UpdateUserProfileRequestDto,
 	): Promise<{ userProfile: UserProfileEntity }> {
-		await this.authorization.can(authEntity, [Permission.UpdateUserProfile]);
+		await this.authorization.can(userEntity, [Permission.UpdateUserProfile]);
 
 		return { userProfile: await this.userProfileService.updateUserProfile(userProfileUuid, updateUserProfileRequestDto) };
+	}
+
+	public async changeUserLiveProfile(@Auth userEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {
+		await this.authorization.can(userEntity, [Permission.UpdateUserProfile]);
+
+		return { userProfile: await this.userProfileService.changeUserLiveProfile(userEntity, userProfileUuid) };
 	}
 
 	public async deleteUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ deleted: boolean }> {

@@ -27,17 +27,21 @@ export class UserContactEntity extends BaseEntity<UserContactEntity> {
 	@Column({ type: DataType.STRING(50) })
 	public userContactLastName: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
-	public userContactEmail: string;
+	@AllowNull(true)
+	@Column({ type: DataType.STRING(255) })
+	public userContactPicture: Nullable<string>;
 
 	@AllowNull(true)
 	@Column({ type: DataType.STRING(50) })
-	public userContactPhone: Nullable<string>;
+	public userContactEmail: Nullable<string>;
 
 	@AllowNull(true)
 	@Column({ type: DataType.TEXT })
 	public userContactNote: Nullable<string>;
+
+	@AllowNull(true)
+	@Column({ type: DataType.STRING(50) })
+	public userContactPhone: Nullable<string>;
 
 	@CreatedAtColumn
 	public userContactCreatedAt: Date;
