@@ -1,8 +1,8 @@
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
+import { HasMany, Scopes, Table } from "sequelize-typescript";
 import { CustomPlatformEntity } from "@/backend/platform/db/entities/custom-platform.entity";
 import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 
@@ -17,8 +17,7 @@ export class PlatformCategoryEntity extends BaseEntity<PlatformCategoryEntity> {
 	@UuidKeyColumn
 	public readonly platformCategoryUuid: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(100) })
+	@StringColumn({ length: 100 })
 	public platformCategoryName: string;
 
 	@IsActiveColumn

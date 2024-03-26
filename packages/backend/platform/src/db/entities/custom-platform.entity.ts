@@ -1,9 +1,9 @@
 import { UserProfileEntity } from "@/backend/user/db/entities";
-import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, Scopes, Table } from "sequelize-typescript";
 import { PlatformCategoryEntity } from "@/backend/platform/db/entities/platform-category.entity";
 
 @Scopes(() => ({
@@ -23,16 +23,13 @@ export class CustomPlatformEntity extends BaseEntity<CustomPlatformEntity> {
 	@ForeignKeyColumn(() => UserProfileEntity)
 	public customPlatformUserProfileId: number;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(100) })
+	@StringColumn({ length: 100 })
 	public customPlatformName: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn()
 	public customPlatformIcon: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn()
 	public customPlatformIdentity: string;
 
 	@IsActiveColumn

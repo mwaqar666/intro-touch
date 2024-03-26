@@ -4,6 +4,19 @@ import type { ScopesOptions } from "sequelize-typescript";
 import type { EntityScopeConst } from "@/backend-core/database/const";
 import type { BaseEntity } from "@/backend-core/database/entity";
 
+export interface IEntityStringColumnOptions {
+	length: number;
+	nullable: boolean;
+}
+
+export type IEntityIntegerColumnOptions = Omit<IEntityStringColumnOptions, "length">;
+
+export type IEntityDateColumnOptions = Omit<IEntityStringColumnOptions, "length">;
+
+export type IEntityBooleanColumnOptions = Omit<IEntityStringColumnOptions, "length">;
+
+export type IEntityTextColumnOptions = Omit<IEntityStringColumnOptions, "length">;
+
 export type IEntityScope = Array<string | ScopeOptions>;
 
 export type IEntityRelationshipPropertyTypes = Nullable<BaseEntity> | BaseEntity | Array<BaseEntity>;

@@ -1,9 +1,9 @@
 import { CustomPlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
-import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { BooleanColumn, CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, TextColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, BelongsTo, Column, DataType, Default, HasMany, Scopes, Table, Unique } from "sequelize-typescript";
+import { BelongsTo, Default, HasMany, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserEntity } from "@/backend/user/db/entities/user.entity";
 
 @Scopes(() => ({
@@ -20,58 +20,45 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 	@ForeignKeyColumn(() => UserEntity)
 	public readonly userProfileUserId: number;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50 })
 	public userProfileFirstName: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50 })
 	public userProfileLastName: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn()
 	public userProfilePicture: string;
 
 	@Unique
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50 })
 	public userProfileEmail: string;
 
-	@AllowNull(true)
-	@Column({ type: DataType.TEXT })
+	@TextColumn({ nullable: true })
 	public userProfileBio: Nullable<string>;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn({ nullable: true })
 	public userProfileCompany: Nullable<string>;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn({ nullable: true })
 	public userProfileJobTitle: Nullable<string>;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50, nullable: true })
 	public userProfileWorkplacePhone: Nullable<string>;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50, nullable: true })
 	public userProfilePersonalPhone: Nullable<string>;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50, nullable: true })
 	public userProfileLandPhone: Nullable<string>;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50, nullable: true })
 	public userProfileFax: Nullable<string>;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn({ nullable: true })
 	public userProfileWebsite: Nullable<string>;
 
 	@Default(false)
-	@AllowNull(false)
-	@Column({ type: DataType.BOOLEAN })
+	@BooleanColumn()
 	public userProfileIsLive: boolean;
 
 	@IsActiveColumn

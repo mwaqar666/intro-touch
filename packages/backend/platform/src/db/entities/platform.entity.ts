@@ -1,8 +1,8 @@
-import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, BelongsTo, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, HasMany, Scopes, Table } from "sequelize-typescript";
 import { PlatformCategoryEntity } from "@/backend/platform/db/entities/platform-category.entity";
 import { PlatformProfileEntity } from "@/backend/platform/db/entities/platform-profile.entity";
 
@@ -20,12 +20,10 @@ export class PlatformEntity extends BaseEntity<PlatformEntity> {
 	@ForeignKeyColumn(() => PlatformCategoryEntity)
 	public platformPlatformCategoryId: number;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(100) })
+	@StringColumn({ length: 100 })
 	public platformName: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn()
 	public platformIcon: string;
 
 	@IsActiveColumn

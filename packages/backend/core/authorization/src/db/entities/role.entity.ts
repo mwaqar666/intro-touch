@@ -1,8 +1,8 @@
-import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, Column, DataType, HasMany, Scopes, Table } from "sequelize-typescript";
+import { HasMany, Scopes, Table } from "sequelize-typescript";
 import { RolePermissionEntity } from "@/backend-core/authorization/db/entities/role-permission.entity";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities/user-role.entity";
 import type { Role } from "@/backend-core/authorization/enums";
@@ -18,8 +18,7 @@ export class RoleEntity extends BaseEntity<RoleEntity> {
 	@UuidKeyColumn
 	public roleUuid: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(100) })
+	@StringColumn({ length: 100 })
 	public roleName: Role;
 
 	@IsActiveColumn

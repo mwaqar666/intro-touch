@@ -1,9 +1,9 @@
 import { UserProfileEntity } from "@/backend/user/db/entities";
-import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, BelongsTo, Column, DataType, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, Scopes, Table } from "sequelize-typescript";
 import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 
 @Scopes(() => ({
@@ -23,8 +23,7 @@ export class PlatformProfileEntity extends BaseEntity<PlatformProfileEntity> {
 	@ForeignKeyColumn(() => PlatformEntity)
 	public platformProfilePlatformId: number;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn()
 	public platformProfileIdentity: string;
 
 	@IsActiveColumn

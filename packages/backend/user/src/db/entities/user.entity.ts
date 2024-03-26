@@ -5,11 +5,11 @@ import { PasswordMissingException } from "@/backend-core/authentication/exceptio
 import type { IAuthenticatable } from "@/backend-core/authentication/interface";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { App } from "@/backend-core/core/extensions";
-import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
+import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { AllowNull, BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
+import { BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserContactEntity } from "@/backend/user/db/entities/user-contact.entity";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
@@ -29,30 +29,24 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 	@ForeignKeyColumn(() => UserEntity, true)
 	public userParentId: Nullable<number>;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50 })
 	public userFirstName: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50 })
 	public userLastName: string;
 
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(255) })
+	@StringColumn()
 	public userPicture: string;
 
 	@Unique
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50 })
 	public userEmail: string;
 
 	@Unique
-	@AllowNull(false)
-	@Column({ type: DataType.STRING(100) })
+	@StringColumn({ length: 100 })
 	public userUsername: string;
 
-	@AllowNull(true)
-	@Column({ type: DataType.STRING(50) })
+	@StringColumn({ length: 50, nullable: true })
 	public userPassword: Nullable<string>;
 
 	@IsActiveColumn
