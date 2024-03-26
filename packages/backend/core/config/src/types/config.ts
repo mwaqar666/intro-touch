@@ -1,12 +1,7 @@
+import type { AuthDriver } from "@/backend-core/authentication/enums";
+import type { IAuthRepository } from "@/backend-core/authentication/types";
 import type { StorageDriver } from "@/backend-core/storage/enums";
-
-export interface IAuthConfig {
-	readonly googleClientId: string;
-	readonly facebookClientId: string;
-	readonly facebookClientSecret: string;
-	readonly redirectUrl: string;
-	readonly tokenExpiry: string;
-}
+import type { Constructable } from "@/stacks/types";
 
 export interface IAppConfig {
 	readonly env: string;
@@ -14,6 +9,23 @@ export interface IAppConfig {
 	readonly version: string;
 	readonly region: string;
 	readonly key: string;
+}
+
+export interface IAuthDriverConfig {
+	readonly repository: Promise<Constructable<IAuthRepository>>;
+}
+
+export type IAuthDrivers = {
+	readonly [Key in AuthDriver]: IAuthDriverConfig;
+};
+
+export interface IAuthConfig {
+	readonly googleClientId: string;
+	readonly facebookClientId: string;
+	readonly facebookClientSecret: string;
+	readonly redirectUrl: string;
+	readonly tokenExpiry: string;
+	readonly authDrivers: IAuthDrivers;
 }
 
 export interface IEmailConfig {

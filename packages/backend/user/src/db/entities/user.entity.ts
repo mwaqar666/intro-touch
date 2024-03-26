@@ -8,8 +8,7 @@ import { App } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
-import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
-import type { Key, Nullable } from "@/stacks/types";
+import type { Nullable } from "@/stacks/types";
 import { AllowNull, BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, Column, DataType, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserContactEntity } from "@/backend/user/db/entities/user-contact.entity";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
@@ -18,7 +17,7 @@ import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entit
 	...ScopeFactory.commonScopes(() => UserEntity),
 }))
 @Table({ tableName: "users" })
-export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatable<UserEntity> {
+export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatable {
 	public static override readonly hiddenKeys: Array<string> = ["userPassword"];
 
 	@PrimaryKeyColumn
@@ -143,26 +142,19 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 		});
 	}
 
-	public async verifyPassword(plainPassword: string): Promise<boolean> {
-		if (!this.userPassword) throw new PasswordMissingException();
-
-		const hashService: HashService = App.container.resolve(HashService);
-		return await hashService.compare(plainPassword, this.userPassword);
-	}
-
-	public getAuthIdentifierName(): Key<IEntityTableColumnProperties<UserEntity>> {
-		return "userId";
-	}
-
 	public getAuthIdentifier(): number {
 		return this.userId;
 	}
 
-	public getAuthPasswordName(): Key<IEntityTableColumnProperties<UserEntity>> {
-		return "userPassword";
-	}
-
 	public getAuthPassword(): Nullable<string> {
 		return this.userPassword;
+	}
+
+	public async verifyPassword(plainPassword: string): Promise<boolean> {
+		const authPassword: Nullable<string> = this.getAuthPassword();
+		if (!authPassword) throw new PasswordMissingException();
+
+		const hashService: HashService = App.container.resolve(HashService);
+		return await hashService.compare(plainPassword, authPassword);
 	}
 }
