@@ -19,7 +19,7 @@ export class UserContactController {
 		return { userContact: await this.userContactService.createUserContact(userUuid, createUserContactRequestDto) };
 	}
 
-	public async getUserContacts(@Auth authEntity: UserEntity): Promise<{ userContacts: Array<UserContactEntity> }> {
+	public async getUserContactList(@Auth authEntity: UserEntity): Promise<{ userContacts: Array<UserContactEntity> }> {
 		await this.authorization.can(authEntity, [Permission.ListUserContact]);
 
 		return { userContacts: await this.userContactService.getUserContacts(authEntity) };

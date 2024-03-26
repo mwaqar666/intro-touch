@@ -75,9 +75,5 @@ export class UpdateUserProfileRequestDto {
 
 	@IsBoolean()
 	@IsOptional()
-	public userProfileIsLive: Optional<boolean>;
-
-	@IsBoolean()
-	@IsOptional()
 	public userProfileIsActive: Optional<boolean>;
 }

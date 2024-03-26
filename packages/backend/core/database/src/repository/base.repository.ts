@@ -15,7 +15,8 @@ import type {
 	IEntityType,
 	IFindOrCreateOptions,
 	IScopedFinderOptions,
-	IUpdateOptions,
+	IUpdateManyOptions,
+	IUpdateOneOptions,
 } from "@/backend-core/database/types";
 
 export abstract class BaseRepository<TEntity extends BaseEntity<TEntity> = BaseEntity> {
@@ -86,17 +87,25 @@ export abstract class BaseRepository<TEntity extends BaseEntity<TEntity> = BaseE
 		return await this.concreteEntity.bulkCreate<TEntity>(valuesToCreate as Array<CreationAttributes<TEntity>>, { transaction });
 	}
 
-	public async updateOne(updateOptions: IUpdateOptions<TEntity>): Promise<TEntity> {
-		const { scopes, transaction }: IUpdateOptions<TEntity> = updateOptions;
+	public async updateOne(updateOneOptions: IUpdateOneOptions<TEntity>): Promise<TEntity> {
+		const { scopes, valuesToUpdate, transaction }: IUpdateOneOptions<TEntity> = updateOneOptions;
 
 		const foundEntity: TEntity =
-			"findOptions" in updateOptions
+			"findOptions" in updateOneOptions
 				? // Find by finder options
-					await this.findOneOrFail({ findOptions: updateOptions.findOptions, scopes })
+					await this.findOneOrFail({ findOptions: updateOneOptions.findOptions, scopes })
 				: // Or resolve using primary key or uuid
-					await this.resolveOneOrFail(updateOptions.entity, scopes);
+					await this.resolveOneOrFail(updateOneOptions.entity, scopes);
 
-		return foundEntity.update(updateOptions.valuesToUpdate as IEntityKeyValues<TEntity>, { transaction });
+		return foundEntity.update(valuesToUpdate as IEntityKeyValues<TEntity>, { transaction });
+	}
+
+	public async updateMany(updateManyOptions: IUpdateManyOptions<TEntity>): Promise<Array<TEntity>> {
+		const { where, scopes, valuesToUpdate, transaction }: IUpdateManyOptions<TEntity> = updateManyOptions;
+
+		const [, affectedRows]: [affectedCount: number, affectedRows: Array<TEntity>] = await this.concreteEntity.applyScopes<TEntity>(scopes).update(valuesToUpdate as IEntityKeyValues<TEntity>, { where, transaction, returning: true });
+
+		return affectedRows;
 	}
 
 	public async findOrCreate(findOrCreateOptions: IFindOrCreateOptions<TEntity>): Promise<TEntity> {

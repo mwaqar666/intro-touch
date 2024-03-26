@@ -1,3 +1,5 @@
+import type { UploadedFile } from "@/backend-core/request-processor/dto";
+import { IsValidFile } from "@/backend-core/validation/validators";
 import type { Optional } from "@/stacks/types";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
@@ -12,10 +14,18 @@ export class CreateUserContactRequestDto {
 	@IsNotEmpty()
 	public userContactLastName: string;
 
+	@IsValidFile({
+		maxSizeInBytes: 5 * 1024 * 1024,
+		mimeType: "image/*",
+	})
+	@IsOptional()
+	public userContactPicture: Optional<UploadedFile>;
+
 	@MaxLength(50)
 	@IsEmail()
 	@IsString()
-	public userContactEmail: string;
+	@IsOptional()
+	public userContactEmail: Optional<string>;
 
 	@IsString()
 	@IsOptional()

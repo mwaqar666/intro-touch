@@ -23,9 +23,14 @@ export class UserRouter implements IRouter {
 						handler: this.userController.publicPreview,
 					},
 					{
-						path: "/contact/create/{userUuid}",
-						method: RouteMethod.Post,
-						handler: this.userContactController.createUserContact,
+						prefix: "/contact",
+						routes: [
+							{
+								path: "/create/{userUuid}",
+								method: RouteMethod.Post,
+								handler: this.userContactController.createUserContact,
+							},
+						],
 					},
 					{
 						prefix: "/",
@@ -37,14 +42,19 @@ export class UserRouter implements IRouter {
 								handler: this.userController.getUserList,
 							},
 							{
-								path: "/contacts",
-								method: RouteMethod.Get,
-								handler: this.userContactController.getUserContacts,
-							},
-							{
 								path: "/change-password",
 								method: RouteMethod.Post,
 								handler: this.userController.changePassword,
+							},
+							{
+								prefix: "/contact",
+								routes: [
+									{
+										path: "/list",
+										method: RouteMethod.Get,
+										handler: this.userContactController.getUserContactList,
+									},
+								],
 							},
 							{
 								prefix: "/profile",
@@ -68,6 +78,11 @@ export class UserRouter implements IRouter {
 										path: "/update/{userProfileUuid}",
 										method: RouteMethod.Patch,
 										handler: this.userProfileController.updateUserProfile,
+									},
+									{
+										path: "/update/live/{userProfileUuid}",
+										method: RouteMethod.Patch,
+										handler: this.userProfileController.changeUserLiveProfile,
 									},
 									{
 										path: "/delete/{userProfileUuid}",

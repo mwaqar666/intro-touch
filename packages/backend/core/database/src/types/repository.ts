@@ -1,4 +1,4 @@
-import type { FindOptions, Transaction } from "sequelize";
+import type { Filterable, FindOptions, Transaction } from "sequelize";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IEntityScope, IEntityTableColumnProperties } from "@/backend-core/database/types/entity";
 
@@ -44,7 +44,9 @@ export type IFindOrCreateOptions<TEntity extends BaseEntity<TEntity>> = Partial<
 
 export type ICreateOrUpdateOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScopedFinderOrResolverOption<TEntity>> & IUpdateBaseOptions<TEntity> & ICreateOneOptions<TEntity>;
 
-export type IUpdateOptions<TEntity extends BaseEntity<TEntity>> = IScopedFinderOrResolverOption<TEntity> & IUpdateBaseOptions<TEntity>;
+export type IUpdateOneOptions<TEntity extends BaseEntity<TEntity>> = IScopedFinderOrResolverOption<TEntity> & IUpdateBaseOptions<TEntity>;
+
+export type IUpdateManyOptions<TEntity extends BaseEntity<TEntity>> = Partial<IScoped> & Required<Filterable<TEntity>> & IUpdateBaseOptions<TEntity>;
 
 export type IDeleteOptions<TEntity extends BaseEntity<TEntity>> = IScopedFinderOrResolverOption<TEntity> & IDeleteBaseOptions;
 

@@ -50,6 +50,20 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		});
 	}
 
+	public async changeUserLiveProfile(userEntity: UserEntity, userProfileUuid: string, transaction: Transaction): Promise<UserProfileEntity> {
+		await this.updateMany({
+			where: { userProfileUserId: userEntity.userId },
+			valuesToUpdate: { userProfileIsLive: false },
+			transaction,
+		});
+
+		return this.updateOne({
+			entity: userProfileUuid,
+			valuesToUpdate: { userProfileIsLive: true },
+			transaction,
+		});
+	}
+
 	public deleteUserProfile(userProfileUuid: string, transaction: Transaction): Promise<boolean> {
 		return this.deleteOne({
 			entity: userProfileUuid,
