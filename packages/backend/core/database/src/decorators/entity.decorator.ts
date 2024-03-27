@@ -76,8 +76,8 @@ export const StringColumn: Delegate<[Partial<IEntityStringColumnOptions>?], Prop
 	return <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 		const options: Required<IEntityStringColumnOptions> = CreateEntityStringColumnOptions(entityStringColumnOptions);
 
-		AllowNull(options.nullable)(target, propertyKey);
 		Column({ type: DataType.STRING(options.length) })(target, propertyKey);
+		AllowNull(options.nullable)(target, propertyKey);
 	});
 };
 
@@ -85,8 +85,8 @@ export const IntegerColumn: Delegate<[Partial<IEntityIntegerColumnOptions>?], Pr
 	return <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 		const options: Required<IEntityIntegerColumnOptions> = CreateEntityIntegerColumnOptions(entityIntegerColumnOptions);
 
-		AllowNull(options.nullable)(target, propertyKey);
 		Column({ type: DataType.INTEGER })(target, propertyKey);
+		AllowNull(options.nullable)(target, propertyKey);
 	});
 };
 
@@ -94,8 +94,8 @@ export const DateColumn: Delegate<[Partial<IEntityDateColumnOptions>?], Property
 	return <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 		const options: Required<IEntityDateColumnOptions> = CreateEntityDateColumnOptions(entityDateColumnOptions);
 
-		AllowNull(options.nullable)(target, propertyKey);
 		Column({ type: DataType.DATE })(target, propertyKey);
+		AllowNull(options.nullable)(target, propertyKey);
 	});
 };
 
@@ -103,8 +103,8 @@ export const BooleanColumn: Delegate<[Partial<IEntityBooleanColumnOptions>?], Pr
 	return <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 		const options: Required<IEntityBooleanColumnOptions> = CreateEntityBooleanColumnOptions(entityBooleanColumnOptions);
 
-		AllowNull(options.nullable)(target, propertyKey);
 		Column({ type: DataType.BOOLEAN })(target, propertyKey);
+		AllowNull(options.nullable)(target, propertyKey);
 	});
 };
 
@@ -112,8 +112,8 @@ export const TextColumn: Delegate<[Partial<IEntityTextColumnOptions>?], Property
 	return <PropertyDecorator>(<TEntity extends BaseEntity<TEntity>>(target: TEntity, propertyKey: string): void => {
 		const options: Required<IEntityTextColumnOptions> = CreateEntityTextColumnOptions(entityTextColumnOptions);
 
-		AllowNull(options.nullable)(target, propertyKey);
 		Column({ type: DataType.TEXT })(target, propertyKey);
+		AllowNull(options.nullable)(target, propertyKey);
 	});
 };
 

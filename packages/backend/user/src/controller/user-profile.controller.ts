@@ -44,10 +44,10 @@ export class UserProfileController {
 		return { userProfile: await this.userProfileService.updateUserProfile(userProfileUuid, updateUserProfileRequestDto) };
 	}
 
-	public async changeUserLiveProfile(@Auth userEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {
+	public async changeLiveProfile(@Auth userEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {
 		await this.authorization.can(userEntity, [Permission.UpdateUserProfile]);
 
-		return { userProfile: await this.userProfileService.changeUserLiveProfile(userEntity, userProfileUuid) };
+		return { userProfile: await this.userProfileService.changeLiveProfile(userEntity, userProfileUuid) };
 	}
 
 	public async deleteUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ deleted: boolean }> {

@@ -80,9 +80,9 @@ export class UserRouter implements IRouter {
 										handler: this.userProfileController.updateUserProfile,
 									},
 									{
-										path: "/update/live/{userProfileUuid}",
+										path: "/live/{userProfileUuid}",
 										method: RouteMethod.Patch,
-										handler: this.userProfileController.changeUserLiveProfile,
+										handler: this.userProfileController.changeLiveProfile,
 									},
 									{
 										path: "/delete/{userProfileUuid}",

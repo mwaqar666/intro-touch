@@ -73,10 +73,10 @@ export class UserProfileService {
 		});
 	}
 
-	public changeUserLiveProfile(userEntity: UserEntity, userProfileUuid: string): Promise<UserProfileEntity> {
+	public changeLiveProfile(userEntity: UserEntity, userProfileUuid: string): Promise<UserProfileEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: ({ transaction }: ITransactionStore): Promise<UserProfileEntity> => {
-				return this.userProfileRepository.changeUserLiveProfile(userEntity, userProfileUuid, transaction);
+				return this.userProfileRepository.changeLiveProfile(userEntity, userProfileUuid, transaction);
 			},
 		});
 	}
