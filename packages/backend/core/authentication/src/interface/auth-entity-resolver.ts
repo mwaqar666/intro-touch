@@ -1,6 +1,6 @@
-import type { UserEntity } from "@/backend/user/db/entities";
 import type { Nullable } from "@/stacks/types";
+import type { IAuthenticatableEntity } from "@/backend-core/authentication/types";
 
 export interface IAuthEntityResolver {
-	resolve(): Promise<Nullable<UserEntity>>;
+	resolve(): Promise<Nullable<IAuthenticatableEntity>>;
 }

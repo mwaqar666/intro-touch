@@ -136,7 +136,7 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 		});
 	}
 
-	public getAuthIdentifier(): number {
+	public getAuthPrimaryKey(): number {
 		return this.userId;
 	}
 

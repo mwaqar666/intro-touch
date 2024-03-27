@@ -1,16 +1,17 @@
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";
 import { App } from "@/backend-core/core/extensions";
+import type { IEntityScope } from "@/backend-core/database/types";
 import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { WhereOptions } from "sequelize";
 import type { AuthDriver } from "@/backend-core/authentication/enums";
 import type { IAuthProvider } from "@/backend-core/authentication/interface";
-import type { IAuthEntity, IAuthRepository } from "@/backend-core/authentication/types";
+import type { IAuthenticatableEntity, IAuthenticatableRepository } from "@/backend-core/authentication/types";
 
 export class AuthProvider implements IAuthProvider {
-	private authRepository: Nullable<IAuthRepository> = null;
+	private authRepository: Nullable<IAuthenticatableRepository> = null;
 
 	public constructor(
 		// Dependencies
@@ -26,19 +27,26 @@ export class AuthProvider implements IAuthProvider {
 		return this;
 	}
 
-	public retrieveByPrimaryKey(primaryKey: number): Promise<IAuthEntity> {
+	public retrieveByPrimaryKey(primaryKey: number, scopes?: IEntityScope): Promise<Nullable<IAuthenticatableEntity>> {
 		if (!this.authRepository) throw new InternalServerException("Authentication repository not configured");
 
-		return this.authRepository.resolveOneOrFail(primaryKey);
+		return this.authRepository.resolveOne(primaryKey, scopes);
 	}
 
-	public retrieveByCredentials<TCredentials extends WhereOptions<IAuthEntity>>(credentials: TCredentials): Promise<IAuthEntity> {
+	public retrieveByUuid(uuid: string, scopes?: IEntityScope): Promise<Nullable<IAuthenticatableEntity>> {
+		if (!this.authRepository) throw new InternalServerException("Authentication repository not configured");
+
+		return this.authRepository.resolveOne(uuid, scopes);
+	}
+
+	public retrieveByCredentials<TCredentials extends WhereOptions<IAuthenticatableEntity>>(credentials: TCredentials, scopes?: IEntityScope): Promise<IAuthenticatableEntity> {
 		if (!this.authRepository) throw new InternalServerException("Authentication repository not configured");
 
 		return this.authRepository.findOneOrFail({
 			findOptions: {
 				where: credentials,
 			},
+			scopes,
 		});
 	}
 }

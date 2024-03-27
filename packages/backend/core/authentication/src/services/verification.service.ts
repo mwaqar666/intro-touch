@@ -1,6 +1,5 @@
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserAuthService } from "@/backend/user/services";
-import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import { VerificationTokenService } from "@/backend-core/authentication/dal";
 import type { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
@@ -19,19 +18,17 @@ export class VerificationService {
 		@Inject(VerificationTokenService) private readonly verificationTokenService: VerificationTokenService,
 	) {}
 
-	public async verifyRegisteredEmail(verifyRequestDto: VerifyRequestDto): Promise<string> {
-		const user: Nullable<UserEntity> = await this.userAuthService.findActiveUserByEmail(verifyRequestDto.userEmail);
-		if (!user) throw new InvalidCredentialsException();
+	public async verifyRegisteredEmail({ userEmail, tokenIdentifier }: VerifyRequestDto): Promise<string> {
+		const user: UserEntity = await this.userAuthService.retrieveUserByCredentials({ userEmail }, true);
 
-		const userVerified: boolean = await this.verificationTokenService.verifyUserEmailVerificationToken(user, verifyRequestDto.tokenIdentifier);
+		const userVerified: boolean = await this.verificationTokenService.verifyUserEmailVerificationToken(user, tokenIdentifier);
 		if (!userVerified) throw new InvalidCredentialsException();
 
 		return this.tokenUtilService.createAuthenticationToken(user);
 	}
 
-	public async resendEmailVerificationToken(resendRequestDto: ResendRequestDto): Promise<boolean> {
-		const user: Nullable<UserEntity> = await this.userAuthService.findActiveUserByEmail(resendRequestDto.userEmail);
-		if (!user) throw new InvalidCredentialsException();
+	public async resendEmailVerificationToken({ userEmail }: ResendRequestDto): Promise<boolean> {
+		const user: UserEntity = await this.userAuthService.retrieveUserByCredentials({ userEmail }, true);
 
 		const verificationToken: VerificationTokenEntity = await this.verificationTokenService.createEmailVerificationToken(user);
 

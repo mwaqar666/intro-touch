@@ -1,7 +1,7 @@
 import type { Nullable } from "@/stacks/types";
 
 export interface IAuthenticatable {
-	getAuthIdentifier(): number;
+	getAuthPrimaryKey(): number;
 
 	getAuthPassword(): Nullable<string>;
 

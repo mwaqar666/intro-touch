@@ -1,4 +1,4 @@
-import type { UserEntity } from "@/backend/user/db/entities";
+import type { IAuthenticatableEntity } from "@/backend-core/authentication/types";
 import { App } from "@/backend-core/core/extensions";
 import { Request } from "@/backend-core/request-processor/handlers";
 import type { Nullable, Optional } from "@/stacks/types";
@@ -24,7 +24,7 @@ export class CurrentPasswordConstraint implements ValidatorConstraintInterface {
 
 		const request: Request = App.container.resolve(Request);
 
-		const userEntity: Nullable<UserEntity> = await request.auth();
+		const userEntity: Nullable<IAuthenticatableEntity> = await request.auth();
 		if (!userEntity) return false;
 
 		return await userEntity.verifyPassword(value);

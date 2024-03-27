@@ -4,25 +4,24 @@ import { LoginRequestDto } from "@/backend-core/authentication/dto/login";
 import { RegisterRequestDto } from "@/backend-core/authentication/dto/register";
 import { ResendRequestDto } from "@/backend-core/authentication/dto/resend";
 import { VerifyRequestDto } from "@/backend-core/authentication/dto/verify";
-import { SignInService, SignUpService, VerificationService } from "@/backend-core/authentication/services";
+import { BasicAuthService, VerificationService } from "@/backend-core/authentication/services";
 
 @Controller
 export class AuthenticationController {
 	public constructor(
 		// Dependencies
 
-		@Inject(SignInService) private readonly signInService: SignInService,
-		@Inject(SignUpService) private readonly signUpService: SignUpService,
+		@Inject(BasicAuthService) private readonly basicAuthService: BasicAuthService,
 		// @Inject(SocialAuthService) private readonly socialAuthService: SocialAuthService,
 		@Inject(VerificationService) private readonly verificationService: VerificationService,
 	) {}
 
 	public async basicLogin(@Body(LoginRequestDto) loginRequestDto: LoginRequestDto): Promise<{ token: string }> {
-		return { token: await this.signInService.basicLogin(loginRequestDto) };
+		return { token: await this.basicAuthService.basicLogin(loginRequestDto) };
 	}
 
 	public async basicRegister(@Body(RegisterRequestDto) registerRequestDto: RegisterRequestDto): Promise<{ registered: boolean }> {
-		return { registered: await this.signUpService.basicRegister(registerRequestDto) };
+		return { registered: await this.basicAuthService.basicRegister(registerRequestDto) };
 	}
 
 	public async verifyRegisteredEmail(@Body(VerifyRequestDto) verifyRequestDto: VerifyRequestDto): Promise<{ token: string }> {

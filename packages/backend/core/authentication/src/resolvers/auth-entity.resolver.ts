@@ -1,39 +1,31 @@
-import type { UserEntity } from "@/backend/user/db/entities";
-import { UserAuthService } from "@/backend/user/services";
+import { EntityScopeConst } from "@/backend-core/database/const";
 import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { SessionValue } from "sst/node/auth";
 import { useSession } from "sst/node/auth";
-import { VerificationTokenService } from "@/backend-core/authentication/dal";
-import type { IAuthEntityResolver } from "@/backend-core/authentication/interface";
+import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
+import type { IAuthEntityResolver, IAuthProvider } from "@/backend-core/authentication/interface";
+import type { IAuthenticatableEntity } from "@/backend-core/authentication/types";
 
 export class AuthEntityResolver implements IAuthEntityResolver {
-	private _resolvedAuthEntity: Nullable<UserEntity> = null;
+	private authEntity: Nullable<IAuthenticatableEntity> = null;
 
 	public constructor(
 		// Dependencies
 
-		@Inject(UserAuthService) private readonly userAuthService: UserAuthService,
-		@Inject(VerificationTokenService) private readonly verificationTokenService: VerificationTokenService,
+		@Inject(AuthenticationTokenConst.AuthProviderToken) private readonly authProvider: IAuthProvider,
 	) {}
 
-	public async resolve(): Promise<Nullable<UserEntity>> {
-		if (this._resolvedAuthEntity) return this._resolvedAuthEntity;
+	public async resolve(): Promise<Nullable<IAuthenticatableEntity>> {
+		if (this.authEntity) return this.authEntity;
 
 		const session: SessionValue = useSession();
-
 		if (session.type !== "user") return null;
 
-		const user: Nullable<UserEntity> = await this.userAuthService.findActiveUserByUuid(session.properties.userUuid);
+		const authEntity: Nullable<IAuthenticatableEntity> = await this.authProvider.retrieveByUuid(session.properties.userUuid, [EntityScopeConst.isActive]);
+		if (!authEntity) return null;
 
-		if (!user) return null;
-
-		const userIsVerified: boolean = await this.verificationTokenService.verifyUserEmailIsVerified(user);
-
-		if (!userIsVerified) return null;
-
-		this._resolvedAuthEntity = user;
-
-		return this._resolvedAuthEntity;
+		this.authEntity = authEntity;
+		return this.authEntity;
 	}
 }

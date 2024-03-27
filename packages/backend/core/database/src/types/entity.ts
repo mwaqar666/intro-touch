@@ -31,10 +31,10 @@ export type IEntityNonTableColumnProperties = IEntityRelationshipPropertyTypes |
 
 export type IEntityTableColumnProperties<TEntity extends BaseEntity<TEntity>> = FilterWhereNot<IEntityProperties<TEntity>, IEntityNonTableColumnProperties>;
 
-export type IEntityTableColumnPropertiesExcept<TEntity extends BaseEntity<TEntity>, TProps extends Key<TEntity> = Key<TEntity>> = Omit<IEntityTableColumnProperties<TEntity>, TProps>;
+export type IEntityTableColumnPropertiesOnly<TEntity extends BaseEntity<TEntity>, TProps extends Key<IEntityTableColumnProperties<TEntity>> = Key<IEntityTableColumnProperties<TEntity>>> = Pick<IEntityTableColumnProperties<TEntity>, TProps>;
 
-export type IEntityScopes<T> = { [K in Key<T>]: ScopesOptions };
+export type IEntityTableColumnPropertiesExcept<TEntity extends BaseEntity<TEntity>, TProps extends Key<IEntityTableColumnProperties<TEntity>> = Key<IEntityTableColumnProperties<TEntity>>> = Omit<IEntityTableColumnProperties<TEntity>, TProps>;
 
-export type IAvailableScopes = IEntityScopes<typeof EntityScopeConst>;
+export type IAvailableScopes = { [K in Key<typeof EntityScopeConst>]: ScopesOptions };
 
 export type IEntityType<TEntity extends BaseEntity<TEntity> = BaseEntity> = Constructable<TEntity> & typeof BaseEntity<TEntity>;

@@ -4,6 +4,8 @@ export type Optional<T> = undefined | T;
 
 export type Nullable<T> = null | T;
 
+export type NonNullableProps<T> = { [P in Key<T>]-?: NonNullable<T[P]> };
+
 export type Primitives = string | number | boolean | Buffer;
 
 export type AnyObjectValues = Primitives | AnyObject | Array<AnyObjectValues>;

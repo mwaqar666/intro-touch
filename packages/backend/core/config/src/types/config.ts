@@ -1,5 +1,5 @@
 import type { AuthDriver } from "@/backend-core/authentication/enums";
-import type { IAuthRepository } from "@/backend-core/authentication/types";
+import type { IAuthenticatableRepository } from "@/backend-core/authentication/types";
 import type { StorageDriver } from "@/backend-core/storage/enums";
 import type { Constructable } from "@/stacks/types";
 
@@ -12,7 +12,7 @@ export interface IAppConfig {
 }
 
 export interface IAuthDriverConfig {
-	readonly repository: Promise<Constructable<IAuthRepository>>;
+	readonly repository: Promise<Constructable<IAuthenticatableRepository>>;
 }
 
 export type IAuthDrivers = {

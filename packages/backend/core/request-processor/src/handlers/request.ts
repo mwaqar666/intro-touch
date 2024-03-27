@@ -1,6 +1,6 @@
-import type { UserEntity } from "@/backend/user/db/entities";
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import type { IAuthEntityResolver } from "@/backend-core/authentication/interface";
+import type { IAuthenticatableEntity } from "@/backend-core/authentication/types";
 import { App } from "@/backend-core/core/extensions";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IPathParams, IQueryParams, IResolvedRoute, IRouteResolver } from "@/backend-core/router/interface";
@@ -78,7 +78,7 @@ export class Request<T extends object = object, P extends IPathParams = IPathPar
 		return headers[header.toLowerCase()];
 	}
 
-	public async auth(): Promise<Nullable<UserEntity>> {
+	public async auth(): Promise<Nullable<IAuthenticatableEntity>> {
 		return this.authEntityResolver.resolve();
 	}
 
