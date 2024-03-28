@@ -1,6 +1,7 @@
 import type { UploadedFile } from "@/backend-core/request-processor/dto";
 import { IsValidFile } from "@/backend-core/validation/validators";
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import type { Optional } from "@/stacks/types";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export class RegisterRequestDto {
 	@MaxLength(50)
@@ -24,8 +25,8 @@ export class RegisterRequestDto {
 		mimeType: "image/*",
 		maxSizeInBytes: 5 * 1024 * 1024,
 	})
-	@IsNotEmpty()
-	public userPicture: UploadedFile;
+	@IsOptional()
+	public userPicture: Optional<UploadedFile>;
 
 	@MaxLength(50)
 	@MinLength(8)

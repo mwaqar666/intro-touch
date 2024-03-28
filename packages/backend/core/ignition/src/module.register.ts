@@ -11,6 +11,7 @@ import { RouterModule } from "@/backend-core/router/module";
 import { StorageModule } from "@/backend-core/storage/module";
 import { ValidationModule } from "@/backend-core/validation/module";
 import type { Constructable } from "@/stacks/types";
+import { IndustryModule } from "@/backend/industry/module";
 
 export class ModuleRegister {
 	public static applicationModules(): Array<Constructable<IModule>> {
@@ -29,6 +30,7 @@ export class ModuleRegister {
 			// Application business modules
 			UserModule,
 			PlatformModule,
+			IndustryModule,
 		];
 	}
 }

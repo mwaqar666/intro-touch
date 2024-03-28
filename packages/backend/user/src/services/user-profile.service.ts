@@ -40,7 +40,7 @@ export class UserProfileService {
 				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
 				const profilePictureBucket: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.ProfilePictures);
 
-				const userProfilePicture: string = await this.storageService.storeFile(profilePictureBucket, uploadedPicture);
+				const userProfilePicture: string = uploadedPicture ? await this.storageService.storeFile(profilePictureBucket, uploadedPicture) : "";
 
 				const userProfileTableColumnProperties: Partial<IEntityTableColumnProperties<UserProfileEntity>> = {
 					...userProfileFields,
