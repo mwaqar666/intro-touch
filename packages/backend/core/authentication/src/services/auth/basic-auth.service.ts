@@ -37,7 +37,7 @@ export class BasicAuthService {
 		const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
 
 		const userPictureBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.ProfilePictures);
-		const userPicture: string = await this.storageService.storeFile(userPictureBucketName, registerRequestDto.userPicture);
+		const userPicture: string = registerRequestDto.userPicture ? await this.storageService.storeFile(userPictureBucketName, registerRequestDto.userPicture) : "";
 
 		const findOrCreateUserProps: IFindOrCreateUserProps = {
 			...registerRequestDto,

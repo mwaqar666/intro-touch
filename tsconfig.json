@@ -61,6 +61,9 @@
       "@/backend-core/validation/*": [
         "packages/backend/core/validation/src/*"
       ],
+      "@/backend/industry/*": [
+        "packages/backend/industry/src/*"
+      ],
       "@/backend/platform/*": [
         "packages/backend/platform/src/*"
       ],

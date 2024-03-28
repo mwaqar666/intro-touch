@@ -148,7 +148,7 @@ importers:
         specifier: ^2.3.4
         version: 2.3.4
       sequelize:
-        specifier: ^6.36.0
+        specifier: ^6.37.1
         version: 6.37.1(pg-hstore@2.3.4)(pg@8.11.3)
       sequelize-typescript:
         specifier: ^2.1.6
@@ -234,6 +234,24 @@ importers:
         specifier: ^6.36.0
         version: 6.37.1(pg-hstore@2.3.4)(pg@8.11.3)
 
+  packages/backend/industry:
+    dependencies:
+      class-validator:
+        specifier: ^0.14.1
+        version: 0.14.1
+      iocc:
+        specifier: ^2.2.2
+        version: 2.2.2(reflect-metadata@0.2.1)
+      reflect-metadata:
+        specifier: ^0.2.1
+        version: 0.2.1
+      sequelize:
+        specifier: ^6.36.0
+        version: 6.37.1(pg-hstore@2.3.4)(pg@8.11.3)
+      sequelize-typescript:
+        specifier: ^2.1.6
+        version: 2.1.6(@types/node@20.11.29)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.37.1)
+
   packages/backend/platform:
     dependencies:
       class-validator:
@@ -260,9 +278,6 @@ importers:
       iocc:
         specifier: ^2.2.2
         version: 2.2.2(reflect-metadata@0.2.1)
-      lodash.omit:
-        specifier: ^4.5.0
-        version: 4.5.0
       reflect-metadata:
         specifier: ^0.2.1
         version: 0.2.1
@@ -272,10 +287,6 @@ importers:
       sequelize-typescript:
         specifier: ^2.1.6
         version: 2.1.6(@types/node@20.11.29)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.37.1)
-    devDependencies:
-      '@types/lodash.omit':
-        specifier: ^4.5.9
-        version: 4.5.9
 
 packages:
 
