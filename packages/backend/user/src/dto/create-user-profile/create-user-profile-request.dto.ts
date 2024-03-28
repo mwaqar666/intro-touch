@@ -19,8 +19,8 @@ export class CreateUserProfileRequestDto {
 		mimeType: "image/*",
 		maxSizeInBytes: 5 * 1024 * 1024,
 	})
-	@IsNotEmpty()
-	public userProfilePicture: UploadedFile;
+	@IsOptional()
+	public userProfilePicture: Optional<UploadedFile>;
 
 	@IsUnique({ repository: UserProfileRepository })
 	@MaxLength(50)
