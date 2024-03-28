@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
-import { HashService } from "@/backend-core/authentication/crypt";
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import type { IAuthenticatable } from "@/backend-core/authentication/interface";
+import { HashService } from "@/backend-core/authentication/services/crypt";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
 import { App } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";

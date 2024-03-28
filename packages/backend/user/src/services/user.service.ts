@@ -1,4 +1,4 @@
-import { HashService } from "@/backend-core/authentication/crypt";
+import { HashService } from "@/backend-core/authentication/services/crypt";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";

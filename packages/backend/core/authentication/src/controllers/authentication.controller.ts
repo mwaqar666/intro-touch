@@ -4,7 +4,8 @@ import { LoginRequestDto } from "@/backend-core/authentication/dto/login";
 import { RegisterRequestDto } from "@/backend-core/authentication/dto/register";
 import { ResendRequestDto } from "@/backend-core/authentication/dto/resend";
 import { VerifyRequestDto } from "@/backend-core/authentication/dto/verify";
-import { BasicAuthService, VerificationService } from "@/backend-core/authentication/services";
+import { BasicAuthService } from "@/backend-core/authentication/services/auth";
+import { VerificationService } from "@/backend-core/authentication/services/verification";
 
 @Controller
 export class AuthenticationController {

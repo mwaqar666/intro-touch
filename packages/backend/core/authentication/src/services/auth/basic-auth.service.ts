@@ -7,10 +7,10 @@ import { S3Bucket, S3BucketConst } from "@/backend-core/storage/config";
 import { StorageTokenConst } from "@/backend-core/storage/const";
 import type { StorageService } from "@/backend-core/storage/services";
 import { Inject } from "iocc";
-import { VerificationTokenService } from "@/backend-core/authentication/dal";
 import type { LoginRequestDto } from "@/backend-core/authentication/dto/login";
 import type { RegisterRequestDto } from "@/backend-core/authentication/dto/register";
 import { EmailNotVerifiedException } from "@/backend-core/authentication/exceptions";
+import { VerificationService } from "@/backend-core/authentication/services/verification";
 import { TokenUtilService } from "@/backend-core/authentication/utils";
 
 export class BasicAuthService {
@@ -19,15 +19,15 @@ export class BasicAuthService {
 
 		@Inject(UserAuthService) private readonly userAuthService: UserAuthService,
 		@Inject(TokenUtilService) private readonly tokenUtilService: TokenUtilService,
+		@Inject(VerificationService) private readonly verificationService: VerificationService,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
-		@Inject(VerificationTokenService) private readonly verificationTokenService: VerificationTokenService,
 	) {}
 
 	public async basicLogin(loginRequestDto: LoginRequestDto): Promise<string> {
 		const user: UserEntity = await this.userAuthService.validateUserWithCredentials(loginRequestDto);
 
-		const userIsVerified: boolean = await this.verificationTokenService.verifyUserEmailIsVerified(user);
+		const userIsVerified: boolean = await this.verificationService.verifyUserEmailIsVerified(user);
 		if (!userIsVerified) throw new EmailNotVerifiedException();
 
 		return this.tokenUtilService.createAuthenticationToken(user);
