@@ -1,10 +1,11 @@
-import { Body, Path } from "@/backend-core/request-processor/decorators";
+import { Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { IndustryEntity } from "@/backend/industry/db/entities";
 import { CreateIndustryRequestDto } from "@/backend/industry/dto/create-industry";
 import { UpdateIndustryRequestDto } from "@/backend/industry/dto/update-industry";
 import { IndustryService } from "@/backend/industry/services";
 
+@Controller
 export class IndustryController {
 	public constructor(
 		// Dependencies
