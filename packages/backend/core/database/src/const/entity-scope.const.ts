@@ -9,4 +9,7 @@ export const EntityScopeConst = {
 	isActive: "isActive",
 	withoutTimestamps: "withoutTimestamps",
 	withoutSelection: "withoutSelection",
+
+	// Column Selection
+	withColumns: "withColumns",
 };

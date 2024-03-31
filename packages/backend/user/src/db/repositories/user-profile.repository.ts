@@ -1,6 +1,7 @@
+import { IndustryEntity } from "@/backend/industry/db/entities";
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
-import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
+import type { IEntityScope, IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Transaction } from "sequelize";
 import type { UserEntity } from "@/backend/user/db/entities";
 import { UserProfileEntity } from "@/backend/user/db/entities";
@@ -10,12 +11,12 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		super(UserProfileEntity);
 	}
 
-	public getUserProfileList(userEntity: UserEntity): Promise<Array<UserProfileEntity>> {
+	public getUserProfileList(userEntity: UserEntity, scopes: IEntityScope): Promise<Array<UserProfileEntity>> {
 		return this.findAll({
 			findOptions: {
 				where: { userProfileUserId: userEntity.userId },
 			},
-			scopes: [EntityScopeConst.withoutTimestamps],
+			scopes,
 		});
 	}
 
@@ -31,8 +32,20 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		});
 	}
 
-	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
-		return this.resolveOneOrFail(userProfileUuid, [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps]);
+	public getUserProfile(userProfileUuid: string, userProfileScopes: IEntityScope, industryScopes: IEntityScope): Promise<UserProfileEntity> {
+		return this.findOneOrFail({
+			findOptions: {
+				where: { userProfileUuid },
+				include: [
+					{
+						as: "userProfileIndustry",
+						model: IndustryEntity.applyScopes(industryScopes),
+						required: true,
+					},
+				],
+			},
+			scopes: userProfileScopes,
+		});
 	}
 
 	public createUserProfile(valuesToCreate: Partial<IEntityTableColumnProperties<UserProfileEntity>>, transaction: Transaction): Promise<UserProfileEntity> {

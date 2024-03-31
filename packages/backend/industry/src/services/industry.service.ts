@@ -1,6 +1,6 @@
-import { DbTokenConst } from "@/backend-core/database/const";
+import { DbTokenConst, EntityScopeConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
-import type { ITransactionStore } from "@/backend-core/database/types";
+import type { IEntityScope, ITransactionStore } from "@/backend-core/database/types";
 import { Inject } from "iocc";
 import type { IndustryEntity } from "@/backend/industry/db/entities";
 import { IndustryRepository } from "@/backend/industry/db/repositories";
@@ -16,11 +16,15 @@ export class IndustryService {
 	) {}
 
 	public getIndustryList(): Promise<Array<IndustryEntity>> {
-		return this.industryRepository.getIndustryList();
+		const scopes: IEntityScope = [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps];
+
+		return this.industryRepository.getIndustryList(scopes);
 	}
 
 	public getIndustry(industryUuid: string): Promise<IndustryEntity> {
-		return this.industryRepository.getIndustry(industryUuid);
+		const scopes: IEntityScope = [EntityScopeConst.withoutTimestamps];
+
+		return this.industryRepository.getIndustry(industryUuid, scopes);
 	}
 
 	public createIndustry(createIndustryRequestDto: CreateIndustryRequestDto): Promise<IndustryEntity> {

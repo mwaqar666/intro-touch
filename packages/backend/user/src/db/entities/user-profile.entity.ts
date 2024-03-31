@@ -89,7 +89,7 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 		targetKey: "industryId",
 		foreignKey: "userProfileIndustryId",
 	})
-	public userProfileIndustry: IndustryEntity;
+	public userProfileIndustry: Nullable<IndustryEntity>;
 
 	@HasMany(() => PlatformProfileEntity, {
 		as: "userProfilePlatformProfiles",

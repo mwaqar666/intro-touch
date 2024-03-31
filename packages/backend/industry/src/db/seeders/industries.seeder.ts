@@ -5,7 +5,6 @@ import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-
 import { Inject } from "iocc";
 import type { IndustryEntity } from "@/backend/industry/db/entities";
 import { IndustryRepository } from "@/backend/industry/db/repositories";
-import { Industry } from "@/backend/industry/enums";
 
 export class IndustriesSeeder implements ISeeder {
 	public timestamp = 1688975570960;
@@ -20,9 +19,30 @@ export class IndustriesSeeder implements ISeeder {
 	public async seed(): Promise<void> {
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
-				const industries: Array<Industry> = Object.values(Industry);
+				const industries: Array<string> = [
+					"Technology",
+					"Healthcare",
+					"Education",
+					"Finance",
+					"Retail",
+					"Manufacturing",
+					"Automotive",
+					"Entertainment",
+					"Food & Beverage",
+					"Travel & Tourism",
+					"Real Estate",
+					"Fashion & Apparel",
+					"Energy & Utilities",
+					"Construction",
+					"Media & Communication",
+					"Agriculture",
+					"Transportation & Logistics",
+					"Hospitality",
+					"Legal Services",
+					"Non-profit & Philanthropy",
+				];
 
-				const industriesToCreate: Array<Partial<IEntityTableColumnProperties<IndustryEntity>>> = industries.map((industry: Industry): Partial<IEntityTableColumnProperties<IndustryEntity>> => {
+				const industriesToCreate: Array<Partial<IEntityTableColumnProperties<IndustryEntity>>> = industries.map((industry: string): Partial<IEntityTableColumnProperties<IndustryEntity>> => {
 					return {
 						industryName: industry,
 					};

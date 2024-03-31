@@ -1,7 +1,7 @@
 import type { UploadedFile } from "@/backend-core/request-processor/dto";
 import { IsUnique, IsValidFile } from "@/backend-core/validation/validators";
 import type { Optional } from "@/stacks/types";
-import { IsBoolean, IsEmail, IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
+import { IsBoolean, IsEmail, IsOptional, IsString, IsUrl, IsUUID, MaxLength } from "class-validator";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
 
 export class UpdateUserProfileRequestDto {
@@ -33,6 +33,10 @@ export class UpdateUserProfileRequestDto {
 	@IsString()
 	@IsOptional()
 	public userProfileEmail: Optional<string>;
+
+	@IsUUID()
+	@IsOptional()
+	public userProfileIndustryUuid: Optional<string>;
 
 	@IsString()
 	@IsOptional()

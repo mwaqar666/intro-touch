@@ -1,4 +1,5 @@
 import type { Delegate } from "@/stacks/types";
+import type { FindOptions } from "sequelize";
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IAvailableScopes, IEntityType } from "@/backend-core/database/types";
 
@@ -18,7 +19,8 @@ export class ScopeFactory<TEntity extends BaseEntity<TEntity>> {
 			.prepareUuidKeyScopes()
 			.prepareTimestampsScopes()
 			.prepareWithoutSelectionScope()
-			.prepareActiveColumnScope();
+			.prepareActiveColumnScope()
+			.prepareColumnInclusionScope();
 
 		return scopesInstance.scopes;
 	}
@@ -64,6 +66,14 @@ export class ScopeFactory<TEntity extends BaseEntity<TEntity>> {
 
 	private prepareActiveColumnScope(): ScopeFactory<TEntity> {
 		if (this.model.isActiveColumnName) this.scopes["isActive"] = { where: { [this.model.isActiveColumnName]: true } };
+
+		return this;
+	}
+
+	private prepareColumnInclusionScope(): ScopeFactory<TEntity> {
+		this.scopes["withColumns"] = (...columnsToInclude: Array<string>): FindOptions => ({
+			attributes: [this.model.primaryKeyAttribute, this.model.uuidColumnName, ...columnsToInclude],
+		});
 
 		return this;
 	}
