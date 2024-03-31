@@ -31,7 +31,9 @@ export class PlatformUserProfileSeeder implements ISeeder {
 				const platformProfileData: Array<Partial<IEntityTableColumnProperties<PlatformProfileEntity>>> = [];
 
 				for (const userProfile of userProfiles) {
-					for (let platformProfileIndex: number = 0; platformProfileIndex < 3; platformProfileIndex++) {
+					const numberOfPlatformProfiles: number = Math.floor(Math.random() * 10);
+
+					for (let platformProfileIndex: number = 0; platformProfileIndex < numberOfPlatformProfiles; platformProfileIndex++) {
 						const platformIndex: number = Math.floor(Math.random() * platforms.length);
 
 						const platform: Optional<PlatformEntity> = platforms[platformIndex];

@@ -30,7 +30,9 @@ export class CustomPlatformSeeder {
 				const customPlatformData: Array<Partial<IEntityTableColumnProperties<CustomPlatformEntity>>> = [];
 
 				for (const userProfile of userProfiles) {
-					for (let customPlatformIndex: number = 0; customPlatformIndex < 3; customPlatformIndex++) {
+					const numberOfCustomPlatforms: number = Math.floor(Math.random() * 10);
+
+					for (let customPlatformIndex: number = 0; customPlatformIndex < numberOfCustomPlatforms; customPlatformIndex++) {
 						const platformCategoryIndex: number = Math.floor(Math.random() * platformCategories.length);
 
 						const platformCategory: Optional<PlatformCategoryEntity> = platformCategories[platformCategoryIndex];

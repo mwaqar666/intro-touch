@@ -31,7 +31,9 @@ export class UserProfilesSeeder implements ISeeder {
 				const userProfileData: Array<Partial<IEntityTableColumnProperties<UserProfileEntity>>> = [];
 
 				for (const user of users) {
-					for (let profileIndex: number = 0; profileIndex < 2; profileIndex++) {
+					const numberOfProfiles: number = Math.floor(Math.random() * 10);
+
+					for (let profileIndex: number = 0; profileIndex < numberOfProfiles; profileIndex++) {
 						const industryIndex: number = Math.floor(Math.random() * industries.length);
 
 						const industry: Optional<IndustryEntity> = industries[industryIndex];
