@@ -9,7 +9,7 @@ import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, Pri
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
+import { BeforeBulkCreate, BeforeBulkUpdate, BeforeValidate, BelongsTo, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserContactEntity } from "@/backend/user/db/entities/user-contact.entity";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
@@ -111,21 +111,24 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 	public userUserContacts: Array<UserContactEntity>;
 
 	@BeforeValidate
-	@BeforeUpdate
-	@BeforeCreate
 	@BeforeBulkCreate
 	@BeforeBulkUpdate
 	public static async hashPasswordHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
 		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
+			console.log("userPassword", instance.userPassword, "changed", !instance.changed("userPassword"));
+
 			if (!instance.userPassword || !instance.changed("userPassword")) return;
+
+			console.log(`Hashing plain password: ${instance.userPassword}`);
 
 			const hashService: HashService = App.container.resolve(HashService);
 			instance.userPassword = await hashService.hash(instance.userPassword);
+
+			console.log(`Hashed password: ${instance.userPassword}`);
 		});
 	}
 
 	@BeforeValidate
-	@BeforeCreate
 	@BeforeBulkCreate
 	public static async createUsernameHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
 		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
@@ -146,9 +149,11 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 
 	public async verifyPassword(plainPassword: string): Promise<boolean> {
 		const authPassword: Nullable<string> = this.getAuthPassword();
+
 		if (!authPassword) throw new PasswordMissingException();
 
 		const hashService: HashService = App.container.resolve(HashService);
+
 		return await hashService.compare(plainPassword, authPassword);
 	}
 }

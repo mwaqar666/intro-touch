@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
-import type { Delegate, Key } from "@/stacks/types";
+import type { Delegate, Key, PossiblePromise } from "@/stacks/types";
 import omit from "lodash.omit";
 import type { ModelStatic } from "sequelize";
-import { BeforeBulkCreate, BeforeCreate, BeforeValidate, Model } from "sequelize-typescript";
+import { BeforeBulkCreate, BeforeValidate, Model } from "sequelize-typescript";
 import type { IEntityScope, IEntityType } from "@/backend-core/database/types";
 
 export abstract class BaseEntity<TEntity extends BaseEntity<TEntity> = any> extends Model<TEntity> {
@@ -30,26 +30,23 @@ export abstract class BaseEntity<TEntity extends BaseEntity<TEntity> = any> exte
 	}
 
 	@BeforeValidate
-	@BeforeCreate
 	@BeforeBulkCreate
 	public static async generateUuid<TEntityStatic extends BaseEntity<TEntityStatic>>(model: TEntityStatic | Array<TEntityStatic>): Promise<void> {
 		if (!BaseEntity.uuidColumnName) return;
 
 		await BaseEntity.runHookForOneOrMoreInstances(model, async (instance: TEntityStatic): Promise<void> => {
-			const existingUuid = instance[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName];
+			const existingUuid: TEntityStatic[Key<TEntityStatic>] = instance[<Key<TEntityStatic>>BaseEntity.uuidColumnName];
 			if (existingUuid) return;
 
-			instance[<Key<BaseEntity<TEntityStatic>>>BaseEntity.uuidColumnName] = randomUUID();
+			instance[<Key<TEntityStatic>>BaseEntity.uuidColumnName] = randomUUID() as TEntityStatic[Key<TEntityStatic>];
 		});
 	}
 
-	protected static async runHookForOneOrMoreInstances<TEntityStatic extends BaseEntity<TEntityStatic>>(instanceOrInstances: TEntityStatic | Array<TEntityStatic>, callback: Delegate<[TEntityStatic], Promise<void>>): Promise<void> {
-		if (!Array.isArray(instanceOrInstances)) {
-			return await callback(instanceOrInstances);
-		}
+	protected static async runHookForOneOrMoreInstances<TEntityStatic extends BaseEntity<TEntityStatic>>(oneOrMoreInstance: TEntityStatic | Array<TEntityStatic>, callback: Delegate<[TEntityStatic], PossiblePromise<void>>): Promise<void> {
+		if (!Array.isArray(oneOrMoreInstance)) oneOrMoreInstance = [oneOrMoreInstance];
 
 		await Promise.all(
-			instanceOrInstances.map((eachInstance: TEntityStatic): Promise<void> | void => {
+			oneOrMoreInstance.map((eachInstance: TEntityStatic): Promise<void> | void => {
 				return callback(eachInstance);
 			}),
 		);
