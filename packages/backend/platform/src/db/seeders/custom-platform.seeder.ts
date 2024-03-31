@@ -3,6 +3,7 @@ import { UserProfileRepository } from "@/backend/user/db/repositories";
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
+import type { Optional } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { CustomPlatformEntity, PlatformCategoryEntity } from "@/backend/platform/db/entities";
 import { CustomPlatformRepository, PlatformCategoryRepository } from "@/backend/platform/db/repositories";
@@ -20,59 +21,58 @@ export class CustomPlatformSeeder {
 	) {}
 
 	public async seed(): Promise<void> {
-		const categories: Array<string> = ["Get in touch", "Payment links", "Social links"];
-
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
-				const platformCategories: Array<PlatformCategoryEntity> = await this.platformCategoryRepository.findAll({ findOptions: {} });
+				const platformCategories: Array<PlatformCategoryEntity> = await this.getPlatformCategories();
 
-				const nabeelBaigDefaultProfile: UserProfileEntity = await this.userProfileRepository.findOneOrFail({
-					findOptions: {
-						where: {
-							userProfileFirstName: "Nabeel",
-							userProfileLastName: "Baig",
-						},
-					},
-				});
+				const userProfiles: Array<UserProfileEntity> = await this.getUserProfiles();
 
-				const muhammadWaqarDefaultProfile: UserProfileEntity = await this.userProfileRepository.findOneOrFail({
-					findOptions: {
-						where: {
-							userProfileFirstName: "Muhammad",
-							userProfileLastName: "Waqar",
-						},
-					},
-				});
+				const customPlatformData: Array<Partial<IEntityTableColumnProperties<CustomPlatformEntity>>> = [];
 
-				const nabeelBaigCustomPlatforms: Partial<IEntityTableColumnProperties<CustomPlatformEntity>>[] = platformCategories
-					.filter((platformCategory: PlatformCategoryEntity): boolean => categories.includes(platformCategory.platformCategoryName))
-					.map((platformCategory: PlatformCategoryEntity): Partial<IEntityTableColumnProperties<CustomPlatformEntity>> => {
-						return {
-							customPlatformUserProfileId: nabeelBaigDefaultProfile.userProfileId,
-							customPlatformPlatformCategoryId: platformCategory.platformCategoryId,
-							customPlatformName: "CUSTOM-XYZ",
-							customPlatformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/google+map.png",
-							customPlatformIdentity: "CustomNabeel-Identity",
-						};
-					});
+				for (const userProfile of userProfiles) {
+					for (let customPlatformIndex: number = 0; customPlatformIndex < 3; customPlatformIndex++) {
+						const platformCategoryIndex: number = Math.floor(Math.random() * platformCategories.length);
 
-				const muhammadWaqarCustomPlatforms: Partial<IEntityTableColumnProperties<CustomPlatformEntity>>[] = platformCategories
-					.filter((platformCategory: PlatformCategoryEntity): boolean => categories.includes(platformCategory.platformCategoryName))
-					.map((platformCategory: PlatformCategoryEntity): Partial<IEntityTableColumnProperties<CustomPlatformEntity>> => {
-						return {
-							customPlatformUserProfileId: muhammadWaqarDefaultProfile.userProfileId,
-							customPlatformPlatformCategoryId: platformCategory.platformCategoryId,
-							customPlatformName: "CUSTOM-XYZ",
-							customPlatformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/google+map.png",
-							customPlatformIdentity: "CustomNabeel-Identity",
-						};
-					});
+						const platformCategory: Optional<PlatformCategoryEntity> = platformCategories[platformCategoryIndex];
+
+						if (!platformCategory) continue;
+
+						customPlatformData.push(
+							// Commented to format
+							this.generateCustomPlatform(customPlatformIndex + 1, userProfile, platformCategory),
+						);
+					}
+				}
 
 				await this.customPlatformRepository.createMany({
-					valuesToCreate: [...nabeelBaigCustomPlatforms, ...muhammadWaqarCustomPlatforms],
+					valuesToCreate: customPlatformData,
 					transaction,
 				});
 			},
 		});
+	}
+
+	private getPlatformCategories(): Promise<Array<PlatformCategoryEntity>> {
+		return this.platformCategoryRepository.findAll({
+			findOptions: {},
+		});
+	}
+
+	private getUserProfiles(): Promise<Array<UserProfileEntity>> {
+		return this.userProfileRepository.findAll({
+			findOptions: {},
+		});
+	}
+
+	private generateCustomPlatform(customPlatformNumber: number, userProfile: UserProfileEntity, platformCategory: PlatformCategoryEntity): Partial<IEntityTableColumnProperties<CustomPlatformEntity>> {
+		const formattedCustomPlatformNumber: string = customPlatformNumber.toString().padStart(2, "0");
+
+		return {
+			customPlatformUserProfileId: userProfile.userProfileId,
+			customPlatformPlatformCategoryId: platformCategory.platformCategoryId,
+			customPlatformName: `Social Media - ${formattedCustomPlatformNumber}`,
+			customPlatformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/google+map.png",
+			customPlatformIdentity: `@custom_identity_${formattedCustomPlatformNumber}`,
+		};
 	}
 }

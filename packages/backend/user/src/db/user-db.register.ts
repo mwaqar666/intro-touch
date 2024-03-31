@@ -4,25 +4,25 @@ import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityType } from "@/backend-core/database/types";
 import type { Constructable } from "@/stacks/types";
-import { UserContactEntity, UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
-import { CreateUserContactsTableMigration, CreateUserProfilesTable, CreateUsersTable } from "@/backend/user/db/migrations";
-import { UserContactRepository, UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
-import { UsersSeeder } from "@/backend/user/db/seeders";
+import * as Entities from "@/backend/user/db/entities";
+import * as Migrations from "@/backend/user/db/migrations";
+import * as Repositories from "@/backend/user/db/repositories";
+import * as Seeders from "@/backend/user/db/seeders";
 
 export class UserDbRegister extends AbstractDbRegister {
 	public override registerEntities(): Array<IEntityType> {
-		return [UserEntity, UserContactEntity, UserProfileEntity];
+		return Object.values(Entities);
 	}
 
 	public override registerMigrations(): Array<Constructable<IMigration>> {
-		return [CreateUsersTable, CreateUserContactsTableMigration, CreateUserProfilesTable];
+		return Object.values(Migrations);
 	}
 
 	public override registerRepositories(): Array<Constructable<BaseRepository>> {
-		return [UserRepository, UserContactRepository, UserProfileRepository];
+		return Object.values(Repositories);
 	}
 
 	public override registerSeeders(): Array<Constructable<ISeeder>> {
-		return [UsersSeeder];
+		return Object.values(Seeders);
 	}
 }

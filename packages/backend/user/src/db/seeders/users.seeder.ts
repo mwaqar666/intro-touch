@@ -1,10 +1,9 @@
 import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
-import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
+import type { ITransactionStore } from "@/backend-core/database/types";
 import { Inject } from "iocc";
-import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
-import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
+import { UserRepository } from "@/backend/user/db/repositories";
 
 export class UsersSeeder implements ISeeder {
 	public timestamp = 1688975570959;
@@ -13,14 +12,13 @@ export class UsersSeeder implements ISeeder {
 		// Dependencies
 
 		@Inject(UserRepository) private readonly userRepository: UserRepository,
-		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
 
 	public async seed(): Promise<void> {
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
-				const users: Array<UserEntity> = await this.userRepository.createMany({
+				await this.userRepository.createMany({
 					valuesToCreate: [
 						{
 							userFirstName: "Muhammad",
@@ -38,22 +36,6 @@ export class UsersSeeder implements ISeeder {
 							userPicture: "",
 						},
 					],
-					transaction,
-				});
-
-				const userProfileEntries: Array<Partial<IEntityTableColumnProperties<UserProfileEntity>>> = users.map((user: UserEntity): Partial<IEntityTableColumnProperties<UserProfileEntity>> => {
-					return {
-						userProfileFirstName: user.userFirstName,
-						userProfileLastName: user.userLastName,
-						userProfileEmail: user.userEmail,
-						userProfilePicture: user.userPicture,
-						userProfileUserId: user.userId,
-						userProfileIsLive: true,
-					};
-				});
-
-				await this.userProfileRepository.createMany({
-					valuesToCreate: userProfileEntries,
 					transaction,
 				});
 			},

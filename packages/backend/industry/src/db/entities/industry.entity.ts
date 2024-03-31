@@ -1,8 +1,9 @@
+import { UserProfileEntity } from "@/backend/user/db/entities";
 import { CreatedAtColumn, DeletedAtColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { Scopes, Table } from "sequelize-typescript";
+import { HasMany, Scopes, Table } from "sequelize-typescript";
 
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => IndustryEntity),
@@ -10,7 +11,7 @@ import { Scopes, Table } from "sequelize-typescript";
 @Table({ tableName: "industries" })
 export class IndustryEntity extends BaseEntity<IndustryEntity> {
 	@PrimaryKeyColumn
-	public industryId: string;
+	public industryId: number;
 
 	@UuidKeyColumn
 	public industryUuid: string;
@@ -29,4 +30,11 @@ export class IndustryEntity extends BaseEntity<IndustryEntity> {
 
 	@DeletedAtColumn
 	public industryDeletedAt: Nullable<Date>;
+
+	@HasMany(() => UserProfileEntity, {
+		as: "industryUserProfiles",
+		sourceKey: "industryId",
+		foreignKey: "userProfileIndustryId",
+	})
+	public industryUserProfiles: Array<IndustryEntity>;
 }

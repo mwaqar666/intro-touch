@@ -4,6 +4,7 @@ import { DbTokenConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
 import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
+import type { Optional } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { PlatformProfileRepository, PlatformRepository } from "@/backend/platform/db/repositories";
@@ -21,55 +22,56 @@ export class PlatformUserProfileSeeder implements ISeeder {
 	) {}
 
 	public async seed(): Promise<void> {
-		const nabeelBaigPlatformNames: Array<string> = ["Call", "Calendly", "Mail", "Paypal", "CashApp"];
-		const muhammadWaqarPlatformNames: Array<string> = ["Message", "Calendly", "Maps", "Venmo", "Paypal"];
-
 		await this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<void> => {
-				const platforms: Array<PlatformEntity> = await this.platformRepository.findAll({ findOptions: {} });
+				const platforms: Array<PlatformEntity> = await this.getPlatforms();
 
-				const nabeelBaigDefaultProfile: UserProfileEntity = await this.userProfileRepository.findOneOrFail({
-					findOptions: {
-						where: {
-							userProfileFirstName: "Nabeel",
-							userProfileLastName: "Baig",
-						},
-					},
-				});
-				const muhammadWaqarDefaultProfile: UserProfileEntity = await this.userProfileRepository.findOneOrFail({
-					findOptions: {
-						where: {
-							userProfileFirstName: "Muhammad",
-							userProfileLastName: "Waqar",
-						},
-					},
-				});
+				const userProfiles: Array<UserProfileEntity> = await this.getUserProfiles();
 
-				const nabeelBaigPlatforms: Array<Partial<IEntityTableColumnProperties<PlatformProfileEntity>>> = platforms
-					.filter((platform: PlatformEntity): boolean => nabeelBaigPlatformNames.includes(platform.platformName))
-					.map((platform: PlatformEntity): Partial<IEntityTableColumnProperties<PlatformProfileEntity>> => {
-						return {
-							platformProfileProfileId: nabeelBaigDefaultProfile.userProfileId,
-							platformProfilePlatformId: platform.platformId,
-							platformProfileIdentity: "XYZ",
-						};
-					});
+				const platformProfileData: Array<Partial<IEntityTableColumnProperties<PlatformProfileEntity>>> = [];
 
-				const muhammadWaqarPlatforms: Array<Partial<IEntityTableColumnProperties<PlatformProfileEntity>>> = platforms
-					.filter((platform: PlatformEntity): boolean => muhammadWaqarPlatformNames.includes(platform.platformName))
-					.map((platform: PlatformEntity): Partial<IEntityTableColumnProperties<PlatformProfileEntity>> => {
-						return {
-							platformProfileProfileId: muhammadWaqarDefaultProfile.userProfileId,
-							platformProfilePlatformId: platform.platformId,
-							platformProfileIdentity: "XYZ",
-						};
-					});
+				for (const userProfile of userProfiles) {
+					for (let platformProfileIndex: number = 0; platformProfileIndex < 3; platformProfileIndex++) {
+						const platformIndex: number = Math.floor(Math.random() * platforms.length);
+
+						const platform: Optional<PlatformEntity> = platforms[platformIndex];
+
+						if (!platform) continue;
+
+						platformProfileData.push(
+							// Commented to format
+							this.generatePlatformProfile(platformProfileIndex + 1, userProfile, platform),
+						);
+					}
+				}
 
 				await this.platformProfileRepository.createMany({
-					valuesToCreate: [...nabeelBaigPlatforms, ...muhammadWaqarPlatforms],
+					valuesToCreate: platformProfileData,
 					transaction,
 				});
 			},
 		});
+	}
+
+	private getPlatforms(): Promise<Array<PlatformEntity>> {
+		return this.platformRepository.findAll({
+			findOptions: {},
+		});
+	}
+
+	private getUserProfiles(): Promise<Array<UserProfileEntity>> {
+		return this.userProfileRepository.findAll({
+			findOptions: {},
+		});
+	}
+
+	private generatePlatformProfile(platformProfileNumber: number, userProfile: UserProfileEntity, platform: PlatformEntity): Partial<IEntityTableColumnProperties<PlatformProfileEntity>> {
+		const formattedPlatformProfileNumber: string = platformProfileNumber.toString().padStart(2, "0");
+
+		return {
+			platformProfileProfileId: userProfile.userProfileId,
+			platformProfilePlatformId: platform.platformId,
+			platformProfileIdentity: `@some_identity_${formattedPlatformProfileNumber}`,
+		};
 	}
 }

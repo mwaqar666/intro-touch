@@ -3,7 +3,7 @@ import { CreatedAtColumn, DateColumn, DefaultUuid, ForeignKeyColumn, IntegerColu
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import { BelongsTo, Scopes, Table } from "sequelize-typescript";
-import type { TokenType } from "@/backend-core/authentication/db/enums";
+import type { TokenType } from "@/backend-core/authentication/enums";
 
 @Scopes(() => ({
 	...ScopeFactory.commonScopes(() => VerificationTokenEntity),

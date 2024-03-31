@@ -2,7 +2,7 @@ import { AbstractMigration } from "@/backend-core/database/abstract";
 import { DataType } from "sequelize-typescript";
 
 export class CreateUserContactsTableMigration extends AbstractMigration {
-	public timestamp = 1687791044253;
+	public timestamp = 1711629070801;
 
 	public async up(): Promise<void> {
 		await this.queryInterface.createTable("userContacts", {

@@ -8,7 +8,7 @@ import { IndustryRepository } from "@/backend/industry/db/repositories";
 import { Industry } from "@/backend/industry/enums";
 
 export class IndustriesSeeder implements ISeeder {
-	public timestamp = 1711629923929;
+	public timestamp = 1688975570960;
 
 	public constructor(
 		// Dependencies

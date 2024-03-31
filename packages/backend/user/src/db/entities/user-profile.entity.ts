@@ -1,3 +1,4 @@
+import { IndustryEntity } from "@/backend/industry/db/entities";
 import { CustomPlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { BooleanColumn, CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, TextColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
@@ -19,6 +20,9 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 
 	@ForeignKeyColumn(() => UserEntity)
 	public readonly userProfileUserId: number;
+
+	@ForeignKeyColumn(() => IndustryEntity, true)
+	public userProfileIndustryId: Nullable<number>;
 
 	@StringColumn({ length: 50 })
 	public userProfileFirstName: string;
@@ -79,6 +83,13 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 		foreignKey: "userProfileUserId",
 	})
 	public userProfileUser: UserEntity;
+
+	@BelongsTo(() => IndustryEntity, {
+		as: "userProfileIndustry",
+		targetKey: "industryId",
+		foreignKey: "userProfileIndustryId",
+	})
+	public userProfileIndustry: IndustryEntity;
 
 	@HasMany(() => PlatformProfileEntity, {
 		as: "userProfilePlatformProfiles",

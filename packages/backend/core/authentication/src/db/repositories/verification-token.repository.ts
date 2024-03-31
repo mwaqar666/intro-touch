@@ -4,7 +4,7 @@ import ms from "ms";
 import type { Transaction } from "sequelize";
 import { Op } from "sequelize";
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
-import type { TokenType } from "@/backend-core/authentication/db/enums";
+import type { TokenType } from "@/backend-core/authentication/enums";
 import type { IAuthenticatableEntity } from "@/backend-core/authentication/types";
 
 export class VerificationTokenRepository extends BaseRepository<VerificationTokenEntity> {
