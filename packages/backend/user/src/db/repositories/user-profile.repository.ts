@@ -30,7 +30,7 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 					{
 						as: "userProfileIndustry",
 						model: IndustryEntity.applyScopes(industryScopes),
-						required: true,
+						required: false,
 					},
 				],
 			},
@@ -46,7 +46,7 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 					{
 						as: "userProfileIndustry",
 						model: IndustryEntity.applyScopes(industryScopes),
-						required: true,
+						required: false,
 					},
 				],
 			},
