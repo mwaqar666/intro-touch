@@ -1,8 +1,8 @@
 import type { UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
-import { DbTokenConst } from "@/backend-core/database/const";
+import { DbTokenConst, EntityScopeConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
-import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
+import type { IEntityScope, IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
 import { Inject } from "iocc";
 import type { CustomPlatformEntity, PlatformEntity, PlatformProfileEntity } from "@/backend/platform/db/entities";
 import { CustomPlatformRepository, PlatformProfileRepository, PlatformRepository } from "@/backend/platform/db/repositories";
@@ -36,7 +36,10 @@ export class PlatformProfileService {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<PlatformProfileEntity> => {
 				const platform: PlatformEntity = await this.platformRepository.getPlatform(platformUuid);
-				const userProfile: UserProfileEntity = await this.userProfileRepository.getUserProfile(userProfileUuid);
+
+				const industryScopes: IEntityScope = [{ method: [EntityScopeConst.withColumns, "industryName"] }];
+				const userProfileScopes: IEntityScope = [EntityScopeConst.withoutTimestamps];
+				const userProfile: UserProfileEntity = await this.userProfileRepository.getUserProfile(userProfileUuid, userProfileScopes, industryScopes);
 
 				const valuesToCreate: Partial<IEntityTableColumnProperties<PlatformProfileEntity>> = {
 					platformProfileProfileId: userProfile.userProfileId,

@@ -1,6 +1,6 @@
 import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
-import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
+import type { IEntityScope, IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Transaction } from "sequelize";
 import { UserEntity } from "@/backend/user/db/entities";
 
@@ -16,12 +16,12 @@ export class UserRepository extends BaseRepository<UserEntity> {
 		});
 	}
 
-	public async findOrFailActiveUserByUsername(userUsername: string): Promise<UserEntity> {
+	public async findOrFailActiveUserByUsername(userUsername: string, userScopes: IEntityScope): Promise<UserEntity> {
 		return this.findOneOrFail({
 			findOptions: {
 				where: { userUsername },
 			},
-			scopes: [EntityScopeConst.isActive],
+			scopes: userScopes,
 		});
 	}
 

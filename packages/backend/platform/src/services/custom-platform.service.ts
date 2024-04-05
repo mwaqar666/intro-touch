@@ -2,9 +2,9 @@ import type { UserProfileEntity } from "@/backend/user/db/entities";
 import { UserProfileRepository } from "@/backend/user/db/repositories";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
-import { DbTokenConst } from "@/backend-core/database/const";
+import { DbTokenConst, EntityScopeConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
-import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
+import type { IEntityScope, IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
 import { UploadedFile } from "@/backend-core/request-processor/dto";
 import { S3Bucket, S3BucketConst } from "@/backend-core/storage/config";
 import { StorageTokenConst } from "@/backend-core/storage/const";
@@ -40,7 +40,10 @@ export class CustomPlatformService {
 	public createCustomPlatform({ userProfileUuid, platformCategoryUuid }: CreateCustomPlatformRequestPathDto, createCustomPlatformRequestBodyDto: CreateCustomPlatformRequestBodyDto): Promise<CustomPlatformEntity> {
 		return this.transactionManager.executeTransaction({
 			operation: async ({ transaction }: ITransactionStore): Promise<CustomPlatformEntity> => {
-				const userProfile: UserProfileEntity = await this.userProfileRepository.getUserProfile(userProfileUuid);
+				const industryScopes: IEntityScope = [{ method: [EntityScopeConst.withColumns, "industryName"] }];
+				const userProfileScopes: IEntityScope = [EntityScopeConst.withoutTimestamps];
+				const userProfile: UserProfileEntity = await this.userProfileRepository.getUserProfile(userProfileUuid, userProfileScopes, industryScopes);
+
 				const platformCategory: PlatformCategoryEntity = await this.platformCategoryRepository.getPlatformCategory(platformCategoryUuid);
 
 				const { customPlatformIcon: customPlatformIconFile, ...customPlatformValues }: CreateCustomPlatformRequestBodyDto = createCustomPlatformRequestBodyDto;

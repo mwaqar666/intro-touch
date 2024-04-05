@@ -1,7 +1,7 @@
 import { HashService } from "@/backend-core/authentication/services/crypt";
-import { DbTokenConst } from "@/backend-core/database/const";
+import { DbTokenConst, EntityScopeConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
-import type { IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
+import type { IEntityScope, IEntityTableColumnProperties, ITransactionStore } from "@/backend-core/database/types";
 import { BadRequestException } from "@/backend-core/request-processor/exceptions";
 import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
@@ -19,9 +19,11 @@ export class UserService {
 	) {}
 
 	public async getUserWithLiveProfile(userUsername: string): Promise<UserEntity> {
-		const userEntity: UserEntity = await this.userRepository.findOrFailActiveUserByUsername(userUsername);
+		const userEntity: UserEntity = await this.userRepository.findOrFailActiveUserByUsername(userUsername, [EntityScopeConst.withoutTimestamps]);
 
-		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(userEntity);
+		const industryScopes: IEntityScope = [{ method: [EntityScopeConst.withColumns, "industryName"] }];
+		const userProfileScopes: IEntityScope = [EntityScopeConst.withoutTimestamps];
+		const userLiveProfile: UserProfileEntity = await this.userProfileRepository.getUserLiveProfile(userEntity, userProfileScopes, industryScopes);
 
 		userEntity.setDataValue("userLiveUserProfile", userLiveProfile);
 

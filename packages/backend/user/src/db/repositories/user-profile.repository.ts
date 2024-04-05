@@ -1,5 +1,4 @@
 import { IndustryEntity } from "@/backend/industry/db/entities";
-import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityScope, IEntityTableColumnProperties } from "@/backend-core/database/types";
 import type { Transaction } from "sequelize";
@@ -20,15 +19,22 @@ export class UserProfileRepository extends BaseRepository<UserProfileEntity> {
 		});
 	}
 
-	public getUserLiveProfile(userEntity: UserEntity): Promise<UserProfileEntity> {
+	public getUserLiveProfile(userEntity: UserEntity, userProfileScopes: IEntityScope, industryScopes: IEntityScope): Promise<UserProfileEntity> {
 		return this.findOneOrFail({
 			findOptions: {
 				where: {
 					userProfileIsLive: true,
 					userProfileUserId: userEntity.userId,
 				},
+				include: [
+					{
+						as: "userProfileIndustry",
+						model: IndustryEntity.applyScopes(industryScopes),
+						required: true,
+					},
+				],
 			},
-			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
+			scopes: userProfileScopes,
 		});
 	}
 
