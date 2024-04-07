@@ -52,6 +52,18 @@ export class PlatformsSeeder implements ISeeder {
 						platformName: "Mail",
 						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/apple_mail.png",
 					},
+					{
+						platformName: "Behance",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/behance.png",
+					},
+					{
+						platformName: "Contact",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/contact.png",
+					},
+					{
+						platformName: "WhatsApp",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/whatsapp.png",
+					},
 				],
 			},
 			{
@@ -69,11 +81,48 @@ export class PlatformsSeeder implements ISeeder {
 						platformName: "CashApp",
 						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/cashapp.png",
 					},
+					{
+						platformName: "ApplePay",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/applepay.png",
+					},
 				],
 			},
 			{
 				platformCategoryName: "Social links",
-				platformCategoryPlatforms: [],
+				platformCategoryPlatforms: [
+					{
+						platformName: "Facebook",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/facebook.png",
+					},
+					{
+						platformName: "Instagram",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/instagram.png",
+					},
+					{
+						platformName: "LinkedIn",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/linkedin.png",
+					},
+					{
+						platformName: "Twitter",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/twitter.png",
+					},
+					{
+						platformName: "YouTube",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/youtube.png",
+					},
+					{
+						platformName: "TikTok",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/tiktok.png",
+					},
+					{
+						platformName: "SnapChat",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/snapchat.png",
+					},
+					{
+						platformName: "Pinterest",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/pinterest.png",
+					},
+				],
 			},
 		];
 
