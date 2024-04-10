@@ -1,4 +1,3 @@
-import type { BaseEntity } from "@/backend-core/database/entity";
 import type { IDbRegister } from "@/backend-core/database/interface/db/db-register";
 import type { IMigration } from "@/backend-core/database/interface/migration";
 import type { ISeeder } from "@/backend-core/database/interface/seeder";
@@ -12,7 +11,7 @@ export interface IDbManager {
 
 	resolveMigrations(): Array<IMigration>;
 
-	resolveRepositories(): Array<BaseRepository<BaseEntity<any>>>;
+	resolveRepositories(): Array<BaseRepository>;
 
 	resolveSeeders(): Array<ISeeder>;
 }

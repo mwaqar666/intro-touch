@@ -7,7 +7,7 @@
     "lodash.omit": "^4.5.0",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.1",
+    "sequelize": "^6.36.0",
     "sequelize-typescript": "^2.1.6",
     "umzug": "^3.7.0"
   },
