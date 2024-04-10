@@ -115,16 +115,10 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 	@BeforeBulkUpdate
 	public static async hashPasswordHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
 		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
-			console.log("userPassword", instance.userPassword, "changed", !instance.changed("userPassword"));
-
 			if (!instance.userPassword || !instance.changed("userPassword")) return;
-
-			console.log(`Hashing plain password: ${instance.userPassword}`);
 
 			const hashService: HashService = App.container.resolve(HashService);
 			instance.userPassword = await hashService.hash(instance.userPassword);
-
-			console.log(`Hashed password: ${instance.userPassword}`);
 		});
 	}
 

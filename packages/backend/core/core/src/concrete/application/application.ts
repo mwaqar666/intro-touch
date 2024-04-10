@@ -61,26 +61,61 @@ export class Application implements IApplication {
 		const moduleInstance: IModule = new appModule();
 
 		moduleInstance.setContainer(this.container);
-		await moduleInstance.register();
+
+		try {
+			await moduleInstance.register();
+		} catch (exception) {
+			this.logHookErrors(moduleInstance, "registering", exception);
+		}
 
 		this.registeredModules.push(moduleInstance);
 		this.registeredModuleNames.push(appModule.name);
 	}
 
 	private async runRegisteredModulesBootCycle(): Promise<void> {
-		for (const registeredModule of this.registeredModules) await registeredModule.preBoot();
+		for (const registeredModule of this.registeredModules) {
+			try {
+				await registeredModule.preBoot();
+			} catch (exception) {
+				this.logHookErrors(registeredModule, "pre-booting", exception);
+			}
+		}
 
-		for (const registeredModule of this.registeredModules) await registeredModule.boot();
+		for (const registeredModule of this.registeredModules) {
+			try {
+				await registeredModule.boot();
+			} catch (exception) {
+				this.logHookErrors(registeredModule, "booting", exception);
+			}
+		}
 
-		for (const registeredModule of this.registeredModules) await registeredModule.postBoot();
+		for (const registeredModule of this.registeredModules) {
+			try {
+				await registeredModule.postBoot();
+			} catch (exception) {
+				this.logHookErrors(registeredModule, "post-booting", exception);
+			}
+		}
 	}
 
 	private async runRegisteredModuleRunCycle<T>(executionContext: Delegate<[IContainer], Promise<T>>): Promise<T> {
-		for (const registeredModule of this.registeredModules) await registeredModule.preRun();
+		for (const registeredModule of this.registeredModules) {
+			try {
+				await registeredModule.preRun();
+			} catch (exception) {
+				this.logHookErrors(registeredModule, "pre-running", exception);
+			}
+		}
 
 		const result: T = await executionContext(this.container);
 
-		for (const registeredModule of this.registeredModules) await registeredModule.postRun();
+		for (const registeredModule of this.registeredModules) {
+			try {
+				await registeredModule.postRun();
+			} catch (exception) {
+				this.logHookErrors(registeredModule, "post-running", exception);
+			}
+		}
 
 		return result;
 	}
@@ -102,5 +137,15 @@ export class Application implements IApplication {
 		if (!modulePresent) return;
 
 		throw new InternalServerException(`Module "${appModule.name}" has already been registered`);
+	}
+
+	private logHookErrors(appModule: IModule, operation: string, exception: unknown): void {
+		console.log("\n");
+		console.log(`====================================================================================================`);
+		console.log(`Exception occurred in ${operation} module: [${appModule.constructor.name}]`);
+		console.log(`====================================================================================================`);
+		console.log(exception);
+		console.log(`====================================================================================================`);
+		console.log("\n");
 	}
 }

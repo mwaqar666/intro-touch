@@ -22,7 +22,7 @@ export class AuthEntityResolver implements IAuthEntityResolver {
 		const session: SessionValue = useSession();
 		if (session.type !== "user") return null;
 
-		const authEntity: Nullable<IAuthenticatableEntity> = await this.authProvider.retrieveByUuid(session.properties.userUuid, [EntityScopeConst.isActive]);
+		const authEntity: Nullable<IAuthenticatableEntity> = await this.authProvider.retrieveByUuid(session.properties.userUuid, { scopes: [EntityScopeConst.isActive] });
 		if (!authEntity) return null;
 
 		this.authEntity = authEntity;
