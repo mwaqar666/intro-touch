@@ -1,3 +1,4 @@
+import { AnalyticsModule } from "@/backend/analytics/module";
 import { IndustryModule } from "@/backend/industry/module";
 import { PlatformModule } from "@/backend/platform/module";
 import { UserModule } from "@/backend/user/module";
@@ -31,6 +32,7 @@ export class ModuleRegister {
 			UserModule,
 			PlatformModule,
 			IndustryModule,
+			AnalyticsModule,
 		];
 	}
 }
