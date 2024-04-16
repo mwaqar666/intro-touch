@@ -11,7 +11,7 @@ import type { Nullable } from "@/stacks/types";
 import { Inject } from "iocc";
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
 import type { IAuthProvider } from "@/backend-core/authentication/interface";
-import { TokenUtilService } from "@/backend-core/authentication/utils";
+import { TokenUtilService } from "@/backend-core/authentication/services/utils";
 
 export class SocialAuthService {
 	public constructor(

@@ -25,11 +25,9 @@ export class UserRepository extends BaseRepository<UserEntity> {
 		});
 	}
 
-	public resetPassword(userEntity: UserEntity, valuesToUpdate: Partial<IEntityTableColumnProperties<UserEntity>>, transaction: Transaction): Promise<UserEntity> {
+	public async updateUser(userUuid: string, valuesToUpdate: Partial<IEntityTableColumnProperties<UserEntity>>, transaction: Transaction): Promise<UserEntity> {
 		return this.updateOne({
-			findOptions: {
-				where: { userId: userEntity.userId },
-			},
+			entity: userUuid,
 			valuesToUpdate,
 			transaction,
 		});

@@ -2,21 +2,21 @@ import type { Key, Optional } from "@/stacks/types";
 import type { ValidationArguments, ValidationOptions, ValidatorConstraintInterface } from "class-validator";
 import { registerDecorator, ValidatorConstraint } from "class-validator";
 
-export function IsSameAsField(fieldName: string, validationOptions?: ValidationOptions) {
+export function MatchField(fieldName: string, validationOptions?: ValidationOptions) {
 	return function (object: object, propertyName: string): void {
 		registerDecorator({
 			target: object.constructor,
 			propertyName,
-			options: { message: `${propertyName}: "$value" must be same as "${fieldName}"`, ...validationOptions },
+			options: { message: `${propertyName}: "$value" must match "${fieldName}"`, ...validationOptions },
 			constraints: [fieldName],
-			validator: IsSameAsFieldConstraint,
+			validator: MatchFieldConstraint,
 		});
 	};
 }
 
-@ValidatorConstraint({ async: true })
-export class IsSameAsFieldConstraint implements ValidatorConstraintInterface {
-	public async validate(value: Optional<string>, args: ValidationArguments): Promise<boolean> {
+@ValidatorConstraint()
+export class MatchFieldConstraint implements ValidatorConstraintInterface {
+	public validate(value: Optional<string>, args: ValidationArguments): boolean {
 		if (!value) return false;
 
 		const [fieldName]: [string] = <[string]>args.constraints;
