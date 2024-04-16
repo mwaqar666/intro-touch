@@ -66,6 +66,27 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/backend/analytics:
+    dependencies:
+      class-validator:
+        specifier: ^0.14.1
+        version: 0.14.1
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+      iocc:
+        specifier: ^2.2.2
+        version: 2.2.2(reflect-metadata@0.2.1)
+      reflect-metadata:
+        specifier: 0.2.1
+        version: 0.2.1
+      sequelize:
+        specifier: 6.36.0
+        version: 6.36.0(pg-hstore@2.3.4)(pg@8.11.5)
+      sequelize-typescript:
+        specifier: 2.1.6
+        version: 2.1.6(@types/node@20.12.7)(@types/validator@13.11.9)(reflect-metadata@0.2.1)(sequelize@6.36.0)
+
   packages/backend/core/authentication:
     dependencies:
       bcryptjs:
@@ -4068,6 +4089,10 @@ packages:
       es-errors: 1.3.0
       is-data-view: 1.0.1
     dev: true
+
+  /date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
+    dev: false
 
   /debounce-fn@4.0.0:
     resolution: {integrity: sha512-8pYCQiL9Xdcg0UPSD3d+0KMlOjp+KGU5EPwYddgzQ7DATsg4fuUDjQtsYLmWjnk2obnNHgV3vE2Y4jejSOJVBQ==}

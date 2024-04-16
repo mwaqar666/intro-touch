@@ -8,7 +8,7 @@ import type { CustomPlatformEntity, PlatformEntity, PlatformProfileEntity } from
 import type { UserBuiltInPlatform, UserCustomPlatform, UserOwnedPlatformResponseDto, UserOwnedPlatformTransformedResponseDto, UserPlatform } from "@/backend/platform/dto/user-owned";
 
 export class UserOwnedPlatformResponseInterceptor implements IResponseInterceptor<Request, Response<UserOwnedPlatformResponseDto>, Response<UserOwnedPlatformTransformedResponseDto>> {
-	public intercept(_request: Request, response: Response<UserOwnedPlatformResponseDto>): PossiblePromise<Response<UserOwnedPlatformTransformedResponseDto>> {
+	public intercept(_: Request, response: Response<UserOwnedPlatformResponseDto>): PossiblePromise<Response<UserOwnedPlatformTransformedResponseDto>> {
 		const userOwnedPlatforms: Nullable<UserOwnedPlatformResponseDto> = response.getData();
 
 		if (!userOwnedPlatforms) throw new InternalServerException();

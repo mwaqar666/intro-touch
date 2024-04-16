@@ -1,9 +1,10 @@
+import { PlatformAnalyticsEntity } from "@/backend/analytics/db/entities";
 import { UserProfileEntity } from "@/backend/user/db/entities";
 import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { BelongsTo, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, HasMany, Scopes, Table } from "sequelize-typescript";
 import { PlatformEntity } from "@/backend/platform/db/entities/platform.entity";
 
 @Scopes(() => ({
@@ -51,4 +52,11 @@ export class PlatformProfileEntity extends BaseEntity<PlatformProfileEntity> {
 		foreignKey: "platformProfileProfileId",
 	})
 	public platformProfileProfile: UserProfileEntity;
+
+	@HasMany(() => PlatformAnalyticsEntity, {
+		as: "platformProfilePlatformAnalytics",
+		foreignKey: "platformAnalyticsPlatformProfileId",
+		sourceKey: "platformProfileId",
+	})
+	public platformProfilePlatformAnalytics: Array<PlatformAnalyticsEntity>;
 }
