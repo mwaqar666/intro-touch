@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
-import { PasswordMissingException } from "@/backend-core/authentication/exceptions";
+import { InvalidCredentialsException, PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import type { IAuthenticatable } from "@/backend-core/authentication/interface";
 import { HashService } from "@/backend-core/authentication/services/crypt";
 import { UserRoleEntity } from "@/backend-core/authorization/db/entities";
@@ -9,7 +9,7 @@ import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, Pri
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
 import type { Nullable } from "@/stacks/types";
-import { BeforeBulkCreate, BeforeBulkUpdate, BeforeValidate, BelongsTo, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
+import { BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserContactEntity } from "@/backend/user/db/entities/user-contact.entity";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
 
@@ -110,7 +110,8 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 	})
 	public userUserContacts: Array<UserContactEntity>;
 
-	@BeforeValidate
+	@BeforeCreate
+	@BeforeUpdate
 	@BeforeBulkCreate
 	@BeforeBulkUpdate
 	public static async hashPasswordHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
@@ -126,6 +127,8 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 	@BeforeBulkCreate
 	public static async createUsernameHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
 		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
+			if (instance.userUsername) return;
+
 			const firstName: string = instance.userFirstName.trim().toLowerCase();
 			const lastName: string = instance.userLastName.trim().toLowerCase();
 
@@ -133,21 +136,49 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 		});
 	}
 
+	public getAuthPrimaryKeyName(): string {
+		return "userId";
+	}
+
 	public getAuthPrimaryKey(): number {
 		return this.userId;
+	}
+
+	public getAuthUuidIdentifierName(): string {
+		return "userUuid";
+	}
+
+	public getAuthUuidIdentifier(): string {
+		return this.userUuid;
+	}
+
+	public getAuthEmailIdentifierName(): string {
+		return "userEmail";
+	}
+
+	public getAuthEmailIdentifier(): string {
+		return this.userEmail;
+	}
+
+	public getAuthPasswordName(): string {
+		return "userPassword";
 	}
 
 	public getAuthPassword(): Nullable<string> {
 		return this.userPassword;
 	}
 
-	public async verifyPassword(plainPassword: string): Promise<boolean> {
+	public async verifyPassword(plainPassword: string): Promise<void> {
 		const authPassword: Nullable<string> = this.getAuthPassword();
 
 		if (!authPassword) throw new PasswordMissingException();
 
 		const hashService: HashService = App.container.resolve(HashService);
 
-		return await hashService.compare(plainPassword, authPassword);
+		const passwordVerified: boolean = await hashService.compare(plainPassword, authPassword);
+
+		if (passwordVerified) return;
+
+		throw new InvalidCredentialsException();
 	}
 }

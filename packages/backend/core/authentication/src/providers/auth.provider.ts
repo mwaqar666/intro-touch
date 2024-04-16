@@ -38,14 +38,14 @@ export class AuthProvider implements IAuthProvider {
 		return this.throwOrReturnAuthEntity<TAuthEntity>(authEntity, resolvedOptions.throwOnAbsence);
 	}
 
-	public retrieveByUuid<TAuthEntity extends IAuthenticatableEntity>(uuid: string, options?: INullableAuthEntityOptions): Promise<Nullable<TAuthEntity>>;
-	public retrieveByUuid<TAuthEntity extends IAuthenticatableEntity>(uuid: string, options: INonNullableAuthEntityOptions): Promise<TAuthEntity>;
-	public async retrieveByUuid<TAuthEntity extends IAuthenticatableEntity>(uuid: string, options?: IAuthEntityOptions): Promise<Nullable<TAuthEntity>> {
+	public retrieveByUuidIdentifier<TAuthEntity extends IAuthenticatableEntity>(uuidIdentifier: string, options?: INullableAuthEntityOptions): Promise<Nullable<TAuthEntity>>;
+	public retrieveByUuidIdentifier<TAuthEntity extends IAuthenticatableEntity>(uuidIdentifier: string, options: INonNullableAuthEntityOptions): Promise<TAuthEntity>;
+	public async retrieveByUuidIdentifier<TAuthEntity extends IAuthenticatableEntity>(uuidIdentifier: string, options?: IAuthEntityOptions): Promise<Nullable<TAuthEntity>> {
 		if (!this.authRepository) throw new InternalServerException("Authentication repository not configured");
 
 		const resolvedOptions: Required<IAuthEntityOptions> = this.createAuthEntityResolverOptions(options);
 
-		const authEntity: Nullable<IAuthenticatableEntity> = await this.authRepository.resolveOne(uuid, resolvedOptions.scopes);
+		const authEntity: Nullable<IAuthenticatableEntity> = await this.authRepository.resolveOne(uuidIdentifier, resolvedOptions.scopes);
 
 		return this.throwOrReturnAuthEntity<TAuthEntity>(authEntity, resolvedOptions.throwOnAbsence);
 	}

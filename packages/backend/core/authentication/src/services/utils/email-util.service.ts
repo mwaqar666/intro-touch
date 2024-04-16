@@ -14,12 +14,21 @@ export class EmailUtilService {
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 	) {}
 
-	public async sendAccountVerificationEmailToUser(userEntity: UserEntity, verificationToken: VerificationTokenEntity): Promise<void> {
+	public async sendAccountVerificationEmailToUser(userEntity: UserEntity, verificationToken: VerificationTokenEntity): Promise<boolean> {
 		const frontendConfig: IFrontendConfig = this.configResolver.resolveConfig("frontend");
 
-		await this.mailer.to(userEntity.userEmail).send("send-otp.email.html", {
+		return this.mailer.to(userEntity.userEmail).send("verify-email.email.html", {
 			name: `${userEntity.userFirstName} ${userEntity.userLastName}`,
-			verificationUrl: `${frontendConfig.url}/auth/otp?email=${userEntity.userEmail}&token=${verificationToken.tokenIdentifier}`,
+			verificationUrl: `${frontendConfig.url}/email/verify?email=${userEntity.userEmail}&token=${verificationToken.tokenIdentifier}`,
+		});
+	}
+
+	public async sendPasswordResetEmailToUser(userEntity: UserEntity, verificationToken: VerificationTokenEntity): Promise<boolean> {
+		const frontendConfig: IFrontendConfig = this.configResolver.resolveConfig("frontend");
+
+		return this.mailer.to(userEntity.userEmail).send("reset-password.email.html", {
+			name: `${userEntity.userFirstName} ${userEntity.userLastName}`,
+			verificationUrl: `${frontendConfig.url}/password/reset?email=${userEntity.userEmail}&token=${verificationToken.tokenIdentifier}`,
 		});
 	}
 }

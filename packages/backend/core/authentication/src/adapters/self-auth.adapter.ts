@@ -8,7 +8,7 @@ import type { IAuthAdapterRecord } from "@/backend-core/authentication/types";
 export class SelfAuthAdapter extends AbstractAuthAdapter {
 	public configureAuthAdapter(): IAuthAdapterRecord {
 		const selfAuthAdapter: Delegate<[], Adapter> = createAdapter(() => {
-			return async (): Promise<ApiResponse> => this.processRequest();
+			return (): Promise<ApiResponse> => this.processRequest();
 		});
 
 		return {

@@ -7,5 +7,5 @@ export interface IMailer {
 
 	bcc(...recipients: Array<string>): IMailer;
 
-	send<T extends object>(emailTemplate: string, data: T): Promise<void>;
+	send<T extends object>(emailTemplate: string, data: T): Promise<boolean>;
 }
