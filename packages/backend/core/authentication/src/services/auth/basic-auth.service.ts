@@ -5,6 +5,7 @@ import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
 import { DbTokenConst, EntityScopeConst } from "@/backend-core/database/const";
 import type { ITransactionManager } from "@/backend-core/database/interface";
+import { BadRequestException } from "@/backend-core/request-processor/exceptions";
 import { S3Bucket, S3BucketConst } from "@/backend-core/storage/config";
 import { StorageTokenConst } from "@/backend-core/storage/const";
 import type { StorageService } from "@/backend-core/storage/services";
@@ -17,7 +18,7 @@ import type { ResendRequestDto } from "@/backend-core/authentication/dto/resend"
 import type { VerifyEmailRequestDto } from "@/backend-core/authentication/dto/verify-email";
 import { TokenType } from "@/backend-core/authentication/enums";
 import { EmailNotVerifiedException } from "@/backend-core/authentication/exceptions";
-import type { IAuthProvider, IPasswordManager } from "@/backend-core/authentication/interface";
+import type { IAuthProvider } from "@/backend-core/authentication/interface";
 import { EmailUtilService, TokenUtilService } from "@/backend-core/authentication/services/utils";
 import { VerificationService } from "@/backend-core/authentication/services/verification";
 
@@ -31,7 +32,6 @@ export class BasicAuthService {
 		@Inject(VerificationService) private readonly verificationService: VerificationService,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
 		@Inject(AuthenticationTokenConst.AuthProviderToken) private readonly authProvider: IAuthProvider,
-		@Inject(AuthenticationTokenConst.PasswordManagerToken) private readonly passwordManager: IPasswordManager,
 		@Inject(ConfigTokenConst.ConfigResolverToken) private readonly configResolver: IAppConfigResolver,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,
 	) {}
@@ -56,16 +56,16 @@ export class BasicAuthService {
 				const userPictureBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.ProfilePictures);
 				const userPicture: string = userRegistrationFields.userPicture ? await this.storageService.storeFile(userPictureBucketName, userRegistrationFields.userPicture) : "";
 
+				if (userNewPassword !== userConfirmNewPassword) throw new BadRequestException("New password and confirm new password must be same");
+
 				const findOrCreateUserProps: IFindOrCreateUserProps = {
 					...userRegistrationFields,
 					userParentId: 1,
 					userPicture,
-					userPassword: null,
+					userPassword: userNewPassword,
 				};
 
 				const user: UserEntity = await this.userService.createNewUserWithProfile(findOrCreateUserProps);
-
-				await this.passwordManager.saveNewPassword(user, { userNewPassword, userConfirmNewPassword });
 
 				const verificationToken: VerificationTokenEntity = await this.verificationService.createVerificationToken(user, TokenType.EmailVerification);
 
