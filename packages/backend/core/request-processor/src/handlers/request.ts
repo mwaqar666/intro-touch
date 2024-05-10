@@ -1,13 +1,16 @@
 import { AuthenticationTokenConst } from "@/backend-core/authentication/const";
-import type { IAuthEntityResolver } from "@/backend-core/authentication/interface";
+import type { IAuthProvider } from "@/backend-core/authentication/interface";
 import type { IAuthenticatableEntity } from "@/backend-core/authentication/types";
 import { App } from "@/backend-core/core/extensions";
+import { EntityScopeConst } from "@/backend-core/database/const";
 import { RouterTokenConst } from "@/backend-core/router/const";
 import type { IPathParams, IQueryParams, IResolvedRoute, IRouteResolver } from "@/backend-core/router/interface";
 import type { ApiRequest, ApiRequestHeaders, DeepReadonly, Key, Nullable, Optional } from "@/stacks/types";
 import type { Context } from "aws-lambda";
 import { Inject } from "iocc";
 import { useEvent, useLambdaContext } from "sst/context";
+import type { SessionValue } from "sst/node/auth";
+import { useSession } from "sst/node/auth";
 import { InternalServerException } from "@/backend-core/request-processor/exceptions";
 import type { IBodyParser } from "@/backend-core/request-processor/interface";
 import { FormDataParser, JsonParser, UrlEncodedFormParser } from "@/backend-core/request-processor/parsers";
@@ -15,13 +18,14 @@ import { FormDataParser, JsonParser, UrlEncodedFormParser } from "@/backend-core
 export class Request<T extends object = object, P extends IPathParams = IPathParams, Q extends IQueryParams = IQueryParams> {
 	private _body: Nullable<T> = null;
 	private _route: IResolvedRoute<P, Q>;
+	private _authEntity: Nullable<IAuthenticatableEntity> = null;
 	private readonly awsRequest: DeepReadonly<ApiRequest>;
 
 	public constructor(
 		// Dependencies
 
 		@Inject(RouterTokenConst.RouteResolverToken) private readonly routeResolver: IRouteResolver<P, Q>,
-		@Inject(AuthenticationTokenConst.AuthEntityResolverToken) private readonly authEntityResolver: IAuthEntityResolver,
+		@Inject(AuthenticationTokenConst.AuthProviderToken) private readonly authProvider: IAuthProvider,
 	) {
 		this.awsRequest = useEvent("api");
 	}
@@ -79,7 +83,16 @@ export class Request<T extends object = object, P extends IPathParams = IPathPar
 	}
 
 	public async auth(): Promise<Nullable<IAuthenticatableEntity>> {
-		return this.authEntityResolver.resolve();
+		if (this._authEntity) return this._authEntity;
+
+		const session: SessionValue = useSession();
+		if (session.type !== "user") return null;
+
+		const authEntity: Nullable<IAuthenticatableEntity> = await this.authProvider.retrieveByUuidIdentifier(session.properties.userUuid, { scopes: [EntityScopeConst.isActive] });
+		if (!authEntity) return null;
+
+		this._authEntity = authEntity;
+		return this._authEntity;
 	}
 
 	public context(): Context {

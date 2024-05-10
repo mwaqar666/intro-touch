@@ -42,11 +42,6 @@ export class UserRouter implements IRouter {
 								handler: this.userController.getUserList,
 							},
 							{
-								path: "/change-password",
-								method: RouteMethod.Post,
-								handler: this.userController.changePassword,
-							},
-							{
 								prefix: "/contact",
 								routes: [
 									{

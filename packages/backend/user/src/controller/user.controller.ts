@@ -1,10 +1,9 @@
 import { AuthorizationTokenConst } from "@/backend-core/authorization/const";
 import { Permission } from "@/backend-core/authorization/enums";
 import type { IAuthorization } from "@/backend-core/authorization/interface";
-import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
+import { Auth, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { UserEntity } from "@/backend/user/db/entities";
-import { ChangePasswordRequestDto } from "@/backend/user/dto/change-password";
 import { UserService } from "@/backend/user/services";
 
 @Controller
@@ -23,11 +22,5 @@ export class UserController {
 
 	public async publicPreview(@Path("userUsername") userUsername: string): Promise<{ user: UserEntity }> {
 		return { user: await this.userService.getUserWithLiveProfile(userUsername) };
-	}
-
-	public async changePassword(@Auth userEntity: UserEntity, @Body(ChangePasswordRequestDto) changePasswordRequestDto: ChangePasswordRequestDto): Promise<{ user: UserEntity }> {
-		await this.authorization.can(userEntity, [Permission.ChangePassword]);
-
-		return { user: await this.userService.resetPassword(userEntity, changePasswordRequestDto) };
 	}
 }

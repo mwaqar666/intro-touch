@@ -1,9 +1,11 @@
 import type { UploadedFile } from "@/backend-core/request-processor/dto";
-import { IsValidFile } from "@/backend-core/validation/validators";
+import { IsValidFile, MatchField } from "@/backend-core/validation/validators";
 import type { Optional } from "@/stacks/types";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, MaxLength, MinLength } from "class-validator";
+import { AuthenticationConst } from "@/backend-core/authentication/const";
+import type { ISaveNewPassword } from "@/backend-core/authentication/interface";
 
-export class RegisterRequestDto {
+export class RegisterRequestDto implements ISaveNewPassword {
 	@MaxLength(50)
 	@MinLength(5)
 	@IsEmail()
@@ -28,9 +30,15 @@ export class RegisterRequestDto {
 	@IsOptional()
 	public userPicture: Optional<UploadedFile>;
 
+	@IsStrongPassword(AuthenticationConst.StrongPasswordOptions)
 	@MaxLength(50)
-	@MinLength(8)
 	@IsString()
 	@IsNotEmpty()
-	public userPassword: string;
+	public userNewPassword: string;
+
+	@MatchField("userNewPassword")
+	@MaxLength(50)
+	@IsString()
+	@IsNotEmpty()
+	public userConfirmNewPassword: string;
 }

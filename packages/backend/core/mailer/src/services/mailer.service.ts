@@ -44,11 +44,11 @@ export class MailerService implements IMailer {
 		return this;
 	}
 
-	public async send<T extends object>(emailTemplate: string, data: T): Promise<void> {
+	public async send<T extends object>(emailTemplate: string, data: T): Promise<boolean> {
 		this.sendEmailParams.Template = this.prepareEmailTemplateName(emailTemplate);
 		this.sendEmailParams.TemplateData = JSON.stringify(data);
 
-		await this.sendEmail();
+		return this.sendEmail();
 	}
 
 	private prepareSesClient(): SESClient {
@@ -73,18 +73,26 @@ export class MailerService implements IMailer {
 	}
 
 	private prepareEmailTemplateName(emailTemplate: string): string {
-		const { env }: IAppConfig = this.configResolver.resolveConfig("app");
+		const appConfig: IAppConfig = this.configResolver.resolveConfig("app");
 
 		const templateName: string = basename(emailTemplate, ".html").replace(".", "-");
 
-		return EmailConst.EmailId(env, templateName);
+		return EmailConst.EmailId(appConfig.env, templateName);
 	}
 
-	private async sendEmail(): Promise<void> {
+	private async sendEmail(): Promise<boolean> {
 		const command: SendTemplatedEmailCommand = new SendTemplatedEmailCommand(this.sendEmailParams);
 
-		await this.sesClient.send(command);
+		try {
+			await this.sesClient.send(command);
 
-		this.resetSendEmailParams();
+			this.resetSendEmailParams();
+
+			return true;
+		} catch (error) {
+			this.resetSendEmailParams();
+
+			return false;
+		}
 	}
 }

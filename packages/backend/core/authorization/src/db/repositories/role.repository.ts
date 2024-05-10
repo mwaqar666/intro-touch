@@ -3,7 +3,7 @@ import { EntityScopeConst } from "@/backend-core/database/const";
 import { BaseRepository } from "@/backend-core/database/repository";
 import type { Includeable } from "sequelize";
 import { RoleEntity, UserRoleEntity } from "@/backend-core/authorization/db/entities";
-import { Role } from "@/backend-core/authorization/enums";
+import type { Role } from "@/backend-core/authorization/enums";
 
 export class RoleRepository extends BaseRepository<RoleEntity> {
 	public constructor() {
@@ -26,12 +26,10 @@ export class RoleRepository extends BaseRepository<RoleEntity> {
 		});
 	}
 
-	public getAdminRole(): Promise<RoleEntity> {
+	public getRoleByRoleName(roleName: Role): Promise<RoleEntity> {
 		return this.findOneOrFail({
 			findOptions: {
-				where: {
-					roleName: Role.Admin,
-				},
+				where: { roleName },
 			},
 			scopes: [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps],
 		});

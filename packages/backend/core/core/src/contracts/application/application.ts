@@ -12,7 +12,7 @@ export interface IApplication {
 	initializeContainer(): void;
 
 	/**
-	 * Register the module with the application and run its register hook
+	 * Register the module with the application and run its register hook.
 	 *
 	 * @param {Constructable<IModule>} appModule Module to register
 	 * @return {Promise<void>}
@@ -21,7 +21,7 @@ export interface IApplication {
 	registerModule(appModule: Constructable<IModule>): Promise<void>;
 
 	/**
-	 * Run the modules' "boot" cycle methods
+	 * Run the modules' “boot” cycle methods
 	 *
 	 * @return {Promise<void>}
 	 * @author Muhammad Waqar
@@ -43,7 +43,7 @@ export interface IApplication {
 	/**
 	 * Run within the application context.
 	 * This will not run the registered modules' pre- and post-run hooks.
-	 * Use this when you just need to run some code that is initialized once in the app lifecycle
+	 * Use this when you just need to run some code that is initialized once in the app lifecycle.
 	 *
 	 * @template T
 	 * @param {Delegate<[IContainer], Promise<T>>} executionContext Application request

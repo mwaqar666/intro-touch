@@ -24,9 +24,9 @@ export function IsValidFile(isValidMediaOptions?: IValidMediaValidatorOptions, v
 	};
 }
 
-@ValidatorConstraint({ async: true })
+@ValidatorConstraint()
 export class IsValidFileConstraint implements ValidatorConstraintInterface {
-	public async validate(value: Optional<string | UploadedFile>, args: ValidationArguments): Promise<boolean> {
+	public validate(value: Optional<string | UploadedFile>, args: ValidationArguments): boolean {
 		if (!value) return false;
 
 		const [validationConstraints]: [Optional<IValidMediaValidatorOptions>] = args.constraints as [Optional<IValidMediaValidatorOptions>];
