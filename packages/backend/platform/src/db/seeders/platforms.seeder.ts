@@ -85,6 +85,10 @@ export class PlatformsSeeder implements ISeeder {
 						platformName: "ApplePay",
 						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/applepay.png",
 					},
+					{
+						platformName: "GooglePay",
+						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/googlepay.png",
+					},
 				],
 			},
 			{
