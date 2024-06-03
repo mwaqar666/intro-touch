@@ -4,7 +4,8 @@ import { RouterExtension } from "@/backend-core/router/extensions";
 import { UserContactController, UserController, UserProfileController } from "@/backend/user/controller";
 import { UserDbRegister } from "@/backend/user/db/user-db.register";
 import { UserRouter } from "@/backend/user/router";
-import { UserContactService, UserProfileService, UserService } from "@/backend/user/services";
+import { UserContactService, UserProfileService, UserService } from "@/backend/user/services/user";
+import { UserEmailService } from "@/backend/user/services/utils";
 
 export class UserModule extends AbstractModule {
 	public override async register(): Promise<void> {
@@ -17,6 +18,9 @@ export class UserModule extends AbstractModule {
 		this.container.registerSingleton(UserService);
 		this.container.registerSingleton(UserContactService);
 		this.container.registerSingleton(UserProfileService);
+
+		// Util Services
+		this.container.registerSingleton(UserEmailService);
 
 		// Database
 		DbExtension.registerDb(UserDbRegister);

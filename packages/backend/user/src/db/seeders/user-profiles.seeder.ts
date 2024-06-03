@@ -86,6 +86,7 @@ export class UserProfilesSeeder implements ISeeder {
 			userProfileLandPhone: "+1 (003) 9837-3864",
 			userProfileFax: "983 345 983",
 			userProfileWebsite: `https://blogspot.com/some-amazing-tips-${formattedProfileNumber}`,
+			userProfileKeywords: "Lorem ipsum dolor sit amit",
 			userProfileIsLive: profileIsLive,
 		};
 	}

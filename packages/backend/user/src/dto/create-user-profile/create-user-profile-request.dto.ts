@@ -72,6 +72,10 @@ export class CreateUserProfileRequestDto {
 	@IsOptional()
 	public userProfileWebsite: Optional<string>;
 
+	@IsString()
+	@IsOptional()
+	public userProfileKeywords: Optional<string>;
+
 	@IsBoolean()
 	@IsOptional()
 	public userProfileIsActive: Optional<boolean>;

@@ -87,7 +87,7 @@ export class UserProfileService {
 
 				const userProfile: UserProfileEntity = await this.userProfileRepository.updateUserProfile(userProfileUuid, userProfileTableColumnProperties, transaction);
 
-				userProfile.setDataValue("userProfileIndustry", industry);
+				userProfile.userProfileIndustry = industry;
 
 				return userProfile;
 			},

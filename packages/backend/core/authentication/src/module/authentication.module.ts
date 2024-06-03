@@ -12,7 +12,7 @@ import { AuthAdapterResolver, GuardResolver } from "@/backend-core/authenticatio
 import { AuthenticationRouter } from "@/backend-core/authentication/router";
 import { BasicAuthService, PasswordManagerService, SocialAuthService } from "@/backend-core/authentication/services/auth";
 import { HashService } from "@/backend-core/authentication/services/crypt";
-import { EmailUtilService, TokenUtilService } from "@/backend-core/authentication/services/utils";
+import { AuthEmailService, TokenUtilService } from "@/backend-core/authentication/services/utils";
 import { VerificationService } from "@/backend-core/authentication/services/verification";
 import type { IFacebookAdapter, IGoogleAdapter } from "@/backend-core/authentication/types";
 
@@ -28,7 +28,7 @@ export class AuthenticationModule extends AbstractModule {
 		this.container.registerSingleton(VerificationService);
 
 		// Util Services
-		this.container.registerSingleton(EmailUtilService);
+		this.container.registerSingleton(AuthEmailService);
 		this.container.registerSingleton(TokenUtilService);
 
 		// Hashing and Encryption Services

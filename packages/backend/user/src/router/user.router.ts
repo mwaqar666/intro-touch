@@ -37,9 +37,29 @@ export class UserRouter implements IRouter {
 						guards: [AuthRequestGuard],
 						routes: [
 							{
+								path: "/share",
+								method: RouteMethod.Post,
+								handler: this.userController.shareUserAccount,
+							},
+							{
 								path: "/list",
 								method: RouteMethod.Get,
 								handler: this.userController.getUserList,
+							},
+							{
+								path: "/view/{userUuid}",
+								method: RouteMethod.Patch,
+								handler: this.userController.viewUser,
+							},
+							{
+								path: "/update/{userUuid}",
+								method: RouteMethod.Patch,
+								handler: this.userController.updateUser,
+							},
+							{
+								path: "/delete/{userUuid}",
+								method: RouteMethod.Delete,
+								handler: this.userController.deleteUser,
 							},
 							{
 								prefix: "/contact",

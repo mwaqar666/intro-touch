@@ -1,5 +1,5 @@
 import type { UserEntity } from "@/backend/user/db/entities";
-import { UserService } from "@/backend/user/services";
+import { UserService } from "@/backend/user/services/user";
 import type { IFindOrCreateUserProps } from "@/backend/user/types";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfig, IAppConfigResolver } from "@/backend-core/config/types";
@@ -19,7 +19,7 @@ import type { VerifyEmailRequestDto } from "@/backend-core/authentication/dto/ve
 import { TokenType } from "@/backend-core/authentication/enums";
 import { EmailNotVerifiedException } from "@/backend-core/authentication/exceptions";
 import type { IAuthProvider } from "@/backend-core/authentication/interface";
-import { EmailUtilService, TokenUtilService } from "@/backend-core/authentication/services/utils";
+import { AuthEmailService, TokenUtilService } from "@/backend-core/authentication/services/utils";
 import { VerificationService } from "@/backend-core/authentication/services/verification";
 
 export class BasicAuthService {
@@ -27,7 +27,7 @@ export class BasicAuthService {
 		// Dependencies
 
 		@Inject(UserService) private readonly userService: UserService,
-		@Inject(EmailUtilService) private readonly emailUtilService: EmailUtilService,
+		@Inject(AuthEmailService) private readonly emailUtilService: AuthEmailService,
 		@Inject(TokenUtilService) private readonly tokenUtilService: TokenUtilService,
 		@Inject(VerificationService) private readonly verificationService: VerificationService,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
@@ -49,18 +49,15 @@ export class BasicAuthService {
 	public async basicRegister(registerRequestDto: RegisterRequestDto): Promise<boolean> {
 		return this.transactionManager.executeTransaction({
 			operation: async (): Promise<boolean> => {
-				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
-
 				const { userNewPassword, userConfirmNewPassword, ...userRegistrationFields }: RegisterRequestDto = registerRequestDto;
+				if (userNewPassword !== userConfirmNewPassword) throw new BadRequestException("New password and confirm new password must be same");
 
+				const applicationConfig: IAppConfig = this.configResolver.resolveConfig("app");
 				const userPictureBucketName: string = S3BucketConst.BucketName(applicationConfig.env, S3Bucket.ProfilePictures);
 				const userPicture: string = userRegistrationFields.userPicture ? await this.storageService.storeFile(userPictureBucketName, userRegistrationFields.userPicture) : "";
 
-				if (userNewPassword !== userConfirmNewPassword) throw new BadRequestException("New password and confirm new password must be same");
-
 				const findOrCreateUserProps: IFindOrCreateUserProps = {
 					...userRegistrationFields,
-					userParentId: 1,
 					userPicture,
 					userPassword: userNewPassword,
 				};

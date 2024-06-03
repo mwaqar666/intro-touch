@@ -61,6 +61,9 @@ export class UserProfileEntity extends BaseEntity<UserProfileEntity> {
 	@StringColumn({ nullable: true })
 	public userProfileWebsite: Nullable<string>;
 
+	@TextColumn({ nullable: true })
+	public userProfileKeywords: Nullable<string>;
+
 	@Default(false)
 	@BooleanColumn()
 	public userProfileIsLive: boolean;

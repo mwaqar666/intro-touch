@@ -1,2 +1,2 @@
-export * from "./email-util.service";
+export * from "./auth-email.service";
 export * from "./token-util.service";

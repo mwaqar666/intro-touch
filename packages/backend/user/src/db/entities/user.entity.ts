@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 import { InvalidCredentialsException, PasswordMissingException } from "@/backend-core/authentication/exceptions";
 import type { IAuthenticatable } from "@/backend-core/authentication/interface";
@@ -8,7 +7,7 @@ import { App } from "@/backend-core/core/extensions";
 import { CreatedAtColumn, DeletedAtColumn, ForeignKeyColumn, IsActiveColumn, PrimaryKeyColumn, StringColumn, UpdatedAtColumn, UuidKeyColumn } from "@/backend-core/database/decorators";
 import { BaseEntity } from "@/backend-core/database/entity";
 import { ScopeFactory } from "@/backend-core/database/scopes";
-import type { Nullable } from "@/stacks/types";
+import type { Delegate, Nullable } from "@/stacks/types";
 import { BeforeBulkCreate, BeforeBulkUpdate, BeforeCreate, BeforeUpdate, BeforeValidate, BelongsTo, HasMany, HasOne, Scopes, Table, Unique } from "sequelize-typescript";
 import { UserContactEntity } from "@/backend/user/db/entities/user-contact.entity";
 import { UserProfileEntity } from "@/backend/user/db/entities/user-profile.entity";
@@ -125,43 +124,46 @@ export class UserEntity extends BaseEntity<UserEntity> implements IAuthenticatab
 
 	@BeforeValidate
 	@BeforeBulkCreate
+	public static async createUserDefaultUserPictureHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
+		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
+			if (instance.userPicture) return;
+
+			instance.userPicture = `https://api.dicebear.com/8.x/initials/svg?seed=${instance.userFirstName} ${instance.userLastName}`;
+		});
+	}
+
+	@BeforeValidate
+	@BeforeBulkCreate
 	public static async createUsernameHook(instances: UserEntity | Array<UserEntity>): Promise<void> {
 		await BaseEntity.runHookForOneOrMoreInstances(instances, async (instance: UserEntity): Promise<void> => {
 			if (instance.userUsername) return;
 
-			const firstName: string = instance.userFirstName.trim().toLowerCase();
-			const lastName: string = instance.userLastName.trim().toLowerCase();
+			const prepareName: Delegate<[string], string> = (name: string): string => {
+				name = name.trim().toLowerCase();
 
-			instance.userUsername = `${firstName}-${lastName}-${randomUUID()}`;
+				while (name.includes(" ")) name = name.replace(" ", "_");
+
+				return name;
+			};
+
+			const userNameFirstPart: string = prepareName(instance.userFirstName);
+			const userNameLastPart: string = prepareName(instance.userLastName);
+			const userNameIdentifier: string = Math.floor(1000 + 9000 * Math.random()).toString();
+
+			instance.userUsername = `${userNameFirstPart}_${userNameLastPart}_${userNameIdentifier}`;
 		});
-	}
-
-	public getAuthPrimaryKeyName(): string {
-		return "userId";
 	}
 
 	public getAuthPrimaryKey(): number {
 		return this.userId;
 	}
 
-	public getAuthUuidIdentifierName(): string {
-		return "userUuid";
-	}
-
 	public getAuthUuidIdentifier(): string {
 		return this.userUuid;
 	}
 
-	public getAuthEmailIdentifierName(): string {
-		return "userEmail";
-	}
-
 	public getAuthEmailIdentifier(): string {
 		return this.userEmail;
-	}
-
-	public getAuthPasswordName(): string {
-		return "userPassword";
 	}
 
 	public getAuthPassword(): Nullable<string> {

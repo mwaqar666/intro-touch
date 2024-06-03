@@ -58,14 +58,18 @@ export class Request<T extends object = object, P extends IPathParams = IPathPar
 		return queryParams[param];
 	}
 
-	public async getBody(): Promise<T> {
-		if (this._body) return this._body;
+	public async getBody(): Promise<T>;
+	public async getBody<Param extends Key<T>>(param: Param): Promise<T[Param]>;
+	public async getBody<Param extends Key<T>>(param?: Param): Promise<T | T[Param]> {
+		if (!this._body) {
+			const bodyParser: IBodyParser = this.getRequestBodyParser();
 
-		const bodyParser: IBodyParser = this.getRequestBodyParser();
+			this._body = (await bodyParser.parse(this)) as T;
+		}
 
-		this._body = (await bodyParser.parse(this)) as T;
+		if (!param) return this._body;
 
-		return this._body;
+		return this._body[param];
 	}
 
 	public setBody(body: T): void {

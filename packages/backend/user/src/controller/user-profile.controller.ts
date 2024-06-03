@@ -6,7 +6,7 @@ import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
 import { CreateUserProfileRequestDto } from "@/backend/user/dto/create-user-profile";
 import { UpdateUserProfileRequestDto } from "@/backend/user/dto/update-user-profile";
-import { UserProfileService } from "@/backend/user/services";
+import { UserProfileService } from "@/backend/user/services/user";
 
 @Controller
 export class UserProfileController {

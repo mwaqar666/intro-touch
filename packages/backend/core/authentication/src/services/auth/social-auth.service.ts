@@ -1,5 +1,5 @@
 import type { UserEntity } from "@/backend/user/db/entities";
-import { UserService } from "@/backend/user/services";
+import { UserService } from "@/backend/user/services/user";
 import type { IFindOrCreateUserProps } from "@/backend/user/types";
 import { ConfigTokenConst } from "@/backend-core/config/const";
 import type { IAppConfigResolver, IAuthConfig } from "@/backend-core/config/types";

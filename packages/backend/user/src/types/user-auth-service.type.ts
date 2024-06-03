@@ -8,4 +8,4 @@ export type IUserCredentialProps = NonNullableProps<IEntityTableColumnProperties
 
 export type IUserAuthenticationProps = IUserRetrievalProps & IUserCredentialProps;
 
-export type IFindOrCreateUserProps = IEntityTableColumnPropertiesExcept<UserEntity, "userId" | "userUuid" | "userUsername" | "userIsActive" | "userCreatedAt" | "userUpdatedAt" | "userDeletedAt">;
+export type IFindOrCreateUserProps = IEntityTableColumnPropertiesExcept<UserEntity, "userId" | "userParentId" | "userUuid" | "userUsername" | "userIsActive" | "userCreatedAt" | "userUpdatedAt" | "userDeletedAt">;

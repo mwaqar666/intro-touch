@@ -9,9 +9,11 @@ export interface IUniqueValidatorNoIgnoreOptions<T extends BaseEntity<T>, R exte
 }
 
 export interface IUniqueValidatorIgnoreOptions<T extends BaseEntity<T>, R extends BaseRepository<T>> extends IUniqueValidatorNoIgnoreOptions<T, R> {
-	extractParameterFrom: "path" | "query";
+	extractParameterFrom: IExtractParametersFrom;
 	ignoreByParameter: string;
 }
+
+export type IExtractParametersFrom = "path" | "query" | "body";
 
 export type IUniqueValidatorOptions<T extends BaseEntity<T>, R extends BaseRepository<T>> = IUniqueValidatorNoIgnoreOptions<T, R> | IUniqueValidatorIgnoreOptions<T, R>;
 

@@ -5,7 +5,7 @@ import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/d
 import { Inject } from "iocc";
 import type { UserContactEntity, UserEntity } from "@/backend/user/db/entities";
 import { CreateUserContactRequestDto } from "@/backend/user/dto/create-user-contact";
-import { UserContactService } from "@/backend/user/services";
+import { UserContactService } from "@/backend/user/services/user";
 
 @Controller
 export class UserContactController {

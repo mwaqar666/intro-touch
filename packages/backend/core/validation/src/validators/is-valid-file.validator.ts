@@ -6,12 +6,12 @@ import type { IValidMediaValidatorOptions } from "@/backend-core/validation/type
 
 export function IsValidFile(isValidMediaOptions?: IValidMediaValidatorOptions, validationOptions?: ValidationOptions) {
 	return function (object: object, propertyName: string): void {
-		let message: string = `${propertyName}: Invalid file.`;
+		let message: string = `${propertyName}`;
 
 		if (isValidMediaOptions) {
-			if (isValidMediaOptions.mimeType) message = `${message} File must be of type "${isValidMediaOptions.mimeType}".`;
+			if (isValidMediaOptions.mimeType) message = `${message} must be of type “${isValidMediaOptions.mimeType}”`;
 
-			if (isValidMediaOptions.maxSizeInBytes) message = `${message} File must be less than ${isValidMediaOptions.maxSizeInBytes} bytes.`;
+			if (isValidMediaOptions.maxSizeInBytes) message = `${message} ${isValidMediaOptions.mimeType ? "and " : ""}must be less than ${isValidMediaOptions.maxSizeInBytes} bytes.`;
 		}
 
 		registerDecorator({

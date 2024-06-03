@@ -11,7 +11,7 @@ import type { VerificationTokenEntity } from "@/backend-core/authentication/db/e
 import { TokenType } from "@/backend-core/authentication/enums";
 import type { IAuthenticatable, IAuthProvider, IChangePassword, IPasswordManager, IResetPassword, ISaveNewPassword, ISendPasswordResetToken } from "@/backend-core/authentication/interface";
 import { HashService } from "@/backend-core/authentication/services/crypt";
-import { EmailUtilService } from "@/backend-core/authentication/services/utils";
+import { AuthEmailService } from "@/backend-core/authentication/services/utils";
 import { VerificationService } from "@/backend-core/authentication/services/verification";
 
 export class PasswordManagerService implements IPasswordManager {
@@ -19,7 +19,7 @@ export class PasswordManagerService implements IPasswordManager {
 		// Dependencies
 
 		@Inject(HashService) private readonly hashService: HashService,
-		@Inject(EmailUtilService) private readonly emailUtilService: EmailUtilService,
+		@Inject(AuthEmailService) private readonly emailUtilService: AuthEmailService,
 		@Inject(VerificationService) private readonly verificationService: VerificationService,
 		@Inject(UserRepository) private readonly userRepository: UserRepository,
 		@Inject(DbTokenConst.TransactionManagerToken) private readonly transactionManager: ITransactionManager,

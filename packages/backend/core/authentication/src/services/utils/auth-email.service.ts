@@ -6,7 +6,7 @@ import type { IMailer } from "@/backend-core/mailer/interface";
 import { Inject } from "iocc";
 import type { VerificationTokenEntity } from "@/backend-core/authentication/db/entities";
 
-export class EmailUtilService {
+export class AuthEmailService {
 	public constructor(
 		// Dependencies
 
