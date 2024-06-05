@@ -22,6 +22,12 @@ export class UserProfileController {
 		return { userProfiles: await this.userProfileService.getUserProfileList(authEntity) };
 	}
 
+	public async getUserProfileListByUserUuid(@Auth authEntity: UserEntity, @Path("userUuid") userUuid: string): Promise<{ userProfiles: Array<UserProfileEntity> }> {
+		await this.authorization.can(authEntity, [Permission.ListUserProfile]);
+
+		return { userProfiles: await this.userProfileService.getUserProfileListByUserUuid(userUuid) };
+	}
+
 	public async getUserProfile(@Auth authEntity: UserEntity, @Path("userProfileUuid") userProfileUuid: string): Promise<{ userProfile: UserProfileEntity }> {
 		await this.authorization.can(authEntity, [Permission.ViewUserProfile]);
 

@@ -80,6 +80,11 @@ export class UserRouter implements IRouter {
 										handler: this.userProfileController.getUserProfileList,
 									},
 									{
+										path: "/list/{userUuid}",
+										method: RouteMethod.Get,
+										handler: this.userProfileController.getUserProfileListByUserUuid,
+									},
+									{
 										path: "/view/{userProfileUuid}",
 										method: RouteMethod.Get,
 										handler: this.userProfileController.getUserProfile,

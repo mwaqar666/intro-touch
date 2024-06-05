@@ -12,7 +12,7 @@ import type { StorageService } from "@/backend-core/storage/services";
 import type { Key, Nullable, Optional } from "@/stacks/types";
 import { Inject } from "iocc";
 import type { UserEntity, UserProfileEntity } from "@/backend/user/db/entities";
-import { UserProfileRepository } from "@/backend/user/db/repositories";
+import { UserProfileRepository, UserRepository } from "@/backend/user/db/repositories";
 import type { CreateUserProfileRequestDto } from "@/backend/user/dto/create-user-profile";
 import type { UpdateUserProfileRequestDto } from "@/backend/user/dto/update-user-profile";
 
@@ -20,6 +20,7 @@ export class UserProfileService {
 	public constructor(
 		// Dependencies
 
+		@Inject(UserRepository) private readonly userRepository: UserRepository,
 		@Inject(IndustryRepository) private readonly industryRepository: IndustryRepository,
 		@Inject(UserProfileRepository) private readonly userProfileRepository: UserProfileRepository,
 		@Inject(StorageTokenConst.StorageServiceToken) private readonly storageService: StorageService,
@@ -32,6 +33,15 @@ export class UserProfileService {
 		const scopes: IEntityScope = [{ method: [EntityScopeConst.withColumns, ...columnsToInclude] }];
 
 		return this.userProfileRepository.getUserProfileList(authEntity, scopes);
+	}
+
+	public async getUserProfileListByUserUuid(userUuid: string): Promise<Array<UserProfileEntity>> {
+		const columnsToInclude: Array<Key<IEntityTableColumnProperties<UserProfileEntity>>> = ["userProfileFirstName", "userProfileLastName", "userProfilePicture", "userProfileEmail", "userProfileIsLive", "userProfileIsActive"];
+		const scopes: IEntityScope = [{ method: [EntityScopeConst.withColumns, ...columnsToInclude] }];
+
+		const user: UserEntity = await this.userRepository.getUser(userUuid, [EntityScopeConst.isActive, EntityScopeConst.withoutTimestamps]);
+
+		return this.userProfileRepository.getUserProfileList(user, scopes);
 	}
 
 	public getUserProfile(userProfileUuid: string): Promise<UserProfileEntity> {
