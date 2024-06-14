@@ -1,11 +1,11 @@
 import type { BaseEntity } from "@/backend-core/database/entity";
 import type { BaseRepository } from "@/backend-core/database/repository";
 import type { IEntityTableColumnProperties } from "@/backend-core/database/types";
-import type { Constructable, Key, Optional } from "@/stacks/types";
+import type { Constructable, Key } from "@/stacks/types";
 
 export interface IUniqueValidatorNoIgnoreOptions<T extends BaseEntity<T>, R extends BaseRepository<T>> {
 	repository: Constructable<R>;
-	column?: Optional<Key<IEntityTableColumnProperties<T>>>;
+	column?: Key<IEntityTableColumnProperties<T>>;
 }
 
 export interface IUniqueValidatorIgnoreOptions<T extends BaseEntity<T>, R extends BaseRepository<T>> extends IUniqueValidatorNoIgnoreOptions<T, R> {

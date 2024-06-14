@@ -48,7 +48,7 @@ export class UserRouter implements IRouter {
 							},
 							{
 								path: "/view/{userUuid}",
-								method: RouteMethod.Patch,
+								method: RouteMethod.Get,
 								handler: this.userController.viewUser,
 							},
 							{

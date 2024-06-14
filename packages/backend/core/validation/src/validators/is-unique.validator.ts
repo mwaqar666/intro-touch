@@ -32,7 +32,11 @@ export class IsUniqueConstraint<T extends BaseEntity<T>, R extends BaseRepositor
 
 		let where: WhereOptions<T> = <WhereOptions<T>>{ [validationConstraints.column ?? args.property]: value };
 
-		if ("ignoreByParameter" in validationConstraints) where = { ...where, ...(await this.createIgnoreRowClause(validationConstraints)) };
+		if ("ignoreByParameter" in validationConstraints) {
+			where = {
+				[Op.and]: [where, await this.createIgnoreRowClause(validationConstraints)],
+			};
+		}
 
 		const entityCount: number = await repository.count({
 			findOptions: { where, paranoid: false },
