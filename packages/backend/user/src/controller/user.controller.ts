@@ -44,7 +44,7 @@ export class UserController {
 		return { user: await this.userService.getUserWithLiveProfile(userUsername) };
 	}
 
-	public async shareUserAccount(@Auth userEntity: UserEntity, shareUserAccountRequestDto: ShareUserAccountRequestDto): Promise<{ sent: boolean }> {
+	public async shareUserAccount(@Auth userEntity: UserEntity, @Body(ShareUserAccountRequestDto) shareUserAccountRequestDto: ShareUserAccountRequestDto): Promise<{ sent: boolean }> {
 		return { sent: await this.userService.shareUserAccount(userEntity, shareUserAccountRequestDto) };
 	}
 }
