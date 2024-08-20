@@ -4,7 +4,7 @@ import type { IAuthorization } from "@/backend-core/authorization/interface";
 import { Auth, Body, Controller, Path } from "@/backend-core/request-processor/decorators";
 import { Inject } from "iocc";
 import type { UserEntity } from "@/backend/user/db/entities";
-import type { ShareUserAccountRequestDto } from "@/backend/user/dto/share-user-account";
+import { ShareUserAccountRequestDto } from "@/backend/user/dto/share-user-account";
 import { UpdateUserRequestDto } from "@/backend/user/dto/update-user/update-user-request.dto";
 import { UserService } from "@/backend/user/services/user";
 
