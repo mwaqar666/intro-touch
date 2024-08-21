@@ -7,6 +7,8 @@ export class DatabaseConst {
 
 	public static readonly DatabaseSecretId = (stage: string): string => `dbSecret-${stage}`;
 
+	public static readonly DatabaseImportedSecretId = (stage: string): string => `dbSecretImported-${stage}`;
+
 	public static readonly DatabaseCredentialsSecret = (stage: string): string => `dbCredentials-${stage}`;
 
 	public static readonly DbSecurityGroup = (stage: string): string => `dbSecurityGroup-${stage}`;

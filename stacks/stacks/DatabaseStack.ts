@@ -4,7 +4,7 @@ import { Peer, Port, SecurityGroup, SubnetType } from "aws-cdk-lib/aws-ec2";
 import type { DatabaseClusterProps, IClusterInstance } from "aws-cdk-lib/aws-rds";
 import { AuroraPostgresEngineVersion, ClusterInstance, Credentials, DatabaseCluster, DatabaseClusterEngine } from "aws-cdk-lib/aws-rds";
 import type { ServerlessV2ClusterInstanceProps } from "aws-cdk-lib/aws-rds/lib/aurora-cluster-instance";
-import type { SecretProps } from "aws-cdk-lib/aws-secretsmanager";
+import type { ISecret, SecretProps } from "aws-cdk-lib/aws-secretsmanager";
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
 import type { StackContext } from "sst/constructs";
 import { use } from "sst/constructs";
@@ -64,7 +64,7 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 	const dbSecurityGroup: SecurityGroup = new SecurityGroup(stack, DatabaseConst.DbSecurityGroup(app.stage), dbSecurityGroupProps);
 	dbSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432), DatabaseConst.DbSecurityGroupDescription());
 
-	// Create database secret
+	// Create database secret Props
 	const databaseSecretProps: SecretProps = {
 		secretName: DatabaseConst.DatabaseCredentialsSecret(app.stage),
 		generateSecretString: {
@@ -75,8 +75,15 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 			excludeCharacters: '/@" ',
 		},
 	};
-	const databaseSecret: Secret = new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), databaseSecretProps);
 
+	// Check if the database secret already exists
+	let databaseSecret: ISecret;
+	try {
+		databaseSecret = Secret.fromSecretNameV2(stack, DatabaseConst.DatabaseImportedSecretId(app.stage), DatabaseConst.DatabaseCredentialsSecret(app.stage));
+	} catch (error) {
+		// If the database secret does not exist, create a new one
+		databaseSecret = new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), databaseSecretProps);
+	}
 	// Create database reader
 	const databaseServerlessV2Props: ServerlessV2ClusterInstanceProps = { publiclyAccessible: true };
 	const databaseWriter: IClusterInstance = ClusterInstance.serverlessV2(DatabaseConst.DatabaseWriterId(app.stage), databaseServerlessV2Props);
