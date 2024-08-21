@@ -9,7 +9,7 @@ import { ApiStack, AuthStack, BucketStack, DatabaseStack, EmailStack, VpcStack }
 
 export default {
 	config({ stage }): ConfigOptions {
-		stage = stage ?? "dev";
+		if (!stage) throw new Error('No stage defined: Please provide a stage name by specifying "--stage [STAGE_NAME]" with sst command.');
 
 		const dotEnvFilePath: string = resolve(`.env.${stage}`);
 		const environment: DotenvConfigOutput = config({ path: dotEnvFilePath });
@@ -28,11 +28,9 @@ export default {
 		}
 
 		app.stack(DatabaseStack);
-
 		await app.stack(EmailStack);
 		app.stack(BucketStack);
 		await app.stack(ApiStack);
-
 		app.stack(AuthStack);
 	},
 } satisfies SSTConfig;

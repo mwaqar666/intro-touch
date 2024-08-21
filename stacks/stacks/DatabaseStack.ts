@@ -10,8 +10,8 @@ import type { StackContext } from "sst/constructs";
 import { use } from "sst/constructs";
 import { Config } from "@/stacks/config";
 import { DatabaseConst } from "@/stacks/const";
-import { VpcStack } from "@/stacks/stacks/VpcStack";
 import type { IVpcStack } from "@/stacks/stacks/VpcStack";
+import { VpcStack } from "@/stacks/stacks/VpcStack";
 
 export interface IDatabaseStack {
 	databaseName: string;
@@ -64,26 +64,9 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 	const dbSecurityGroup: SecurityGroup = new SecurityGroup(stack, DatabaseConst.DbSecurityGroup(app.stage), dbSecurityGroupProps);
 	dbSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(5432), DatabaseConst.DbSecurityGroupDescription());
 
-	// Create database secret Props
-	const databaseSecretProps: SecretProps = {
-		secretName: DatabaseConst.DatabaseCredentialsSecret(app.stage),
-		generateSecretString: {
-			secretStringTemplate: JSON.stringify({
-				username: databaseUser,
-			}),
-			generateStringKey: "password",
-			excludeCharacters: '/@" ',
-		},
-	};
+	// Initialize database secret
+	const databaseSecret: ISecret = InitializeDatabaseSecret({ app, stack }, databaseUser);
 
-	// Check if the database secret already exists
-	let databaseSecret: ISecret;
-	try {
-		databaseSecret = Secret.fromSecretNameV2(stack, DatabaseConst.DatabaseImportedSecretId(app.stage), DatabaseConst.DatabaseCredentialsSecret(app.stage));
-	} catch (error) {
-		// If the database secret does not exist, create a new one
-		databaseSecret = new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), databaseSecretProps);
-	}
 	// Create database reader
 	const databaseServerlessV2Props: ServerlessV2ClusterInstanceProps = { publiclyAccessible: true };
 	const databaseWriter: IClusterInstance = ClusterInstance.serverlessV2(DatabaseConst.DatabaseWriterId(app.stage), databaseServerlessV2Props);
@@ -132,6 +115,25 @@ const DatabaseCloudStack = ({ app, stack }: StackContext): IDatabaseStack => {
 		databasePass,
 		databaseToken,
 	};
+};
+
+const InitializeDatabaseSecret = ({ app, stack }: StackContext, databaseUser: string): ISecret => {
+	try {
+		return Secret.fromSecretNameV2(stack, DatabaseConst.DatabaseImportedSecretId(app.stage), DatabaseConst.DatabaseCredentialsSecret(app.stage));
+	} catch (exception) {
+		const databaseSecretProps: SecretProps = {
+			secretName: DatabaseConst.DatabaseCredentialsSecret(app.stage),
+			generateSecretString: {
+				secretStringTemplate: JSON.stringify({
+					username: databaseUser,
+				}),
+				generateStringKey: "password",
+				excludeCharacters: '/@" ',
+			},
+		};
+
+		return new Secret(stack, DatabaseConst.DatabaseSecretId(app.stage), databaseSecretProps);
+	}
 };
 
 export const DatabaseStack = (stackContext: StackContext): IDatabaseStack => {

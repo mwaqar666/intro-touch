@@ -37,5 +37,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.535.0"
+  }
 }

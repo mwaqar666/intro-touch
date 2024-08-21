@@ -34,35 +34,27 @@ export class PlatformsSeeder implements ISeeder {
 				platformCategoryPlatforms: [
 					{
 						platformName: "Call",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/phone.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/phone.png",
 					},
 					{
 						platformName: "Message",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/messages.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/messages.png",
 					},
 					{
 						platformName: "Calendly",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/calendly.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/calendly.png",
 					},
 					{
 						platformName: "Maps",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/google+map.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/google+map.png",
 					},
 					{
 						platformName: "Mail",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/apple_mail.png",
-					},
-					{
-						platformName: "Behance",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/behance.png",
-					},
-					{
-						platformName: "Contact",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/contact.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/apple_mail.png",
 					},
 					{
 						platformName: "WhatsApp",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/whatsapp.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/whatsapp.png",
 					},
 				],
 			},
@@ -71,23 +63,23 @@ export class PlatformsSeeder implements ISeeder {
 				platformCategoryPlatforms: [
 					{
 						platformName: "Venmo",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/venmo.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/venmo.png",
 					},
 					{
 						platformName: "Paypal",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/paypal.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/paypal.png",
 					},
 					{
 						platformName: "CashApp",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/cashapp.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/cashapp.png",
 					},
 					{
 						platformName: "ApplePay",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/applepay.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/applepay.png",
 					},
 					{
 						platformName: "GooglePay",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/googlepay.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/googlepay.png",
 					},
 				],
 			},
@@ -96,35 +88,35 @@ export class PlatformsSeeder implements ISeeder {
 				platformCategoryPlatforms: [
 					{
 						platformName: "Facebook",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/facebook.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/facebook.png",
 					},
 					{
 						platformName: "Instagram",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/instagram.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/instagram.png",
 					},
 					{
 						platformName: "LinkedIn",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/linkedin.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/linkedin.png",
 					},
 					{
 						platformName: "Twitter",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/twitter.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/twitter.png",
 					},
 					{
 						platformName: "YouTube",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/youtube.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/youtube.png",
 					},
 					{
 						platformName: "TikTok",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/tiktok.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/tiktok.png",
 					},
 					{
 						platformName: "SnapChat",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/snapchat.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/snapchat.png",
 					},
 					{
 						platformName: "Pinterest",
-						platformIcon: "https://intro-touch-attachment.s3.us-east-2.amazonaws.com/common/pinterest.png",
+						platformIcon: "https://intro-touch-attachment.s3.amazonaws.com/common/pinterest.png",
 					},
 				],
 			},

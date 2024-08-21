@@ -52,6 +52,7 @@ export class UserRepository extends BaseRepository<UserEntity> {
 	public async deleteUser(userUuid: string, transaction: Transaction): Promise<boolean> {
 		return this.deleteOne({
 			entity: userUuid,
+			force: true,
 			transaction,
 		});
 	}
